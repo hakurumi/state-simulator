@@ -4,181 +4,229 @@
 <head>
     <meta charset="UTF-8" />
     <title>artale 能力值模擬器</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet" />
     <style>
         body {
-            font-family: sans-serif;
-            display: flex;
-            justify-content: space-between;
+            font-family: 'Noto Sans TC', sans-serif;
+            font-size: 14px;
+            background: #f5f5f5;
+            margin: 0;
             padding: 20px;
+            display: flex;
+            justify-content: center;
         }
 
-        form {
-            flex: 1;
+        .container {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            font-size: 14px;
         }
 
-        .attributes {
-            flex: 1;
-            margin-left: 40px;
-            border-left: 1px solid #ccc;
-            padding-left: 20px;
+        h3 {
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            color: #222;
         }
 
+        .form-row,
         .attribute-group {
-            margin-bottom: 10px;
-        }
-
-        input.attr-input {
-            width: 40px;
-            text-align: right;
-            font-family: monospace;
-            padding: 2px;
-        }
-
-        input.attr-input::-webkit-outer-spin-button,
-        input.attr-input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        input.attr-input[type=number] {
-            -moz-appearance: textfield;
-        }
-
-        input.no-spinner::-webkit-outer-spin-button,
-        input.no-spinner::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        input.no-spinner[type=number] {
-            -moz-appearance: textfield;
-        }
-
-        #level,
-        #proficiency {
-            font-family: monospace;
-            width: 40px;
-            text-align: right;
-        }
-
-        .remaining {
-            margin-top: 20px;
-            font-weight: bold;
-        }
-
-        button {
-            margin-left: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            font-size: 14px;
         }
 
         label {
-            display: inline-block;
-            width: auto;
-            white-space: nowrap;
+            width: 120px;
+            flex-shrink: 0;
+            color: #333;
+            font-size: 14px;
+        }
+
+        input,
+        select,
+        button {
+            font-family: inherit;
+            font-size: 14px;
+            padding: 4px 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        #attack-display {
+            color: #333;
+            padding: 8px 0;
         }
 
         .total-display {
             display: inline-block;
-            width: 40px;
+            width: 60px;
             text-align: right;
+            font-family: monospace;
+            color: #111;
+            font-size: 14px;
         }
 
-        .extra-attributes {
-            margin-top: 30px;
+        .remaining {
+            font-weight: bold;
+            color: #555;
+            font-size: 14px;
         }
 
-        .extra-attributes h4 {
-            margin-bottom: 10px;
+        button {
+            cursor: pointer;
+            background: #66aaff;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            transition: background-color 0.3s;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #5597dd;
+        }
+
+        /* 移除數字輸入框上下箭頭 */
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* 修正能力值括號和數字靠近 */
+        .attribute-group span {
+            user-select: none;
+        }
+
+        .attribute-group>span.bracket {
+            margin-left: 2px;
+            margin-right: 2px;
+        }
+
+
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
         }
     </style>
 </head>
 
 <body>
-    <form>
-        <h3>角色資訊</h3>
-        <label for="job">職業: </label>
-        <select id="job" name="job">
-            <option value="劍士 (龍騎士)">劍士 (龍騎士)</option>
-            <option value="劍士 (十字軍)">劍士 (十字軍)</option>
-            <option value="劍士 (騎士)">劍士 (騎士)</option>
-            <option value="盜賊 (神偷)">盜賊 (神偷)</option>
-            <option value="盜賊 (暗殺者)">盜賊 (暗殺者)</option>
-            <option value="弓箭手 (遊俠)">弓箭手 (遊俠)</option>
-            <option value="弓箭手 (狙擊手)">弓箭手 (狙擊手)</option>
-            <option value="法師">法師</option>
-            <option value="海盜 (槍手)">海盜 (槍手)</option>
-        </select><br /><br />
+    <div class="container">
+        <form>
+            <div class="form-row">
+                <label for="job">職業：</label>
+                <select id="job" name="job">
+                    <option value="劍士 (龍騎士)">劍士 (龍騎士)</option>
+                    <option value="劍士 (十字軍)">劍士 (十字軍)</option>
+                    <option value="劍士 (騎士)">劍士 (騎士)</option>
+                    <option value="盜賊 (神偷)">盜賊 (神偷)</option>
+                    <option value="盜賊 (暗殺者)">盜賊 (暗殺者)</option>
+                    <option value="弓箭手 (遊俠)">弓箭手 (遊俠)</option>
+                    <option value="弓箭手 (狙擊手)">弓箭手 (狙擊手)</option>
+                    <option value="法師">法師</option>
+                    <option value="海盜 (槍手)">海盜 (槍手)</option>
+                </select>
+            </div>
 
-        <label for="level">等級: </label>
-        <input type="text" id="level" name="level" value="1" required /><br />
+            <div class="form-row">
+                <label for="level">等級：</label>
+                <input type="text" id="level" name="level" value="1" required />
+            </div>
 
-        <div>(可分配能力值點數: <span id="points">9</span>)</div><br />
+            <div class="form-row">
+                <span>(可分配能力值點數: <span id="points">9</span>)</span>
+            </div>
 
-        <div id="proficiency-group">
-            <label for="proficiency">精準武器: </label>
-            <input type="text" id="proficiency" name="proficiency" value="0" required />
-            <select id="weapon-type-select" style="display:none; margin-left:8px; width:70px;"></select>
-            <br /><br />
-        </div>
+            <div id="proficiency-group" class="form-row">
+                <label for="proficiency">精準武器：</label>
+                <input type="text" id="proficiency" name="proficiency" value="0" required />
+                <select id="weapon-type-select" style="display:none;"></select>
+            </div>
 
-        <div>
-            <label id="weapon-power-label" for="weapon-power">武器攻擊力: </label>
-            <input type="number" id="weapon-power" value="1" min="1" max="512" class="attr-input no-spinner" />
-        </div>
-        <br />
-        <div id="attack-display"></div>
-    </form>
+            <div class="form-row">
+                <label id="weapon-power-label" for="weapon-power">武器攻擊力：</label>
+                <input type="number" id="weapon-power" value="1" min="1" max="512" class="no-spinner" />
 
-    <div class="attributes">
-        <h3>能力值</h3>
-        <div class="attribute-group">
-            <label for="str">力量: </label>
-            <span id="total-str" class="total-display"></span>
-            <span> ( </span>
-            <input class="attr-input" type="number" id="str" min="4" value="4" />
-            <span> + </span>
-            <input class="attr-input" type="number" id="extra-str" value="0" />
-            <span> ) </span>
-            <button type="button" onclick="changeAttr('str', -1)">-</button>
-            <button type="button" onclick="changeAttr('str', 1)">+</button>
-        </div>
-        <div class="attribute-group">
-            <label for="dex">敏捷: </label>
-            <span id="total-dex" class="total-display"></span>
-            <span> ( </span>
-            <input class="attr-input" type="number" id="dex" min="4" value="4" />
-            <span> + </span>
-            <input class="attr-input" type="number" id="extra-dex" value="0" />
-            <span> ) </span>
-            <button type="button" onclick="changeAttr('dex', -1)">-</button>
-            <button type="button" onclick="changeAttr('dex', 1)">+</button>
-        </div>
-        <div class="attribute-group">
-            <label for="int">智慧: </label>
-            <span id="total-int" class="total-display"></span>
-            <span> ( </span>
-            <input class="attr-input" type="number" id="int" min="4" value="4" />
-            <span> + </span>
-            <input class="attr-input" type="number" id="extra-int" value="0" />
-            <span> ) </span>
-            <button type="button" onclick="changeAttr('int', -1)">-</button>
-            <button type="button" onclick="changeAttr('int', 1)">+</button>
-        </div>
-        <div class="attribute-group">
-            <label for="luk">幸運: </label>
-            <span id="total-luk" class="total-display"></span>
-            <span> ( </span>
-            <input class="attr-input" type="number" id="luk" min="4" value="4" />
-            <span> + </span>
-            <input class="attr-input" type="number" id="extra-luk" value="0" />
-            <span> ) </span>
-            <button type="button" onclick="changeAttr('luk', -1)">-</button>
-            <button type="button" onclick="changeAttr('luk', 1)">+</button>
-        </div>
+                <label id="armor-power-label" for="armor-power" style="margin-left:20px;">防具攻擊力：</label>
+                <input type="number" id="armor-power" value="0" min="0" max="512" class="no-spinner" />
+            </div>
 
-        <button type="button" onclick="resetAttributes()">重置能力值</button>
+            <div id="attack-display" style="padding:8px 0; font-size:1.1em; color:#333;"></div>
+        </form>
 
-        <div class="remaining">
-            剩餘可用能力值點數: <span id="remaining">9</span>
+        <div class="attributes">
+            <h3>能力值</h3>
+
+            <div class="attribute-group">
+                <label for="str">力量：</label>
+                <span id="total-str" class="total-display"></span>
+                <span class="bracket">(</span>
+                <input class="attr-input" type="number" id="str" min="4" value="4" />
+                <span class="bracket">+</span>
+                <input class="attr-input" type="number" id="extra-str" value="0" />
+                <span class="bracket">)</span>
+                <button type="button" onclick="changeAttr('str', -1)">-</button>
+                <button type="button" onclick="changeAttr('str', 1)">+</button>
+            </div>
+
+            <div class="attribute-group">
+                <label for="dex">敏捷：</label>
+                <span id="total-dex" class="total-display"></span>
+                <span class="bracket">(</span>
+                <input class="attr-input" type="number" id="dex" min="4" value="4" />
+                <span class="bracket">+</span>
+                <input class="attr-input" type="number" id="extra-dex" value="0" />
+                <span class="bracket">)</span>
+                <button type="button" onclick="changeAttr('dex', -1)">-</button>
+                <button type="button" onclick="changeAttr('dex', 1)">+</button>
+            </div>
+
+            <div class="attribute-group">
+                <label for="int">智慧：</label>
+                <span id="total-int" class="total-display"></span>
+                <span class="bracket">(</span>
+                <input class="attr-input" type="number" id="int" min="4" value="4" />
+                <span class="bracket">+</span>
+                <input class="attr-input" type="number" id="extra-int" value="0" />
+                <span class="bracket">)</span>
+                <button type="button" onclick="changeAttr('int', -1)">-</button>
+                <button type="button" onclick="changeAttr('int', 1)">+</button>
+            </div>
+
+            <div class="attribute-group">
+                <label for="luk">幸運：</label>
+                <span id="total-luk" class="total-display"></span>
+                <span class="bracket">(</span>
+                <input class="attr-input" type="number" id="luk" min="4" value="4" />
+                <span class="bracket">+</span>
+                <input class="attr-input" type="number" id="extra-luk" value="0" />
+                <span class="bracket">)</span>
+                <button type="button" onclick="changeAttr('luk', -1)">-</button>
+                <button type="button" onclick="changeAttr('luk', 1)">+</button>
+            </div>
+
+            <button type="button" onclick="resetAttributes()">重置能力值</button>
+
+            <div class="remaining">
+                剩餘可用能力值點數: <span id="remaining">9</span>
+            </div>
         </div>
     </div>
 
@@ -266,7 +314,7 @@
             updateTotalAttributeDisplays();
         }
 
-        function correctBoundedInputText(id, min, max, width) {
+        function correctBoundedInputText(id, min, max) {
             const input = document.getElementById(id);
             let val = parseInt(input.value.trim());
             if (isNaN(val)) val = min;
@@ -286,27 +334,38 @@
             });
         }
 
-
         function updateAttackDisplay() {
             const job = document.getElementById("job").value;
             const weaponInput = document.getElementById("weapon-power");
+            const armorInput = document.getElementById("armor-power");
             const label = document.getElementById("weapon-power-label");
+            const armorLabel = document.getElementById("armor-power-label");
             const display = document.getElementById("attack-display");
 
-            let power = parseInt(weaponInput.value);
-            if (isNaN(power) || power < 1) power = 1;
-            if (power > 512) power = 512;
-            weaponInput.value = power;
+            let weaponPower = parseInt(weaponInput.value);
+            if (isNaN(weaponPower) || weaponPower < 1) weaponPower = 1;
+            if (weaponPower > 512) weaponPower = 512;
+            weaponInput.value = weaponPower;
+
+            let armorPower = parseInt(armorInput.value);
+            if (isNaN(armorPower) || armorPower < 0) armorPower = 0;
+            if (armorPower > 512) armorPower = 512;
+            armorInput.value = armorPower;
 
             if (job === "法師") {
-                label.textContent = "武器魔法攻擊力: ";
-                const matk = 100 + power;
-                display.textContent = `魔法攻擊力 ${matk.toString().padStart(4, " ")}`;
+                label.textContent = "武器魔法攻擊力：";
+                armorLabel.textContent = "防具魔法攻擊力：";
+                const matk = 100 + weaponPower;
+                const armorMatk = armorPower;
+                display.textContent = `魔法攻擊力： ${matk.toString().padStart(4, " ")}`;
             } else {
-                label.textContent = "武器攻擊力: ";
-                const min = power;
-                const max = power + 20;
-                display.textContent = `攻擊力 ${min.toString().padStart(4, " ")} ~ ${max
+                label.textContent = "武器攻擊力：";
+                armorLabel.textContent = "防具攻擊力：";
+                const min = weaponPower;
+                const max = weaponPower + 20;
+                const armorMin = armorPower;
+                const armorMax = armorPower + 20;
+                display.textContent = `攻擊力： ${min.toString().padStart(4, " ")} ~ ${max
                     .toString()
                     .padStart(4, " ")}`;
             }
@@ -328,7 +387,7 @@
             if (job === "法師") {
                 profGroup.style.display = "none";
             } else {
-                profGroup.style.display = "block";
+                profGroup.style.display = "flex";
             }
         }
 
@@ -336,15 +395,13 @@
             const job = document.getElementById("job").value;
             const select = document.getElementById("weapon-type-select");
 
-            // 劍士分支對應武器選項
             const optionsMap = {
                 "劍士 (龍騎士)": ["槍武器", "矛武器"],
                 "劍士 (十字軍)": ["單手劍", "雙手劍", "單手斧", "雙手斧"],
-                "劍士 (騎士)": ["單手劍", "雙手劍", "單手棍", "雙手棍"]
+                "劍士 (騎士)": ["單手劍", "雙手劍", "單手棍", "雙手棍"],
             };
 
             if (job in optionsMap) {
-                // 清空並生成選項
                 select.innerHTML = "";
                 optionsMap[job].forEach((opt) => {
                     const option = document.createElement("option");
@@ -359,8 +416,9 @@
             }
         }
 
+        // 監聽事件
         document.getElementById("level").addEventListener("input", () => {
-            correctBoundedInputText("level", 1, 200, 3);
+            correctBoundedInputText("level", 1, 200);
             resetAttributes();
             updatePointsDisplay();
             updateAttackDisplay();
@@ -368,7 +426,7 @@
         });
 
         document.getElementById("proficiency").addEventListener("input", () => {
-            correctBoundedInputText("proficiency", 0, 20, 2);
+            correctBoundedInputText("proficiency", 0, 20);
         });
 
         document.getElementById("job").addEventListener("change", () => {
@@ -381,6 +439,15 @@
             const input = document.getElementById("weapon-power");
             let val = parseInt(input.value);
             if (isNaN(val) || val < 1) val = 1;
+            if (val > 512) val = 512;
+            input.value = val;
+            updateAttackDisplay();
+        });
+
+        document.getElementById("armor-power").addEventListener("input", () => {
+            let input = document.getElementById("armor-power");
+            let val = parseInt(input.value);
+            if (isNaN(val) || val < 0) val = 0;
             if (val > 512) val = 512;
             input.value = val;
             updateAttackDisplay();
