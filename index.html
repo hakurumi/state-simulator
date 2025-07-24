@@ -344,6 +344,8 @@
             const display = document.getElementById("attack-display");
             const proficiency = parseInt(document.getElementById("proficiency").value) || 0;
             const weaponType = document.getElementById("weapon-type-select").value;
+            const weaponLabel = document.getElementById("weapon-power-label");
+            const armorLabel = document.getElementById("armor-power-label");
 
             const str = (parseInt(document.getElementById("str").value) || 4) + (parseInt(document.getElementById("extra-str").value) || 0);
             const dex = (parseInt(document.getElementById("dex").value) || 4) + (parseInt(document.getElementById("extra-dex").value) || 0);
@@ -360,6 +362,8 @@
 
             // 魔法職業
             if (job === "法師") {
+                weaponLabel.textContent = "魔法攻擊力:";
+                armorLabel.textContent = "魔法攻擊力:";
                 const matk = int + weaponPower + armorPower;
                 display.textContent = `魔法攻擊力： ${matk.toString().padStart(4, " ")}`;
                 return;
