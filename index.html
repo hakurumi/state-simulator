@@ -44,6 +44,16 @@
             -moz-appearance: textfield;
         }
 
+        input.no-spinner::-webkit-outer-spin-button,
+        input.no-spinner::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input.no-spinner[type=number] {
+            -moz-appearance: textfield;
+        }
+
         #level,
         #proficiency {
             font-family: monospace;
@@ -62,7 +72,14 @@
 
         label {
             display: inline-block;
-            width: 80px;
+            width: auto;
+            white-space: nowrap;
+        }
+
+        .total-display {
+            display: inline-block;
+            width: 40px;
+            text-align: right;
         }
 
         .extra-attributes {
@@ -102,6 +119,12 @@
             <select id="weapon-type-select" style="display:none; margin-left:8px; width:70px;"></select>
             <br /><br />
         </div>
+
+        <div>
+            <label id="weapon-power-label" for="weapon-power">武器攻擊力: </label>
+            <input type="number" id="weapon-power" value="1" min="1" max="512" class="attr-input no-spinner" />
+        </div>
+        <br />
         <div id="attack-display"></div>
     </form>
 
@@ -263,17 +286,29 @@
             });
         }
 
+
         function updateAttackDisplay() {
             const job = document.getElementById("job").value;
+            const weaponInput = document.getElementById("weapon-power");
+            const label = document.getElementById("weapon-power-label");
             const display = document.getElementById("attack-display");
 
+            let power = parseInt(weaponInput.value);
+            if (isNaN(power) || power < 1) power = 1;
+            if (power > 512) power = 512;
+            weaponInput.value = power;
+
             if (job === "法師") {
-                const matk = 123; // 可以改為根據 int 計算
+                label.textContent = "武器魔法攻擊力: ";
+                const matk = 100 + power;
                 display.textContent = `魔法攻擊力 ${matk.toString().padStart(4, " ")}`;
             } else {
-                const minAtk = 45;
-                const maxAtk = 89;
-                display.textContent = `攻擊力 ${minAtk.toString().padStart(4, " ")} ~ ${maxAtk.toString().padStart(4, " ")}`;
+                label.textContent = "武器攻擊力: ";
+                const min = power;
+                const max = power + 20;
+                display.textContent = `攻擊力 ${min.toString().padStart(4, " ")} ~ ${max
+                    .toString()
+                    .padStart(4, " ")}`;
             }
         }
 
@@ -283,7 +318,7 @@
                 const extra = parseInt(document.getElementById(`extra-${attr}`).value) || 0;
                 const total = base + extra;
                 const display = document.getElementById(`total-${attr}`);
-                display.textContent = `${total}`;
+                display.textContent = total.toString().padStart(4, " ");
             });
         }
 
@@ -340,6 +375,15 @@
             updateProficiencyVisibility();
             updateAttackDisplay();
             updateWeaponTypeSelect();
+        });
+
+        document.getElementById("weapon-power").addEventListener("input", () => {
+            const input = document.getElementById("weapon-power");
+            let val = parseInt(input.value);
+            if (isNaN(val) || val < 1) val = 1;
+            if (val > 512) val = 512;
+            input.value = val;
+            updateAttackDisplay();
         });
 
         attributes.forEach((attr) => {
