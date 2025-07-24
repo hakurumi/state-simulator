@@ -364,13 +364,15 @@
 
             // 魔法職業
             if (job === "法師") {
-                weaponLabel.textContent = "魔法攻擊力:";
-                armorLabel.textContent = "魔法攻擊力:";
+                weaponLabel.textContent = "武器魔法攻擊力：";
+                armorLabel.textContent = "防具魔法攻擊力：";
                 const matk = int + weaponPower + armorPower;
                 display.textContent = `魔法攻擊力： ${matk.toString().padStart(4, " ")}`;
                 return;
             }
 
+            weaponLabel.textContent = "武器攻擊力：";
+            armorLabel.textContent = "防具攻擊力：";
             let mainAttr = 0, subAttr = 0, min = 0, max = 0;
             let coefficient_min = 0, coefficient_max = 0;
 
