@@ -446,18 +446,10 @@
             // 計算
             max = Math.floor((mainAttr * coefficient_max + subAttr) * attack / 100);
             min = Math.floor((mainAttr * coefficient_min * 0.9 * prof + subAttr) * attack / 100);
+            max = max == 0 ? 1 : max;
+            min = min == 0 ? 1 : min;
 
             display.textContent = `攻擊力： ${min.toString().padStart(4, " ")} ~ ${max.toString().padStart(4, " ")}`;
-
-            console.log(`coefficient_min: ${coefficient_min}`);
-            console.log(`proficiency: ${proficiency}`);
-            console.log(`prof (熟練度): ${prof}`);
-            console.log(`weaponPower: ${weaponPower}`);
-            console.log(`armorPower: ${armorPower}`);
-            console.log(`attack: ${attack}`);
-            console.log('str:', str, 'dex:', dex, 'int:', int, 'luk:', luk);
-            console.log('mainAttr:', mainAttr);
-            console.log('subAttr:', subAttr);
         }
 
 
@@ -588,6 +580,10 @@
 
         // 監聽事件
         document.getElementById("level").addEventListener("input", () => {
+            updateTotalAttributeDisplays();
+        });
+
+        document.getElementById("level").addEventListener("blur", () => {
             correctBoundedInputText("level", 1, 200);
             resetAttributes();
             updatePointsDisplay();
@@ -595,7 +591,7 @@
             updateTotalAttributeDisplays();
         });
 
-        document.getElementById("proficiency").addEventListener("input", () => {
+        document.getElementById("proficiency").addEventListener("blur", () => {
             correctBoundedInputText("proficiency", 0, 20);
             updateAttackDisplay();
         });
