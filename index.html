@@ -143,6 +143,7 @@
                     <option value="弓箭手 (狙擊手)">弓箭手 (狙擊手)</option>
                     <option value="法師">法師</option>
                     <option value="海盜 (槍手)">海盜 (槍手)</option>
+                    <option value="海盜 (格鬥家)">海盜 (格鬥家)</option>
                 </select>
             </div>
 
@@ -419,10 +420,10 @@
 
             // 海盜系
             else if (job.includes("海盜")) {
-                mainAttr = dex;
-                subAttr = str;
-                coefficient_min = 3.6;
-                coefficient_max = 3.6;
+                mainAttr = job.includes("槍手") ? dex : str;
+                subAttr = job.includes("槍手") ? str : dex;
+                coefficient_min = job.includes("槍手") ? 3.6 : 4.8;
+                coefficient_max = job.includes("槍手") ? 3.6 : 4.8;
             }
 
             // 計算
