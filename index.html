@@ -165,6 +165,11 @@
 
                 <label id="armor-power-label" for="armor-power" style="margin-left:20px;">防具攻擊力：</label>
                 <input type="number" id="armor-power" value="0" min="0" max="512" class="no-spinner" />
+
+                <!-- 暗殺者鏢攻擊力 or 弓箭手箭矢攻擊力 -->
+                <label id="projectile-label" for="projectile-power"
+                    style="margin-left: 20px; display: none;">鏢攻擊力：</label>
+                <input type="number" id="projectile-power" value="0" min="0" max="512" style="display: none;" />
             </div>
 
             <div id="proficiency-group" class="form-row">
@@ -238,6 +243,7 @@
         const baseValue = 4;
         const attributes = ["str", "dex", "int", "luk"];
         const extraAttributes = ["extra-str", "extra-dex", "extra-int", "extra-luk"];
+        const maxAtk = 512;
 
         function getLevelPoints() {
             let level = parseInt(document.getElementById("level").value.trim()) || 1;
@@ -359,7 +365,15 @@
             let armorPower = parseInt(armorInput.value);
             if (isNaN(armorPower) || armorPower < 0) armorPower = 0;
 
-            const attack = weaponPower + armorPower;
+
+            let projectilePower = 0;
+            const projectileInput = document.getElementById("projectile-power");
+            if (projectileInput && projectileInput.style.display !== "none") {
+                projectilePower = parseInt(projectileInput.value);
+                if (isNaN(projectilePower) || projectilePower < 0) projectilePower = 0;
+            }
+
+            const attack = weaponPower + armorPower + projectilePower;
             const prof = (Math.ceil(proficiency / 2) * 5 + 10) / 100;
 
             // 魔法職業
@@ -492,6 +506,25 @@
             }
         }
 
+        function updateProjectileVisibility() {
+            const job = document.getElementById("job").value;
+            const label = document.getElementById("projectile-label");
+            const input = document.getElementById("projectile-power");
+
+            if (job.includes("暗殺者")) {
+                label.textContent = "鏢攻擊力：";
+                label.style.display = "inline-block";
+                input.style.display = "inline-block";
+            } else if (job.includes("弓箭手")) {
+                label.textContent = "箭矢攻擊力：";
+                label.style.display = "inline-block";
+                input.style.display = "inline-block";
+            } else {
+                label.style.display = "none";
+                input.style.display = "none";
+            }
+        }
+
         // 監聽事件
         document.getElementById("level").addEventListener("input", () => {
             correctBoundedInputText("level", 1, 200);
@@ -510,13 +543,14 @@
             updateProficiencyVisibility();
             updateAttackDisplay();
             updateWeaponTypeSelect();
+            updateProjectileVisibility();
         });
 
         document.getElementById("weapon-power").addEventListener("input", () => {
             const input = document.getElementById("weapon-power");
             let val = parseInt(input.value);
             if (isNaN(val) || val < 1) val = 1;
-            if (val > 512) val = 512;
+            if (val > maxAtk) val = maxAtk;
             input.value = val;
             updateAttackDisplay();
         });
@@ -525,7 +559,7 @@
             let input = document.getElementById("armor-power");
             let val = parseInt(input.value);
             if (isNaN(val) || val < 0) val = 0;
-            if (val > 512) val = 512;
+            if (val > maxAtk) val = maxAtk;
             input.value = val;
             updateAttackDisplay();
         });
