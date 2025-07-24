@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>角色設定表單</title>
   <style>
     body {
@@ -31,6 +31,28 @@
       text-align: right;
       font-family: monospace;
       padding: 2px;
+    }
+
+    /* 移除數字輸入框上下箭頭 - Chrome, Edge, Safari */
+    input.attr-input::-webkit-outer-spin-button,
+    input.attr-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      appearance: none;
+      margin: 0;
+    }
+
+    /* 移除數字輸入框上下箭頭 - Firefox */
+    input.attr-input[type=number] {
+      -moz-appearance: textfield;
+      appearance: none;
+    }
+
+    /* 等級 與 精準武器 欄位樣式 */
+    #level,
+    #proficiency {
+      font-family: monospace;
+      width: 40px;
+      text-align: right;
     }
 
     .remaining {
@@ -63,17 +85,17 @@
       <option value="弓箭手">弓箭手</option>
       <option value="海盜 (槍手)">海盜 (槍手)</option>
     </select>
-    <br><br>
+    <br /><br />
 
     <!-- 等級 -->
     <label for="level">等級: </label>
-    <input type="number" id="level" name="level" min="1" max="200" value="1" required>
-    <br><br>
+    <input type="text" id="level" name="level" value="1" required />
+    <br /><br />
 
-    <!-- 武器精準技能 -->
-    <label for="proficiency">武器精準技能 (0~20): </label>
-    <input type="number" id="proficiency" name="proficiency" min="0" max="20" value="0" required>
-    <br><br>
+    <!-- 精準武器 -->
+    <label for="proficiency">精準武器: </label>
+    <input type="text" id="proficiency" name="proficiency" value="0" required />
+    <br /><br />
 
     <!-- 可分配點數 -->
     <div>
@@ -87,28 +109,28 @@
 
     <div class="attribute-group">
       <label for="str">力量: </label>
-      <input class="attr-input" type="number" id="str" min="4" value="4">
+      <input class="attr-input" type="number" id="str" min="4" value="4" />
       <button type="button" onclick="changeAttr('str', -1)">-</button>
       <button type="button" onclick="changeAttr('str', 1)">+</button>
     </div>
 
     <div class="attribute-group">
       <label for="dex">敏捷: </label>
-      <input class="attr-input" type="number" id="dex" min="4" value="4">
+      <input class="attr-input" type="number" id="dex" min="4" value="4" />
       <button type="button" onclick="changeAttr('dex', -1)">-</button>
       <button type="button" onclick="changeAttr('dex', 1)">+</button>
     </div>
 
     <div class="attribute-group">
       <label for="int">智慧: </label>
-      <input class="attr-input" type="number" id="int" min="4" value="4">
+      <input class="attr-input" type="number" id="int" min="4" value="4" />
       <button type="button" onclick="changeAttr('int', -1)">-</button>
       <button type="button" onclick="changeAttr('int', 1)">+</button>
     </div>
 
     <div class="attribute-group">
       <label for="luk">幸運: </label>
-      <input class="attr-input" type="number" id="luk" min="4" value="4">
+      <input class="attr-input" type="number" id="luk" min="4" value="4" />
       <button type="button" onclick="changeAttr('luk', -1)">-</button>
       <button type="button" onclick="changeAttr('luk', 1)">+</button>
     </div>
@@ -124,11 +146,20 @@
     const baseValue = 4;
     const attributes = ["str", "dex", "int", "luk"];
 
+    function padLeft(str, length) {
+      str = str.toString();
+      while (str.length < length) {
+        str = " " + str;
+      }
+      return str;
+    }
+
     function getLevelPoints() {
-      let level = parseInt(document.getElementById("level").value) || 1;
+      let levelStr = document.getElementById("level").value.trim();
+      let level = parseInt(levelStr) || 1;
       if (level > 200) level = 200;
       if (level < 1) level = 1;
-      document.getElementById("level").value = level;
+      document.getElementById("level").value = padLeft(level, 3);
       return (level - 1) * 5 + 9;
     }
 
@@ -149,19 +180,16 @@
       const used = getCurrentTotalUsedPoints();
 
       // 自動修正能力值輸入錯誤
-      let changed = false;
-      attributes.forEach(attr => {
+      attributes.forEach((attr) => {
         const input = document.getElementById(attr);
         let val = parseInt(input.value);
         if (isNaN(val) || val < baseValue) {
           input.value = baseValue;
-          changed = true;
         }
       });
 
       const overflow = used - totalPoints;
       if (overflow > 0) {
-        // 把多出來的點數自動扣除
         for (let attr of attributes) {
           let input = document.getElementById(attr);
           let val = parseInt(input.value);
@@ -175,7 +203,8 @@
       }
 
       document.getElementById("points").textContent = levelPoints;
-      document.getElementById("remaining").textContent = getTotalAllocatablePoints() - getCurrentTotalUsedPoints();
+      document.getElementById("remaining").textContent =
+        getTotalAllocatablePoints() - getCurrentTotalUsedPoints();
     }
 
     function changeAttr(attr, delta) {
@@ -198,33 +227,32 @@
     }
 
     function resetAttributes() {
-      attributes.forEach(attr => {
+      attributes.forEach((attr) => {
         document.getElementById(attr).value = baseValue;
       });
       updatePointsDisplay();
     }
 
-    // 等級、精準技能輸入修正
-    function correctBoundedInput(id, min, max) {
+    function correctBoundedInputText(id, min, max, width) {
       const input = document.getElementById(id);
-      let val = parseInt(input.value);
+      let val = parseInt(input.value.trim());
       if (isNaN(val)) val = min;
       if (val < min) val = min;
       if (val > max) val = max;
-      input.value = val;
+      input.value = padLeft(val, width);
     }
 
     document.getElementById("level").addEventListener("input", () => {
-      correctBoundedInput("level", 1, 200);
-      resetAttributes(); // 等級變動時重設能力值
+      correctBoundedInputText("level", 1, 200, 3);
+      resetAttributes();
       updatePointsDisplay();
     });
 
     document.getElementById("proficiency").addEventListener("input", () => {
-      correctBoundedInput("proficiency", 0, 20);
+      correctBoundedInputText("proficiency", 0, 20, 2);
     });
 
-    attributes.forEach(attr => {
+    attributes.forEach((attr) => {
       document.getElementById(attr).addEventListener("input", () => {
         updatePointsDisplay();
       });
