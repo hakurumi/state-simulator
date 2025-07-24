@@ -528,6 +528,10 @@
             updateAttackDisplay();
         });
 
+        document.getElementById("weapon-type-select").addEventListener("change", () => {
+            updateAttackDisplay();
+        });
+
         attributes.forEach((attr) => {
             document.getElementById(attr).addEventListener("input", () => {
                 updatePointsDisplay();
