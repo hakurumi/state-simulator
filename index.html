@@ -105,33 +105,45 @@
         <h3>能力值</h3>
         <div class="attribute-group">
             <label for="str">力量: </label>
+            <span id="total-str" class="total-display"></span>
+            <span> ( </span>
             <input class="attr-input" type="number" id="str" min="4" value="4" />
             <span> + </span>
             <input class="attr-input" type="number" id="extra-str" value="0" />
+            <span> ) </span>
             <button type="button" onclick="changeAttr('str', -1)">-</button>
             <button type="button" onclick="changeAttr('str', 1)">+</button>
         </div>
         <div class="attribute-group">
             <label for="dex">敏捷: </label>
+            <span id="total-dex" class="total-display"></span>
+            <span> ( </span>
             <input class="attr-input" type="number" id="dex" min="4" value="4" />
             <span> + </span>
             <input class="attr-input" type="number" id="extra-dex" value="0" />
+            <span> ) </span>
             <button type="button" onclick="changeAttr('dex', -1)">-</button>
             <button type="button" onclick="changeAttr('dex', 1)">+</button>
         </div>
         <div class="attribute-group">
             <label for="int">智慧: </label>
+            <span id="total-int" class="total-display"></span>
+            <span> ( </span>
             <input class="attr-input" type="number" id="int" min="4" value="4" />
             <span> + </span>
             <input class="attr-input" type="number" id="extra-int" value="0" />
+            <span> ) </span>
             <button type="button" onclick="changeAttr('int', -1)">-</button>
             <button type="button" onclick="changeAttr('int', 1)">+</button>
         </div>
         <div class="attribute-group">
             <label for="luk">幸運: </label>
+            <span id="total-luk" class="total-display"></span>
+            <span> ( </span>
             <input class="attr-input" type="number" id="luk" min="4" value="4" />
             <span> + </span>
             <input class="attr-input" type="number" id="extra-luk" value="0" />
+            <span> ) </span>
             <button type="button" onclick="changeAttr('luk', -1)">-</button>
             <button type="button" onclick="changeAttr('luk', 1)">+</button>
         </div>
@@ -148,16 +160,10 @@
         const attributes = ["str", "dex", "int", "luk"];
         const extraAttributes = ["extra-str", "extra-dex", "extra-int", "extra-luk"];
 
-        function padLeft(str, length) {
-            str = str.toString();
-            while (str.length < length) str = " " + str;
-            return str;
-        }
-
         function getLevelPoints() {
             let level = parseInt(document.getElementById("level").value.trim()) || 1;
             level = Math.max(1, Math.min(level, 200));
-            document.getElementById("level").value = padLeft(level, 3);
+            document.getElementById("level").value = level;
             return (level - 1) * 5 + 9;
         }
 
@@ -219,6 +225,7 @@
             }
 
             updatePointsDisplay();
+            updateTotalAttributeDisplays();
         }
 
         function resetAttributes() {
@@ -234,7 +241,7 @@
             if (isNaN(val)) val = min;
             if (val < min) val = min;
             if (val > max) val = max;
-            input.value = padLeft(val, width);
+            input.value = val;
         }
 
         function correctExtraAttributes() {
@@ -262,11 +269,22 @@
             }
         }
 
+        function updateTotalAttributeDisplays() {
+            attributes.forEach((attr) => {
+                const base = parseInt(document.getElementById(attr).value) || 0;
+                const extra = parseInt(document.getElementById(`extra-${attr}`).value) || 0;
+                const total = base + extra;
+                const display = document.getElementById(`total-${attr}`);
+                display.textContent = `${total}`;
+            });
+        }
+
         document.getElementById("level").addEventListener("input", () => {
             correctBoundedInputText("level", 1, 200, 3);
             resetAttributes();
             updatePointsDisplay();
             updateAttackDisplay();
+            updateTotalAttributeDisplays();
         });
 
         document.getElementById("proficiency").addEventListener("input", () => {
@@ -279,12 +297,14 @@
             document.getElementById(attr).addEventListener("input", () => {
                 updatePointsDisplay();
                 updateAttackDisplay();
+                updateTotalAttributeDisplays();
             });
         });
 
         extraAttributes.forEach((id) => {
             document.getElementById(id).addEventListener("input", () => {
                 correctExtraAttributes();
+                updateTotalAttributeDisplays(); 
             });
         });
 
@@ -292,6 +312,7 @@
             updatePointsDisplay();
             correctExtraAttributes();
             updateAttackDisplay();
+            updateTotalAttributeDisplays();
         });
     </script>
 </body>
