@@ -535,16 +535,39 @@
         });
 
         attributes.forEach((attr) => {
-            document.getElementById(attr).addEventListener("input", () => {
+            const input = document.getElementById(attr);
+            // 改成 blur 事件觸發校驗
+            input.addEventListener("blur", () => {
+                let val = parseInt(input.value);
+                if (isNaN(val) || val < baseValue) val = baseValue;
+                input.value = val;
                 updatePointsDisplay();
+                updateAttackDisplay();
+                updateTotalAttributeDisplays();
+            });
+
+            // input 事件只更新顯示，不做強制限制
+            input.addEventListener("input", () => {
                 updateAttackDisplay();
                 updateTotalAttributeDisplays();
             });
         });
 
         extraAttributes.forEach((id) => {
-            document.getElementById(id).addEventListener("input", () => {
-                correctExtraAttributes();
+            const input = document.getElementById(id);
+
+            // blur 時做校驗範圍限制
+            input.addEventListener("blur", () => {
+                let val = parseInt(input.value);
+                if (isNaN(val) || val < 0) val = 0;
+                if (val > 999) val = 999;
+                input.value = val;
+                updateTotalAttributeDisplays();
+                updateAttackDisplay();
+            });
+
+            // input 事件不強制調整
+            input.addEventListener("input", () => {
                 updateTotalAttributeDisplays();
                 updateAttackDisplay();
             });
