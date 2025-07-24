@@ -341,38 +341,103 @@
             const job = document.getElementById("job").value;
             const weaponInput = document.getElementById("weapon-power");
             const armorInput = document.getElementById("armor-power");
-            const label = document.getElementById("weapon-power-label");
-            const armorLabel = document.getElementById("armor-power-label");
             const display = document.getElementById("attack-display");
+            const proficiency = parseInt(document.getElementById("proficiency").value) || 0;
+            const weaponType = document.getElementById("weapon-type-select").value;
+
+            const str = (parseInt(document.getElementById("str").value) || 4) + (parseInt(document.getElementById("extra-str").value) || 0);
+            const dex = (parseInt(document.getElementById("dex").value) || 4) + (parseInt(document.getElementById("extra-dex").value) || 0);
+            const int = (parseInt(document.getElementById("int").value) || 4) + (parseInt(document.getElementById("extra-int").value) || 0);
+            const luk = (parseInt(document.getElementById("luk").value) || 4) + (parseInt(document.getElementById("extra-luk").value) || 0);
 
             let weaponPower = parseInt(weaponInput.value);
             if (isNaN(weaponPower) || weaponPower < 1) weaponPower = 1;
-            if (weaponPower > 512) weaponPower = 512;
-            weaponInput.value = weaponPower;
-
             let armorPower = parseInt(armorInput.value);
             if (isNaN(armorPower) || armorPower < 0) armorPower = 0;
-            if (armorPower > 512) armorPower = 512;
-            armorInput.value = armorPower;
 
+            const attack = weaponPower + armorPower;
+            const prof = (Math.ceil(proficiency / 2) * 5 + 10) / 100;
+
+            // 魔法職業
             if (job === "法師") {
-                label.textContent = "武器魔法攻擊力：";
-                armorLabel.textContent = "防具魔法攻擊力：";
-                const matk = 100 + weaponPower;
-                const armorMatk = armorPower;
+                const matk = int + weaponPower + armorPower;
                 display.textContent = `魔法攻擊力： ${matk.toString().padStart(4, " ")}`;
-            } else {
-                label.textContent = "武器攻擊力：";
-                armorLabel.textContent = "防具攻擊力：";
-                const min = weaponPower;
-                const max = weaponPower + 20;
-                const armorMin = armorPower;
-                const armorMax = armorPower + 20;
-                display.textContent = `攻擊力： ${min.toString().padStart(4, " ")} ~ ${max
-                    .toString()
-                    .padStart(4, " ")}`;
+                return;
             }
+
+            let mainAttr = 0, subAttr = 0, min = 0, max = 0;
+            let coefficient_min = 0, coefficient_max = 0;
+
+            // 劍士系
+            if (job.includes("劍士")) {
+                mainAttr = str;
+                subAttr = dex;
+
+                if (job.includes("龍騎士")) {
+                    if (weaponType === "槍武器") {
+                        coefficient_min = 3.6;
+                        coefficient_max = 5.1;
+                    } else if (weaponType === "矛武器") {
+                        coefficient_min = 3.5;
+                        coefficient_max = 5.2;
+                    }
+                } else if (job.includes("十字軍")) {
+                    const map = { "單手劍": 4.2, "雙手劍": 4.8, "單手斧": 3.6, "雙手斧": 4.0 };
+                    coefficient_min = map[weaponType] || 4.0;
+                    coefficient_max = (weaponType === "單手斧") ? 4.8 : (weaponType === "雙手斧") ? 5.2 : coefficient_min;
+                } else if (job.includes("騎士")) {
+                    const map = { "單手劍": 4.2, "雙手劍": 4.8, "單手棍": 3.6, "雙手棍": 4.0 };
+                    coefficient_min = map[weaponType] || 4.0;
+                    coefficient_max = (weaponType === "單手棍") ? 4.8 : (weaponType === "雙手棍") ? 5.2 : coefficient_min;
+                }
+            }
+
+            // 盜賊系
+            else if (job.includes("盜賊")) {
+                mainAttr = luk;
+                subAttr = str + dex;
+                if (job.includes("暗殺者")) {
+                    coefficient_min = 3.6;
+                    coefficient_max = 3.6;
+                } else {
+                    coefficient_min = 3.6;
+                    coefficient_max = 4.2;
+                }
+            }
+
+            // 弓箭手系
+            else if (job.includes("弓箭手")) {
+                mainAttr = dex;
+                subAttr = str;
+                coefficient_min = job.includes("狙擊手") ? 3.6 : 3.4;
+                coefficient_max = coefficient_min;
+            }
+
+            // 海盜系
+            else if (job.includes("海盜")) {
+                mainAttr = dex;
+                subAttr = str;
+                coefficient_min = 3.6;
+                coefficient_max = 3.6;
+            }
+
+            // 計算
+            max = Math.floor((mainAttr * coefficient_max + subAttr) * attack / 100);
+            min = Math.floor((mainAttr * coefficient_min * 0.9 * prof + subAttr) * attack / 100);
+
+            display.textContent = `攻擊力： ${min.toString().padStart(4, " ")} ~ ${max.toString().padStart(4, " ")}`;
+
+            console.log(`coefficient_min: ${coefficient_min}`);
+            console.log(`proficiency: ${proficiency}`);
+            console.log(`prof (熟練度): ${prof}`);
+            console.log(`weaponPower: ${weaponPower}`);
+            console.log(`armorPower: ${armorPower}`);
+            console.log(`attack: ${attack}`);
+            console.log('str:', str, 'dex:', dex, 'int:', int, 'luk:', luk);
+            console.log('mainAttr:', mainAttr);
+            console.log('subAttr:', subAttr);
         }
+
 
         function updateTotalAttributeDisplays() {
             attributes.forEach((attr) => {
@@ -430,6 +495,7 @@
 
         document.getElementById("proficiency").addEventListener("input", () => {
             correctBoundedInputText("proficiency", 0, 20);
+            updateAttackDisplay();
         });
 
         document.getElementById("job").addEventListener("change", () => {
