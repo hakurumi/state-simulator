@@ -142,7 +142,7 @@
                     <option value="弓箭手 (遊俠)">弓箭手 (遊俠)</option>
                     <option value="弓箭手 (狙擊手)">弓箭手 (狙擊手)</option>
                     <option value="法師">法師</option>
-                    <option value="海盜 (槍手)">海盜 (槍手)</option>
+                    <option value="海盜 (神槍手)">海盜 (神槍手)</option>
                     <option value="海盜 (格鬥家)">海盜 (格鬥家)</option>
                 </select>
             </div>
@@ -437,10 +437,10 @@
 
             // 海盜系
             else if (job.includes("海盜")) {
-                mainAttr = job.includes("槍手") ? dex : str;
-                subAttr = job.includes("槍手") ? str : dex;
-                coefficient_min = job.includes("槍手") ? 3.6 : 4.8;
-                coefficient_max = job.includes("槍手") ? 3.6 : 4.8;
+                mainAttr = job.includes("神槍手") ? dex : str;
+                subAttr = job.includes("神槍手") ? str : dex;
+                coefficient_min = job.includes("神槍手") ? 3.6 : 4.8;
+                coefficient_max = job.includes("神槍手") ? 3.6 : 4.8;
             }
 
             // 計算
@@ -519,6 +519,10 @@
                 label.textContent = "箭矢攻擊力：";
                 label.style.display = "inline-block";
                 input.style.display = "inline-block";
+            } else if (job.includes("神槍手")) {
+                label.textContent = "子彈攻擊力：";
+                label.style.display = "inline-block";
+                input.style.display = "inline-block";
             } else {
                 label.style.display = "none";
                 input.style.display = "none";
@@ -557,7 +561,7 @@
                 name = "精準暗器";
             } else if (job === "海盜 (格鬥家)") {
                 name = "精準指虎";
-            } else if (job === "海盜 (槍手)") {
+            } else if (job === "海盜 (神槍手)") {
                 name = "精準槍法";
             } else if (job.includes("劍士")) {
                 if (weaponType.includes("槍")) {
@@ -574,7 +578,7 @@
             } else if (job.includes("弓箭手")) {
                 if (job.includes("遊俠")) {
                     name = "精準之弓";
-                }else if (job.includes("狙擊手")) {
+                } else if (job.includes("狙擊手")) {
                     name = "精準之弩"
                 }
             }
