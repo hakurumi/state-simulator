@@ -99,6 +99,7 @@
         <div id="proficiency-group">
             <label for="proficiency">精準武器: </label>
             <input type="text" id="proficiency" name="proficiency" value="0" required />
+            <select id="weapon-type-select" style="display:none; margin-left:8px; width:70px;"></select>
             <br /><br />
         </div>
         <div id="attack-display"></div>
@@ -292,6 +293,33 @@
             }
         }
 
+        function updateWeaponTypeSelect() {
+            const job = document.getElementById("job").value;
+            const select = document.getElementById("weapon-type-select");
+
+            // 劍士分支對應武器選項
+            const optionsMap = {
+                "劍士 (龍騎士)": ["槍武器", "矛武器"],
+                "劍士 (十字軍)": ["單手劍", "雙手劍", "單手斧", "雙手斧"],
+                "劍士 (騎士)": ["單手劍", "雙手劍", "單手棍", "雙手棍"]
+            };
+
+            if (job in optionsMap) {
+                // 清空並生成選項
+                select.innerHTML = "";
+                optionsMap[job].forEach((opt) => {
+                    const option = document.createElement("option");
+                    option.value = opt;
+                    option.textContent = opt;
+                    select.appendChild(option);
+                });
+                select.style.display = "inline-block";
+            } else {
+                select.style.display = "none";
+                select.innerHTML = "";
+            }
+        }
+
         document.getElementById("level").addEventListener("input", () => {
             correctBoundedInputText("level", 1, 200, 3);
             resetAttributes();
@@ -307,6 +335,7 @@
         document.getElementById("job").addEventListener("change", () => {
             updateProficiencyVisibility();
             updateAttackDisplay();
+            updateWeaponTypeSelect();
         });
 
         attributes.forEach((attr) => {
@@ -330,6 +359,7 @@
             updateAttackDisplay();
             updateTotalAttributeDisplays();
             updateProficiencyVisibility();
+            updateWeaponTypeSelect();
         });
     </script>
 </body>
