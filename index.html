@@ -3,10 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <title>角色設定表單</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+    }
+
+    form {
+      flex: 1;
+    }
+
+    .attributes {
+      flex: 1;
+      margin-left: 40px;
+      border-left: 1px solid #ccc;
+      padding-left: 20px;
+    }
+
+    .attribute-group {
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
-  <h1>角色設定</h1>
   <form>
+    <!-- 職業下拉選單 -->
     <label for="job">職業: </label>
     <select id="job" name="job">
       <option value="法師">法師</option>
@@ -17,15 +40,58 @@
     </select>
     <br><br>
 
+    <!-- 等級 -->
     <label for="level">等級: </label>
-    <input type="number" id="level" name="level" min="1" required>
+    <input type="number" id="level" name="level" min="1" max="200" value="1" required>
     <br><br>
 
-    <label for="accuracy">武器精準技能（0~20）: </label>
-    <input type="number" id="accuracy" name="accuracy" min="0" max="20" required>
+    <!-- 武器精準技能 -->
+    <label for="accuracy">武器精準技能 (0~20): </label>
+    <input type="number" id="accuracy" name="accuracy" min="0" max="20" value="0" required>
     <br><br>
 
-    <button type="submit">提交</button>
+    <!-- 可分配能力值 -->
+    <div>
+      可分配能力值總數: <span id="points">9</span>
+    </div>
+    <br>
+
+    <!-- 提交按鈕 -->
+    <button type="submit">送出</button>
   </form>
+
+  <div class="attributes">
+    <h3>能力值</h3>
+    <div class="attribute-group">
+      <label for="str">力量: </label>
+      <input type="number" id="str" name="str" value="4" min="0">
+    </div>
+    <div class="attribute-group">
+      <label for="dex">敏捷: </label>
+      <input type="number" id="dex" name="dex" value="4" min="0">
+    </div>
+    <div class="attribute-group">
+      <label for="int">智慧: </label>
+      <input type="number" id="int" name="int" value="4" min="0">
+    </div>
+    <div class="attribute-group">
+      <label for="luk">幸運: </label>
+      <input type="number" id="luk" name="luk" value="4" min="0">
+    </div>
+  </div>
+
+  <script>
+    const levelInput = document.getElementById('level');
+    const pointsSpan = document.getElementById('points');
+
+    function updatePoints() {
+      const level = parseInt(levelInput.value, 10);
+      const points = (level - 1) * 5 + 9;
+      pointsSpan.textContent = points;
+    }
+
+    levelInput.addEventListener('input', updatePoints);
+    window.addEventListener('DOMContentLoaded', updatePoints);
+  </script>
 </body>
 </html>
