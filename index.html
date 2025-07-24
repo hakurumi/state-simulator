@@ -173,7 +173,7 @@
             </div>
 
             <div id="proficiency-group" class="form-row">
-                <label for="proficiency">精準武器：</label>
+                <span id="proficiency-name"></span>
                 <input type="text" id="proficiency" name="proficiency" value="0" required />
                 <select id="weapon-type-select" style="display:none;"></select>
             </div>
@@ -525,6 +525,63 @@
             }
         }
 
+        function updateProficiencyLabel() {
+            const job = document.getElementById("job").value;
+            const select = document.getElementById("weapon-type-select");
+            const label = document.getElementById("proficiency-label");
+            const nameDisplay = document.getElementById("proficiency-name");
+
+            // 如果select中沒有值，依職業自動設定一個預設值
+            if (!select.value) {
+                // 劍士職業預設槍、矛、劍等第一項
+                const jobWeaponDefaults = {
+                    "劍士 (龍騎士)": "槍武器",
+                    "劍士 (十字軍)": "單手劍",
+                    "劍士 (騎士)": "單手劍",
+                };
+                if (jobWeaponDefaults[job]) {
+                    select.value = jobWeaponDefaults[job];
+                } else {
+                    // 其他職業沒武器類型，清空
+                    select.value = "";
+                }
+            }
+
+            const weaponType = select.value;
+
+            let name = "";
+
+            if (job === "盜賊 (神偷)") {
+                name = "精準之刀";
+            } else if (job === "盜賊 (暗殺者)") {
+                name = "精準暗器";
+            } else if (job === "海盜 (格鬥家)") {
+                name = "精準指虎";
+            } else if (job === "海盜 (槍手)") {
+                name = "精準槍法";
+            } else if (job.includes("劍士")) {
+                if (weaponType.includes("槍")) {
+                    name = "精準之槍";
+                } else if (weaponType.includes("矛")) {
+                    name = "精準之矛";
+                } else if (weaponType.includes("劍")) {
+                    name = "精準之劍";
+                } else if (weaponType.includes("斧")) {
+                    name = "精準之斧";
+                } else if (weaponType.includes("棍")) {
+                    name = "精準之棍";
+                }
+            } else if (job.includes("弓箭手")) {
+                if (job.includes("遊俠")) {
+                    name = "精準之弓";
+                }else if (job.includes("狙擊手")) {
+                    name = "精準之弩"
+                }
+            }
+
+            nameDisplay.textContent = name ? `${name}： ` : "";
+        }
+
         // 監聽事件
         document.getElementById("level").addEventListener("input", () => {
             correctBoundedInputText("level", 1, 200);
@@ -544,6 +601,7 @@
             updateAttackDisplay();
             updateWeaponTypeSelect();
             updateProjectileVisibility();
+            updateProficiencyLabel();
         });
 
         document.getElementById("weapon-power").addEventListener("input", () => {
@@ -566,6 +624,7 @@
 
         document.getElementById("weapon-type-select").addEventListener("change", () => {
             updateAttackDisplay();
+            updateProficiencyLabel();
         });
 
         attributes.forEach((attr) => {
@@ -614,6 +673,7 @@
             updateTotalAttributeDisplays();
             updateProficiencyVisibility();
             updateWeaponTypeSelect();
+            updateProficiencyLabel();
         });
     </script>
 </body>
