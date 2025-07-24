@@ -34,7 +34,6 @@
             padding: 2px;
         }
 
-        /* 移除上下箭頭 */
         input.attr-input::-webkit-outer-spin-button,
         input.attr-input::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -98,6 +97,8 @@
 
         <label for="proficiency">精準武器: </label>
         <input type="text" id="proficiency" name="proficiency" value="0" required />
+        <br /><br />
+        <div id="attack-display"></div>
     </form>
 
     <div class="attributes">
@@ -247,19 +248,37 @@
             });
         }
 
+        function updateAttackDisplay() {
+            const job = document.getElementById("job").value;
+            const display = document.getElementById("attack-display");
+
+            if (job === "法師") {
+                const matk = 123; // 可以改為根據 int 計算
+                display.textContent = `魔法攻擊力 ${matk.toString().padStart(4, " ")}`;
+            } else {
+                const minAtk = 45;
+                const maxAtk = 89;
+                display.textContent = `攻擊力 ${minAtk.toString().padStart(4, " ")} ~ ${maxAtk.toString().padStart(4, " ")}`;
+            }
+        }
+
         document.getElementById("level").addEventListener("input", () => {
             correctBoundedInputText("level", 1, 200, 3);
             resetAttributes();
             updatePointsDisplay();
+            updateAttackDisplay();
         });
 
         document.getElementById("proficiency").addEventListener("input", () => {
             correctBoundedInputText("proficiency", 0, 20, 2);
         });
 
+        document.getElementById("job").addEventListener("change", updateAttackDisplay);
+
         attributes.forEach((attr) => {
             document.getElementById(attr).addEventListener("input", () => {
                 updatePointsDisplay();
+                updateAttackDisplay();
             });
         });
 
@@ -272,6 +291,7 @@
         window.addEventListener("DOMContentLoaded", () => {
             updatePointsDisplay();
             correctExtraAttributes();
+            updateAttackDisplay();
         });
     </script>
 </body>
