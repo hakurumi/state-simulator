@@ -94,7 +94,7 @@
         <label for="level">等級: </label>
         <input type="text" id="level" name="level" value="1" required /><br />
 
-        <div>(可分配能力值總數: <span id="points">9</span>)</div><br />
+        <div>(可分配能力值點數: <span id="points">9</span>)</div><br />
 
         <label for="proficiency">精準武器: </label>
         <input type="text" id="proficiency" name="proficiency" value="0" required />
@@ -105,24 +105,32 @@
         <div class="attribute-group">
             <label for="str">力量: </label>
             <input class="attr-input" type="number" id="str" min="4" value="4" />
+            <span> + </span>
+            <input class="attr-input" type="number" id="extra-str" value="0" />
             <button type="button" onclick="changeAttr('str', -1)">-</button>
             <button type="button" onclick="changeAttr('str', 1)">+</button>
         </div>
         <div class="attribute-group">
             <label for="dex">敏捷: </label>
             <input class="attr-input" type="number" id="dex" min="4" value="4" />
+            <span> + </span>
+            <input class="attr-input" type="number" id="extra-dex" value="0" />
             <button type="button" onclick="changeAttr('dex', -1)">-</button>
             <button type="button" onclick="changeAttr('dex', 1)">+</button>
         </div>
         <div class="attribute-group">
             <label for="int">智慧: </label>
             <input class="attr-input" type="number" id="int" min="4" value="4" />
+            <span> + </span>
+            <input class="attr-input" type="number" id="extra-int" value="0" />
             <button type="button" onclick="changeAttr('int', -1)">-</button>
             <button type="button" onclick="changeAttr('int', 1)">+</button>
         </div>
         <div class="attribute-group">
             <label for="luk">幸運: </label>
             <input class="attr-input" type="number" id="luk" min="4" value="4" />
+            <span> + </span>
+            <input class="attr-input" type="number" id="extra-luk" value="0" />
             <button type="button" onclick="changeAttr('luk', -1)">-</button>
             <button type="button" onclick="changeAttr('luk', 1)">+</button>
         </div>
@@ -131,26 +139,6 @@
 
         <div class="remaining">
             剩餘可用能力值點數: <span id="remaining">9</span>
-        </div>
-
-        <div class="extra-attributes">
-            <h4>額外能力值</h4>
-            <div class="attribute-group">
-                <label for="extra-str">力量: </label>
-                <input class="attr-input" type="number" id="extra-str" value="0" />
-            </div>
-            <div class="attribute-group">
-                <label for="extra-dex">敏捷: </label>
-                <input class="attr-input" type="number" id="extra-dex" value="0" />
-            </div>
-            <div class="attribute-group">
-                <label for="extra-int">智慧: </label>
-                <input class="attr-input" type="number" id="extra-int" value="0" />
-            </div>
-            <div class="attribute-group">
-                <label for="extra-luk">幸運: </label>
-                <input class="attr-input" type="number" id="extra-luk" value="0" />
-            </div>
         </div>
     </div>
 
@@ -254,7 +242,7 @@
                 let val = parseInt(input.value.trim());
                 if (isNaN(val)) val = 0;
                 if (val < 0) val = 0;
-                if (val > 200) val = 200;
+                if (val > 999) val = 999;
                 input.value = val;
             });
         }
