@@ -236,7 +236,11 @@
             attributes.forEach((attr) => {
                 document.getElementById(attr).value = baseValue;
             });
+            extraAttributes.forEach((id) => {
+                document.getElementById(id).value = 0;
+            });
             updatePointsDisplay();
+            updateTotalAttributeDisplays();
         }
 
         function correctBoundedInputText(id, min, max, width) {
