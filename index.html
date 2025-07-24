@@ -130,6 +130,7 @@
 <body>
     <div class="container">
         <form>
+            <h3>角色資訊</h3>
             <div class="form-row">
                 <label for="job">職業：</label>
                 <select id="job" name="job">
@@ -148,17 +149,14 @@
             <div class="form-row">
                 <label for="level">等級：</label>
                 <input type="text" id="level" name="level" value="1" required />
-            </div>
-
-            <div class="form-row">
                 <span>(可分配能力值點數: <span id="points">9</span>)</span>
             </div>
 
-            <div id="proficiency-group" class="form-row">
-                <label for="proficiency">精準武器：</label>
-                <input type="text" id="proficiency" name="proficiency" value="0" required />
-                <select id="weapon-type-select" style="display:none;"></select>
-            </div>
+            <div id="attack-display" style="padding:8px 0; font-size:1.1em; color:#333;"></div>
+        </form>
+
+        <div class="provide">
+            <h3>裝備技能</h3>
 
             <div class="form-row">
                 <label id="weapon-power-label" for="weapon-power">武器攻擊力：</label>
@@ -168,8 +166,12 @@
                 <input type="number" id="armor-power" value="0" min="0" max="512" class="no-spinner" />
             </div>
 
-            <div id="attack-display" style="padding:8px 0; font-size:1.1em; color:#333;"></div>
-        </form>
+            <div id="proficiency-group" class="form-row">
+                <label for="proficiency">精準武器：</label>
+                <input type="text" id="proficiency" name="proficiency" value="0" required />
+                <select id="weapon-type-select" style="display:none;"></select>
+            </div>
+        </div>
 
         <div class="attributes">
             <h3>能力值</h3>
@@ -222,11 +224,12 @@
                 <button type="button" onclick="changeAttr('luk', 1)">+</button>
             </div>
 
-            <button type="button" onclick="resetAttributes()">重置能力值</button>
-
             <div class="remaining">
                 剩餘可用能力值點數: <span id="remaining">9</span>
             </div>
+            <br />
+
+            <button type="button" onclick="resetAttributes()">重置能力值</button>
         </div>
     </div>
 
