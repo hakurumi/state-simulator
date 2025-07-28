@@ -628,7 +628,7 @@
             correctBoundedInputText("level", 1, 200);
 
             const currentLevel = parseInt(levelInput.value) || 1;
-            if (currentLevel <= prevLevel) {
+            if (currentLevel < prevLevel) {
                 resetAttributes();
             }
             prevLevel = currentLevel;
