@@ -43,7 +43,7 @@
         }
 
         label {
-            width: 120px;
+            width: auto;
             flex-shrink: 0;
             color: #333;
             font-size: 14px;
@@ -114,15 +114,21 @@
             margin-right: 2px;
         }
 
-
-        input[type=number]::-webkit-outer-spin-button,
-        input[type=number]::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
         input[type=number] {
             -moz-appearance: textfield;
+        }
+
+        .version-label {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            font-size: 12px;
+            color: #888;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 4px 8px;
+            border-radius: 4px;
+            z-index: 999;
+            user-select: none;
         }
     </style>
 </head>
@@ -134,9 +140,9 @@
             <div class="form-row">
                 <label for="job">職業：</label>
                 <select id="job" name="job">
-                    <option value="劍士 (龍騎士)">劍士 (龍騎士)</option>
                     <option value="劍士 (十字軍)">劍士 (十字軍)</option>
                     <option value="劍士 (騎士)">劍士 (騎士)</option>
+                    <option value="劍士 (龍騎士)">劍士 (龍騎士)</option>
                     <option value="盜賊 (神偷)">盜賊 (神偷)</option>
                     <option value="盜賊 (暗殺者)">盜賊 (暗殺者)</option>
                     <option value="弓箭手 (遊俠)">弓箭手 (遊俠)</option>
@@ -160,16 +166,19 @@
             <h3>裝備技能</h3>
 
             <div class="form-row">
-                <label id="weapon-power-label" for="weapon-power">武器攻擊力：</label>
-                <input type="number" id="weapon-power" value="1" min="1" max="512" class="no-spinner" />
+                <label id="weapon-state-label" for="weapon-state">武器攻擊力：</label>
+                <input type="number" id="weapon-state" value="1" min="1" max="512" class="no-spinner" />
 
-                <label id="armor-power-label" for="armor-power" style="margin-left:20px;">防具攻擊力：</label>
-                <input type="number" id="armor-power" value="0" min="0" max="512" class="no-spinner" />
+                <label id="armor-state-label" for="armor-state" style="margin-left:20px;">防具攻擊力：</label>
+                <input type="number" id="armor-state" value="0" min="0" max="512" class="no-spinner" />
 
                 <!-- 暗殺者鏢攻擊力 or 弓箭手箭矢攻擊力 -->
-                <label id="projectile-label" for="projectile-power"
+                <label id="projectile-label" for="projectile-state"
                     style="margin-left: 20px; display: none;">鏢攻擊力：</label>
-                <input type="number" id="projectile-power" value="0" min="0" max="512" style="display: none;" />
+                <input type="number" id="projectile-state" value="0" min="0" max="512" style="display: none;" />
+
+                <label id="elixir-label" for="elixir-state" style="margin-left:20px;">藥水攻擊力：</label>
+                <input type="number" id="elixir-state" value="0" min="0" max="512" class="no-spinner" />
             </div>
 
             <div id="proficiency-group" class="form-row">
@@ -237,6 +246,7 @@
 
             <button type="button" onclick="resetAttributes()">重置能力值</button>
         </div>
+        <div class="version-label">v1.0.0</div>
     </div>
 
     <script>
@@ -244,6 +254,7 @@
         const attributes = ["str", "dex", "int", "luk"];
         const extraAttributes = ["extra-str", "extra-dex", "extra-int", "extra-luk"];
         const maxAtk = 512;
+        let prevLevel = parseInt(document.getElementById("level").value) || 1;
 
         function getLevelPoints() {
             let level = parseInt(document.getElementById("level").value.trim()) || 1;
@@ -263,7 +274,7 @@
             }, 0);
         }
 
-        function updatePointsDisplay() {
+        function updateAttributesDisplay() {
             const levelPoints = getLevelPoints();
             const totalPoints = getTotalAllocatablePoints();
             const used = getCurrentTotalUsedPoints();
@@ -309,7 +320,7 @@
                 input.value = newValue;
             }
 
-            updatePointsDisplay();
+            updateAttributesDisplay();
             updateTotalAttributeDisplays();
             updateAttackDisplay();
         }
@@ -321,7 +332,11 @@
             extraAttributes.forEach((id) => {
                 document.getElementById(id).value = 0;
             });
-            updatePointsDisplay();
+        }
+
+        function resetAttributesButtonEvent() {
+            resetAttributes();
+            updateAttributesDisplay();
             updateTotalAttributeDisplays();
         }
 
@@ -345,42 +360,51 @@
             });
         }
 
+        function resetExtraAttributes() {
+            extraAttributes.forEach((id) => {
+                document.getElementById(id).value = 0;
+            });
+        }
+
         function updateAttackDisplay() {
             const job = document.getElementById("job").value;
-            const weaponInput = document.getElementById("weapon-power");
-            const armorInput = document.getElementById("armor-power");
+            const weaponInput = document.getElementById("weapon-state");
+            const armorInput = document.getElementById("armor-state");
             const display = document.getElementById("attack-display");
             const proficiency = parseInt(document.getElementById("proficiency").value) || 0;
             const weaponType = document.getElementById("weapon-type-select").value;
-            const weaponLabel = document.getElementById("weapon-power-label");
-            const armorLabel = document.getElementById("armor-power-label");
+            const weaponLabel = document.getElementById("weapon-state-label");
+            const armorLabel = document.getElementById("armor-state-label");
+            const projectileInput = document.getElementById("projectile-state");
+            const elixirInput = document.getElementById("elixir-state");
 
             const str = (parseInt(document.getElementById("str").value) || 4) + (parseInt(document.getElementById("extra-str").value) || 0);
             const dex = (parseInt(document.getElementById("dex").value) || 4) + (parseInt(document.getElementById("extra-dex").value) || 0);
             const int = (parseInt(document.getElementById("int").value) || 4) + (parseInt(document.getElementById("extra-int").value) || 0);
             const luk = (parseInt(document.getElementById("luk").value) || 4) + (parseInt(document.getElementById("extra-luk").value) || 0);
 
-            let weaponPower = parseInt(weaponInput.value);
-            if (isNaN(weaponPower) || weaponPower < 1) weaponPower = 1;
-            let armorPower = parseInt(armorInput.value);
-            if (isNaN(armorPower) || armorPower < 0) armorPower = 0;
+            let weaponState = parseInt(weaponInput.value);
+            if (isNaN(weaponState) || weaponState < 1) weaponState = 1;
+            let armorState = parseInt(armorInput.value);
+            if (isNaN(armorState) || armorState < 0) armorState = 0;
 
-
-            let projectilePower = 0;
-            const projectileInput = document.getElementById("projectile-power");
+            let projectileState = 0;
             if (projectileInput && projectileInput.style.display !== "none") {
-                projectilePower = parseInt(projectileInput.value);
-                if (isNaN(projectilePower) || projectilePower < 0) projectilePower = 0;
+                projectileState = parseInt(projectileInput.value);
+                if (isNaN(projectileState) || projectileState < 0) projectileState = 0;
             }
 
-            const attack = weaponPower + armorPower + projectilePower;
+            let elixirState = parseInt(elixirInput.value);
+            if (isNaN(elixirState) || elixirState < 0) elixirState = 0;
+
+            const attack = weaponState + armorState + projectileState + elixirState;
             const prof = (Math.ceil(proficiency / 2) * 5 + 10) / 100;
 
             // 魔法職業
             if (job === "法師") {
                 weaponLabel.textContent = "武器魔法攻擊力：";
                 armorLabel.textContent = "防具魔法攻擊力：";
-                const matk = int + weaponPower + armorPower;
+                const matk = int + weaponState + armorState + elixirState;
                 display.textContent = `魔法攻擊力： ${matk.toString().padStart(4, " ")}`;
                 return;
             }
@@ -388,29 +412,28 @@
             weaponLabel.textContent = "武器攻擊力：";
             armorLabel.textContent = "防具攻擊力：";
             let mainAttr = 0, subAttr = 0, min = 0, max = 0;
-            let coefficient_min = 0, coefficient_max = 0;
+            let coefficientMin = 0, coefficientMax = 0;
 
             // 劍士系
             if (job.includes("劍士")) {
                 mainAttr = str;
                 subAttr = dex;
-
                 if (job.includes("龍騎士")) {
                     if (weaponType === "槍武器") {
-                        coefficient_min = 3.6;
-                        coefficient_max = 5.1;
+                        coefficientMin = 3.6;
+                        coefficientMax = 5.1;
                     } else if (weaponType === "矛武器") {
-                        coefficient_min = 3.5;
-                        coefficient_max = 5.2;
+                        coefficientMin = 3.5;
+                        coefficientMax = 5.2;
                     }
                 } else if (job.includes("十字軍")) {
                     const map = { "單手劍": 4.2, "雙手劍": 4.8, "單手斧": 3.6, "雙手斧": 4.0 };
-                    coefficient_min = map[weaponType] || 4.0;
-                    coefficient_max = (weaponType === "單手斧") ? 4.8 : (weaponType === "雙手斧") ? 5.2 : coefficient_min;
+                    coefficientMin = map[weaponType] || 4.0;
+                    coefficientMax = (weaponType === "單手斧") ? 4.8 : (weaponType === "雙手斧") ? 5.2 : coefficientMin;
                 } else if (job.includes("騎士")) {
                     const map = { "單手劍": 4.2, "雙手劍": 4.8, "單手棍": 3.6, "雙手棍": 4.0 };
-                    coefficient_min = map[weaponType] || 4.0;
-                    coefficient_max = (weaponType === "單手棍") ? 4.8 : (weaponType === "雙手棍") ? 5.2 : coefficient_min;
+                    coefficientMin = map[weaponType] || 4.0;
+                    coefficientMax = (weaponType === "單手棍") ? 4.8 : (weaponType === "雙手棍") ? 5.2 : coefficientMin;
                 }
             }
 
@@ -419,11 +442,11 @@
                 mainAttr = luk;
                 subAttr = str + dex;
                 if (job.includes("暗殺者")) {
-                    coefficient_min = 3.6;
-                    coefficient_max = 3.6;
+                    coefficientMin = 3.6;
+                    coefficientMax = 3.6;
                 } else {
-                    coefficient_min = 3.6;
-                    coefficient_max = 4.2;
+                    coefficientMin = 3.6;
+                    coefficientMax = 4.2;
                 }
             }
 
@@ -431,21 +454,21 @@
             else if (job.includes("弓箭手")) {
                 mainAttr = dex;
                 subAttr = str;
-                coefficient_min = job.includes("狙擊手") ? 3.6 : 3.4;
-                coefficient_max = coefficient_min;
+                coefficientMin = job.includes("狙擊手") ? 3.6 : 3.4;
+                coefficientMax = coefficientMin;
             }
 
             // 海盜系
             else if (job.includes("海盜")) {
                 mainAttr = job.includes("神槍手") ? dex : str;
                 subAttr = job.includes("神槍手") ? str : dex;
-                coefficient_min = job.includes("神槍手") ? 3.6 : 4.8;
-                coefficient_max = job.includes("神槍手") ? 3.6 : 4.8;
+                coefficientMin = job.includes("神槍手") ? 3.6 : 4.8;
+                coefficientMax = job.includes("神槍手") ? 3.6 : 4.8;
             }
 
             // 計算
-            max = Math.floor((mainAttr * coefficient_max + subAttr) * attack / 100);
-            min = Math.floor((mainAttr * coefficient_min * 0.9 * prof + subAttr) * attack / 100);
+            max = Math.floor((mainAttr * coefficientMax + subAttr) * attack / 100);
+            min = Math.floor((mainAttr * coefficientMin * 0.9 * prof + subAttr) * attack / 100);
             max = max == 0 ? 1 : max;
             min = min == 0 ? 1 : min;
 
@@ -501,7 +524,7 @@
         function updateProjectileVisibility() {
             const job = document.getElementById("job").value;
             const label = document.getElementById("projectile-label");
-            const input = document.getElementById("projectile-power");
+            const input = document.getElementById("projectile-state");
 
             if (job.includes("暗殺者")) {
                 label.textContent = "鏢攻擊力：";
@@ -521,24 +544,41 @@
             }
         }
 
+        function updateElixirLabel() {
+            const job = document.getElementById("job").value;
+            const label = document.getElementById("elixir-label");
+
+            if (job == "法師") {
+                label.textContent = "藥水魔法攻擊力：";
+            } else {
+                label.textContent = "藥水攻擊力：";
+            }
+        }
+
         function updateProficiencyLabel() {
             const job = document.getElementById("job").value;
             const select = document.getElementById("weapon-type-select");
             const label = document.getElementById("proficiency-label");
             const nameDisplay = document.getElementById("proficiency-name");
 
-            // 如果select中沒有值，依職業自動設定一個預設值
+            const jobWeaponDefaults = {
+                "劍士 (十字軍)": "單手劍",
+                "劍士 (騎士)": "單手劍",
+                "劍士 (龍騎士)": "槍武器",
+                "盜賊 (神偷)": "精準之刀",
+                "盜賊 (暗殺者)": "精準暗器",
+                "海盜 (格鬥家)": "精準指虎",
+                "海盜 (神槍手)": "精準槍法",
+                "弓箭手 (遊俠)": "精準之弓",
+                "弓箭手 (狙擊手)": "精準之弓",
+            };
+
+            console.log("job: " + job);
+
             if (!select.value) {
-                // 劍士職業預設槍、矛、劍等第一項
-                const jobWeaponDefaults = {
-                    "劍士 (龍騎士)": "槍武器",
-                    "劍士 (十字軍)": "單手劍",
-                    "劍士 (騎士)": "單手劍",
-                };
                 if (jobWeaponDefaults[job]) {
                     select.value = jobWeaponDefaults[job];
                 } else {
-                    // 其他職業沒武器類型，清空
                     select.value = "";
                 }
             }
@@ -584,11 +624,27 @@
         });
 
         document.getElementById("level").addEventListener("blur", () => {
+            const levelInput = document.getElementById("level");
             correctBoundedInputText("level", 1, 200);
-            resetAttributes();
-            updatePointsDisplay();
-            updateAttackDisplay();
+
+            const currentLevel = parseInt(levelInput.value) || 1;
+            if (currentLevel <= prevLevel) {
+                resetAttributes();
+            }
+            prevLevel = currentLevel;
+
+            updateAttributesDisplay();
             updateTotalAttributeDisplays();
+            updateAttackDisplay();
+        });
+
+        document.getElementById("job").addEventListener("change", () => {
+            updateProficiencyVisibility();
+            updateWeaponTypeSelect();
+            updateProficiencyLabel();
+            updateProjectileVisibility();
+            updateElixirLabel();
+            updateAttackDisplay();
         });
 
         document.getElementById("proficiency").addEventListener("blur", () => {
@@ -596,16 +652,8 @@
             updateAttackDisplay();
         });
 
-        document.getElementById("job").addEventListener("change", () => {
-            updateProficiencyVisibility();
-            updateAttackDisplay();
-            updateWeaponTypeSelect();
-            updateProjectileVisibility();
-            updateProficiencyLabel();
-        });
-
-        document.getElementById("weapon-power").addEventListener("input", () => {
-            const input = document.getElementById("weapon-power");
+        document.getElementById("weapon-state").addEventListener("blur", () => {
+            const input = document.getElementById("weapon-state");
             let val = parseInt(input.value);
             if (isNaN(val) || val < 1) val = 1;
             if (val > maxAtk) val = maxAtk;
@@ -613,8 +661,13 @@
             updateAttackDisplay();
         });
 
-        document.getElementById("armor-power").addEventListener("input", () => {
-            let input = document.getElementById("armor-power");
+        document.getElementById("weapon-type-select").addEventListener("change", () => {
+            updateProficiencyLabel();
+            updateAttackDisplay();
+        });
+
+        document.getElementById("armor-state").addEventListener("blur", () => {
+            let input = document.getElementById("armor-state");
             let val = parseInt(input.value);
             if (isNaN(val) || val < 0) val = 0;
             if (val > maxAtk) val = maxAtk;
@@ -622,34 +675,41 @@
             updateAttackDisplay();
         });
 
-        document.getElementById("weapon-type-select").addEventListener("change", () => {
+        document.getElementById("projectile-state").addEventListener("blur", () => {
+            let input = document.getElementById("projectile-state");
+            let val = parseInt(input.value);
+            if (isNaN(val) || val < 0) val = 0;
+            if (val > maxAtk) val = maxAtk;
+            input.value = val;
             updateAttackDisplay();
-            updateProficiencyLabel();
+        });
+
+        document.getElementById("elixir-state").addEventListener("blur", () => {
+            let input = document.getElementById("elixir-state");
+            let val = parseInt(input.value);
+            if (isNaN(val) || val < 0) val = 0;
+            if (val > maxAtk) val = maxAtk;
+            input.value = val;
+            updateAttackDisplay();
         });
 
         attributes.forEach((attr) => {
             const input = document.getElementById(attr);
-            // 改成 blur 事件觸發校驗
             input.addEventListener("blur", () => {
                 let val = parseInt(input.value);
                 if (isNaN(val) || val < baseValue) val = baseValue;
                 input.value = val;
-                updatePointsDisplay();
-                updateAttackDisplay();
+                updateAttributesDisplay();
                 updateTotalAttributeDisplays();
-            });
-
-            // input 事件只更新顯示，不做強制限制
-            input.addEventListener("input", () => {
                 updateAttackDisplay();
+            });
+            input.addEventListener("input", () => {
                 updateTotalAttributeDisplays();
             });
         });
 
-        extraAttributes.forEach((id) => {
-            const input = document.getElementById(id);
-
-            // blur 時做校驗範圍限制
+        extraAttributes.forEach((attr) => {
+            const input = document.getElementById(attr);
             input.addEventListener("blur", () => {
                 let val = parseInt(input.value);
                 if (isNaN(val) || val < 0) val = 0;
@@ -658,22 +718,22 @@
                 updateTotalAttributeDisplays();
                 updateAttackDisplay();
             });
-
-            // input 事件不強制調整
             input.addEventListener("input", () => {
                 updateTotalAttributeDisplays();
-                updateAttackDisplay();
             });
         });
 
         window.addEventListener("DOMContentLoaded", () => {
-            updatePointsDisplay();
-            correctExtraAttributes();
-            updateAttackDisplay();
+            resetAttributes();
+            resetExtraAttributes();
+            updateAttributesDisplay();
             updateTotalAttributeDisplays();
             updateProficiencyVisibility();
             updateWeaponTypeSelect();
             updateProficiencyLabel();
+            updateProjectileVisibility();
+            updateElixirLabel();
+            updateAttackDisplay();
         });
     </script>
 </body>
