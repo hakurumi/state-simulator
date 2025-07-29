@@ -354,7 +354,7 @@
             <button type="button" onclick="resetAttrButtonEvent()">重置能力值</button>
             <button type="button" onclick="resetExtraAttrButtonEvent()">重置額外能力值</button>
         </div>
-        <div class="version-label">v1.0.2</div>
+        <div class="version-label">v1.0.3</div>
     </div>
 
     <script>
@@ -449,12 +449,14 @@
             resetAttributes();
             updateAttributesDisplay();
             updateTotalAttributeDisplays();
+            updateAttackDisplay();
         }
 
         function resetExtraAttrButtonEvent() {
             resetExtraAttributes();
             updateAttributesDisplay();
             updateTotalAttributeDisplays();
+            updateAttackDisplay();
         }
 
         function correctBoundedInputText(id, min, max) {
