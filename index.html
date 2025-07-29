@@ -93,6 +93,11 @@
             background: #5597dd;
         }
 
+        input[type="number"]{
+            width: 6ch;
+            text-align: right;
+        }
+
         /* 移除數字輸入框上下箭頭 */
         input[type=number]::-webkit-outer-spin-button,
         input[type=number]::-webkit-inner-spin-button {
@@ -155,7 +160,7 @@
 
             <div class="form-row">
                 <label for="level">等級：</label>
-                <input type="text" id="level" name="level" value="1" required />
+                <input type="number" id="level" name="level" value="1" required />
                 <span>(可分配能力值點數: <span id="points">9</span>)</span>
             </div>
 
@@ -183,7 +188,7 @@
 
             <div id="proficiency-group" class="form-row">
                 <span id="proficiency-name"></span>
-                <input type="text" id="proficiency" name="proficiency" value="0" required />
+                <input type="number" id="proficiency" name="proficiency" value="0" required />
                 <select id="weapon-type-select" style="display:none;"></select>
             </div>
         </div>
