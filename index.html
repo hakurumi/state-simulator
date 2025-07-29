@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>artale 能力值模擬器</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet" />
     <style>
@@ -19,7 +20,7 @@
         .container {
             background: #fff;
             border-radius: 8px;
-            padding: 20px;
+            padding: 20px 16px;
             max-width: 800px;
             width: 100%;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
@@ -59,6 +60,11 @@
             border-radius: 6px;
         }
 
+        input[type="number"] {
+            width: 6ch;
+            text-align: right;
+        }
+
         #attack-display {
             color: #333;
             padding: 8px 0;
@@ -93,9 +99,20 @@
             background: #5597dd;
         }
 
-        input[type="number"]{
-            width: 6ch;
-            text-align: right;
+        #job-label,
+        #level-label,
+        #weapon-state-label {
+            margin-left: 0;
+        }
+
+        .form-row label {
+            margin-left: 20px;
+        }
+
+        .form-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         /* 移除數字輸入框上下箭頭 */
@@ -119,10 +136,6 @@
             margin-right: 2px;
         }
 
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-
         .version-label {
             position: fixed;
             bottom: 10px;
@@ -135,6 +148,83 @@
             z-index: 999;
             user-select: none;
         }
+
+        /* RWD 響應式支援 */
+        @media (max-width: 600px) {
+
+            .attribute-group {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 6px 4px;
+            }
+
+            label {
+                width: 100%;
+                margin-bottom: 2px;
+            }
+
+            input {
+                width: auto;
+                min-width: 6px;
+            }
+
+            select {
+                width: auto;
+                min-width: 6ch;
+            }
+
+            .attribute-group .total-display,
+            .attribute-group .bracket {
+                display: inline-block;
+            }
+
+            .attribute-group button {
+                display: none;
+            }
+
+            .remaining {
+                font-size: 13px;
+            }
+
+            .version-label {
+                font-size: 11px;
+                bottom: 6px;
+                right: 6px;
+            }
+
+            .form-row label {
+                margin-left: 0;
+            }
+
+            .form-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .form-item {
+                width: 100%;
+                flex-direction: row;
+                justify-content: flex-start;
+            }
+
+            .form-item label {
+                width: auto;
+                margin: 0;
+            }
+
+            .form-item input[type="number"] {
+                width: 6ch;
+            }
+
+            #proficiency-name {
+                font-size: 14px;
+                color: #333;
+                min-width: 84px;
+                display: inline-block;
+                user-select: none;
+            }
+        }
     </style>
 </head>
 
@@ -143,25 +233,29 @@
         <form>
             <h3>角色資訊</h3>
             <div class="form-row">
-                <label for="job">職業：</label>
-                <select id="job" name="job">
-                    <option value="劍士 (十字軍)">劍士 (十字軍)</option>
-                    <option value="劍士 (騎士)">劍士 (騎士)</option>
-                    <option value="劍士 (龍騎士)">劍士 (龍騎士)</option>
-                    <option value="盜賊 (神偷)">盜賊 (神偷)</option>
-                    <option value="盜賊 (暗殺者)">盜賊 (暗殺者)</option>
-                    <option value="弓箭手 (遊俠)">弓箭手 (遊俠)</option>
-                    <option value="弓箭手 (狙擊手)">弓箭手 (狙擊手)</option>
-                    <option value="法師">法師</option>
-                    <option value="海盜 (神槍手)">海盜 (神槍手)</option>
-                    <option value="海盜 (格鬥家)">海盜 (格鬥家)</option>
-                </select>
+                <div class="form-item">
+                    <label id="job-label" for="job">職業：</label>
+                    <select id="job" name="job">
+                        <option value="劍士 (十字軍)">劍士 (十字軍)</option>
+                        <option value="劍士 (騎士)">劍士 (騎士)</option>
+                        <option value="劍士 (龍騎士)">劍士 (龍騎士)</option>
+                        <option value="盜賊 (神偷)">盜賊 (神偷)</option>
+                        <option value="盜賊 (暗殺者)">盜賊 (暗殺者)</option>
+                        <option value="弓箭手 (遊俠)">弓箭手 (遊俠)</option>
+                        <option value="弓箭手 (狙擊手)">弓箭手 (狙擊手)</option>
+                        <option value="法師">法師</option>
+                        <option value="海盜 (神槍手)">海盜 (神槍手)</option>
+                        <option value="海盜 (格鬥家)">海盜 (格鬥家)</option>
+                    </select>
+                </div>
             </div>
 
             <div class="form-row">
-                <label for="level">等級：</label>
-                <input type="number" id="level" name="level" value="1" required />
-                <span>(可分配能力值點數: <span id="points">9</span>)</span>
+                <div class="form-item">
+                    <label id="level-label" for="level">等級：</label>
+                    <input type="number" id="level" name="level" value="1" required />
+                    <span>(可分配能力值點數: <span id="points">9</span>)</span>
+                </div>
             </div>
 
             <div id="attack-display" style="padding:8px 0; font-size:1.1em; color:#333;"></div>
@@ -171,25 +265,33 @@
             <h3>裝備技能</h3>
 
             <div class="form-row">
-                <label id="weapon-state-label" for="weapon-state">武器攻擊力：</label>
-                <input type="number" id="weapon-state" value="1" min="1" max="512" class="no-spinner" />
+                <div class="form-item">
+                    <label id="weapon-state-label" for="weapon-state">武器攻擊力：</label>
+                    <input type="number" id="weapon-state" value="1" min="1" max="512" class="no-spinner" />
+                </div>
 
-                <label id="armor-state-label" for="armor-state" style="margin-left:20px;">防具攻擊力：</label>
-                <input type="number" id="armor-state" value="0" min="0" max="512" class="no-spinner" />
+                <div class="form-item">
+                    <label id="armor-state-label" for="armor-state">防具攻擊力：</label>
+                    <input type="number" id="armor-state" value="0" min="0" max="512" class="no-spinner" />
+                </div>
 
-                <!-- 暗殺者鏢攻擊力 or 弓箭手箭矢攻擊力 -->
-                <label id="projectile-label" for="projectile-state"
-                    style="margin-left: 20px; display: none;">鏢攻擊力：</label>
-                <input type="number" id="projectile-state" value="0" min="0" max="512" style="display: none;" />
+                <div class="form-item" style="display: none;" id="projectile-item">
+                    <label id="projectile-label" for="projectile-state">鏢攻擊力：</label>
+                    <input type="number" id="projectile-state" value="0" min="0" max="512" />
+                </div>
 
-                <label id="elixir-label" for="elixir-state" style="margin-left:20px;">藥水攻擊力：</label>
-                <input type="number" id="elixir-state" value="0" min="0" max="512" class="no-spinner" />
+                <div class="form-item">
+                    <label id="elixir-label" for="elixir-state">藥水攻擊力：</label>
+                    <input type="number" id="elixir-state" value="0" min="0" max="512" class="no-spinner" />
+                </div>
             </div>
 
             <div id="proficiency-group" class="form-row">
-                <span id="proficiency-name"></span>
-                <input type="number" id="proficiency" name="proficiency" value="0" required />
-                <select id="weapon-type-select" style="display:none;"></select>
+                <div class="form-item">
+                    <span id="proficiency-name"></span>
+                    <input type="number" id="proficiency" name="proficiency" value="0" required />
+                    <select id="weapon-type-select" style="display:none;"></select>
+                </div>
             </div>
         </div>
 
@@ -252,7 +354,7 @@
             <button type="button" onclick="resetAttrButtonEvent()">重置能力值</button>
             <button type="button" onclick="resetExtraAttrButtonEvent()">重置額外能力值</button>
         </div>
-        <div class="version-label">v1.0.1</div>
+        <div class="version-label">v1.0.2</div>
     </div>
 
     <script>
@@ -587,8 +689,6 @@
                 "弓箭手 (遊俠)": "精準之弓",
                 "弓箭手 (狙擊手)": "精準之弓",
             };
-
-            console.log("job: " + job);
 
             if (!select.value) {
                 if (jobWeaponDefaults[job]) {
