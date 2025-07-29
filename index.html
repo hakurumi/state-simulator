@@ -244,7 +244,8 @@
             </div>
             <br />
 
-            <button type="button" onclick="resetAttributes()">重置能力值</button>
+            <button type="button" onclick="resetAttrButtonEvent()">重置能力值</button>
+            <button type="button" onclick="resetExtraAttrButtonEvent()">重置額外能力值</button>
         </div>
         <div class="version-label">v1.0.0</div>
     </div>
@@ -329,13 +330,22 @@
             attributes.forEach((attr) => {
                 document.getElementById(attr).value = baseValue;
             });
-            extraAttributes.forEach((id) => {
-                document.getElementById(id).value = 0;
+        }
+
+        function resetExtraAttributes() {
+            extraAttributes.forEach((attr) => {
+                document.getElementById(attr).value = 0;
             });
         }
 
-        function resetAttributesButtonEvent() {
+        function resetAttrButtonEvent() {
             resetAttributes();
+            updateAttributesDisplay();
+            updateTotalAttributeDisplays();
+        }
+
+        function resetExtraAttrButtonEvent() {
+            resetExtraAttributes();
             updateAttributesDisplay();
             updateTotalAttributeDisplays();
         }
