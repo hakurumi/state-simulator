@@ -451,7 +451,7 @@
             <button type="button" onclick="resetAttrButtonEvent()">重置能力值</button>
             <button type="button" onclick="resetExtraAttrButtonEvent()">重置額外能力值</button>
         </div>
-        <div class="version-label">v1.0.5</div>
+        <div class="version-label">v1.0.6</div>
     </div>
 
     <script>
@@ -461,6 +461,7 @@
         const extraAttributes = ["extra-str", "extra-dex", "extra-int", "extra-luk"];
         const maxAtk = 512;
         let prevLevel = parseInt(document.getElementById("level").value) || 1;
+        let lastEditedAttr = null;
 
         function getLevelPoints() {
             let level = parseInt(document.getElementById("level").value.trim()) || 1;
@@ -476,39 +477,60 @@
         function getCurrentTotalUsedPoints() {
             return attributes.reduce((sum, attr) => {
                 let val = parseInt(document.getElementById(attr).value);
-                return sum + (isNaN(val) ? baseValue : val);
+                if (isNaN(val)) val = baseValue;
+                return sum + (val - baseValue);
             }, 0);
         }
 
         function updateAttributesDisplay() {
             const levelPoints = getLevelPoints();
             const totalPoints = getTotalAllocatablePoints();
-            const used = getCurrentTotalUsedPoints();
+            const usedPointsMap = {};
+            let usedTotal = 0;
 
-            attributes.forEach((attr) => {
+            attributes.forEach(attr => {
                 const input = document.getElementById(attr);
                 let val = parseInt(input.value);
                 if (isNaN(val) || val < baseValue) {
-                    input.value = baseValue;
+                    val = baseValue;
                 }
+                usedPointsMap[attr] = val;
+                usedTotal += (val - baseValue);
             });
 
-            const overflow = used - totalPoints;
-            if (overflow > 0) {
-                for (let attr of attributes) {
-                    let input = document.getElementById(attr);
-                    let val = parseInt(input.value);
-                    const canReduce = val - baseValue;
-                    const reduceBy = Math.min(canReduce, overflow);
-                    if (reduceBy > 0) {
-                        input.value = val - reduceBy;
-                        break;
+            if (usedTotal > totalPoints) {
+                const remaining = levelPoints - Object.entries(usedPointsMap).reduce((sum, [key, val]) => {
+                    if (key !== lastEditedAttr) {
+                        return sum + (val - baseValue);
                     }
-                }
+                    return sum;
+                }, 0);
+                console.log("entires map: ",Object.entries(usedPointsMap).reduce((sum, [key, val]) => {
+                    if (key !== lastEditedAttr) {
+                        return sum + (val - baseValue);
+                    }
+                    return sum;
+                }, 0));
+                console.log("remaining: ", remaining);
+                const fixedValue = baseValue + Math.max(0, remaining);
+                console.log("fixedValue: ", fixedValue);
+                usedPointsMap[lastEditedAttr] = fixedValue;
+                document.getElementById(lastEditedAttr).value = fixedValue;
             }
 
+            attributes.forEach(attr => {
+                const input = document.getElementById(attr);
+                input.value = usedPointsMap[attr];
+            });
+
+            console.log("usedPointsMap: ", usedPointsMap);
+            console.log("usedTotal: ", usedTotal);
+            console.log("levelPoints: ", levelPoints);
+            console.log("totalPoints: ", totalPoints);
+            console.log("getCurrentTotalUsedPoints(): ", getCurrentTotalUsedPoints());
+
             document.getElementById("points").textContent = levelPoints;
-            document.getElementById("remaining").textContent = totalPoints - getCurrentTotalUsedPoints();
+            document.getElementById("remaining").textContent = levelPoints - getCurrentTotalUsedPoints();
         }
 
         function changeAttr(attr, delta) {
@@ -925,14 +947,14 @@
 
         attributes.forEach((attr) => {
             const input = document.getElementById(attr);
+
             input.addEventListener("blur", () => {
-                let val = parseInt(input.value);
-                if (isNaN(val) || val < baseValue) val = baseValue;
-                input.value = val;
+                lastEditedAttr = attr;
                 updateAttributesDisplay();
                 updateTotalAttributeDisplays();
                 updateAttackDisplay();
             });
+
             input.addEventListener("input", () => {
                 updateTotalAttributeDisplays();
             });
