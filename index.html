@@ -451,7 +451,7 @@
             <button type="button" onclick="resetAttrButtonEvent()">重置能力值</button>
             <button type="button" onclick="resetExtraAttrButtonEvent()">重置額外能力值</button>
         </div>
-        <div class="version-label">v1.0.4</div>
+        <div class="version-label">v1.0.5</div>
     </div>
 
     <script>
@@ -838,6 +838,16 @@
             toggleBtn.textContent = isDark ? "☀️ Light" : "🌙 Dark";
         }
 
+        function loadThemeFromStorage() {
+            const savedTheme = localStorage.getItem("theme");
+            if (savedTheme === "light") {
+                document.body.classList.remove("dark");
+            } else {
+                document.body.classList.add("dark");
+            }
+            updateThemeUI();
+        }
+
         // 監聽事件
         document.getElementById("level").addEventListener("input", () => {
             updateTotalAttributeDisplays();
@@ -946,9 +956,16 @@
         toggleBtn.addEventListener("click", () => {
             document.body.classList.toggle("dark");
             updateThemeUI();
+
+            if (document.body.classList.contains("dark")) {
+                localStorage.setItem("theme", "dark");
+            } else {
+                localStorage.setItem("theme", "light");
+            }
         });
 
         window.addEventListener("DOMContentLoaded", () => {
+            loadThemeFromStorage();
             resetAttributes();
             resetExtraAttributes();
             updateAttributesDisplay();
@@ -964,8 +981,6 @@
         document.querySelector("form").addEventListener("submit", e => {
             e.preventDefault();
         });
-
-        updateThemeUI();
     </script>
 </body>
 
