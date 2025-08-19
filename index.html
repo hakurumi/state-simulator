@@ -280,7 +280,7 @@
             }
 
             label {
-                width: 100%;
+                width: auto;
                 margin-bottom: 2px;
             }
 
@@ -303,10 +303,6 @@
             .attribute-group .total-display,
             .attribute-group .bracket {
                 display: inline-block;
-            }
-
-            .attribute-group button {
-                display: none;
             }
 
             .remaining {
@@ -392,7 +388,7 @@
             <div class="form-row">
                 <div class="form-item">
                     <label id="level-label" for="level">等級：</label>
-                    <input type="number" id="level" name="level" value="1" required />
+                    <input type="number" id="level" name="level" value="200" required />
                     <span>(可分配能力值點數: <span id="points">9</span>)</span>
                 </div>
             </div>
@@ -445,8 +441,6 @@
                 <span class="bracket">+</span>
                 <input class="attr-input" type="number" id="extra-str" value="0" />
                 <span class="bracket">)</span>
-                <button type="button" onclick="changeAttr('str', -1)">-</button>
-                <button type="button" onclick="changeAttr('str', 1)">+</button>
             </div>
 
             <div class="attribute-group">
@@ -457,8 +451,6 @@
                 <span class="bracket">+</span>
                 <input class="attr-input" type="number" id="extra-dex" value="0" />
                 <span class="bracket">)</span>
-                <button type="button" onclick="changeAttr('dex', -1)">-</button>
-                <button type="button" onclick="changeAttr('dex', 1)">+</button>
             </div>
 
             <div class="attribute-group">
@@ -469,8 +461,6 @@
                 <span class="bracket">+</span>
                 <input class="attr-input" type="number" id="extra-int" value="0" />
                 <span class="bracket">)</span>
-                <button type="button" onclick="changeAttr('int', -1)">-</button>
-                <button type="button" onclick="changeAttr('int', 1)">+</button>
             </div>
 
             <div class="attribute-group">
@@ -481,8 +471,6 @@
                 <span class="bracket">+</span>
                 <input class="attr-input" type="number" id="extra-luk" value="0" />
                 <span class="bracket">)</span>
-                <button type="button" onclick="changeAttr('luk', -1)">-</button>
-                <button type="button" onclick="changeAttr('luk', 1)">+</button>
             </div>
 
             <div class="remaining">
@@ -493,7 +481,7 @@
             <button type="button" onclick="resetAttrButtonEvent()">重置能力值</button>
             <button type="button" onclick="resetExtraAttrButtonEvent()">重置額外能力值</button>
         </div>
-        <div class="version-label">v1.0.9</div>
+        <div class="version-label">v1.0.10</div>
     </div>
 
     <script>
@@ -559,26 +547,6 @@
 
             document.getElementById("points").textContent = levelPoints;
             document.getElementById("remaining").textContent = levelPoints - getCurrentTotalUsedPoints();
-        }
-
-        function changeAttr(attr, delta) {
-            const input = document.getElementById(attr);
-            let value = parseInt(input.value);
-            if (isNaN(value)) value = baseValue;
-
-            let newValue = value + delta;
-            const total = getTotalAllocatablePoints();
-            const used = getCurrentTotalUsedPoints();
-
-            if (delta > 0 && used < total) {
-                input.value = newValue;
-            } else if (delta < 0 && newValue >= baseValue) {
-                input.value = newValue;
-            }
-
-            updateAttributesDisplay();
-            updateTotalAttributeDisplays();
-            updateAttackDisplay();
         }
 
         function resetAttributes() {
