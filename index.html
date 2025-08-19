@@ -43,6 +43,11 @@
             flex-wrap: wrap;
         }
 
+        .subcontainer.title {
+            text-align: center;
+            padding: 0 16px;
+        }
+
         h3 {
             font-size: 1.4em;
             margin-bottom: 15px;
@@ -103,7 +108,7 @@
 
         button {
             cursor: pointer;
-            background: #66aaff;
+            background: #a8a8a8;
             color: #fff;
             border: none;
             border-radius: 6px;
@@ -112,7 +117,7 @@
         }
 
         button:hover {
-            background: #5597dd;
+            background: #bebebe;
         }
 
         #job-label,
@@ -184,11 +189,11 @@
         }
 
         body.dark button {
-            background: #4a90e2;
+            background: #4e4e4e;
         }
 
         body.dark button:hover {
-            background: #357ac9;
+            background: #696969;
         }
 
         body.dark .total-display {
@@ -359,6 +364,10 @@
 <body class="dark">
     <button id="theme-toggle" class="theme-toggle">☀️ Light</button>
     <div class="container">
+        <div class="subcontainer title">
+            <h3>artale 表攻計算模擬器</h3>
+        </div>
+
         <div class="subcontainer character">
             <h3>角色資訊</h3>
 
@@ -484,7 +493,7 @@
             <button type="button" onclick="resetAttrButtonEvent()">重置能力值</button>
             <button type="button" onclick="resetExtraAttrButtonEvent()">重置額外能力值</button>
         </div>
-        <div class="version-label">v1.0.8</div>
+        <div class="version-label">v1.0.9</div>
     </div>
 
     <script>
@@ -871,7 +880,27 @@
 
         function updateThemeUI() {
             const isDark = document.body.classList.contains("dark");
-            toggleBtn.textContent = isDark ? "☀️ Light" : "🌙 Dark";
+            if (isDark) {
+                toggleBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun" style="display: block; margin: auto;">
+                        <circle cx="12" cy="12" r="4"/>
+                        <path d="M12 2v2"/>
+                        <path d="M12 20v2"/>
+                        <path d="m4.93 4.93 1.41 1.41"/>
+                        <path d="m17.66 17.66 1.41 1.41"/>
+                        <path d="M2 12h2"/>
+                        <path d="M20 12h2"/>
+                        <path d="m6.34 17.66-1.41 1.41"/>
+                        <path d="m19.07 4.93-1.41 1.41"/>
+                    </svg>
+                `;
+            } else {
+                toggleBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon" style="display: block; margin: auto;">
+                        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+                    </svg>
+                `;
+            }
         }
 
         function loadThemeFromStorage() {
