@@ -1,0 +1,95 @@
+// ────────────────────────────────
+//  共用常數 & 設定
+// ────────────────────────────────
+
+const STORAGE_KEY = 'artale-sim-state';
+const BASE_STAT  = 4;
+const MAX_LEVEL  = 200;
+const MAX_ATK    = 512;
+const MAX_EXTRA  = 999;
+const ATTRS      = ['str', 'dex', 'int', 'luk'];
+
+const WEAPON_COEFF = {
+    '單手劍': [4.2, 4.2],
+    '雙手劍': [4.8, 4.8],
+    '單手斧': [3.6, 4.8],
+    '雙手斧': [4.0, 5.2],
+    '單手棍': [3.6, 4.8],
+    '雙手棍': [4.0, 5.2],
+    '槍武器': [3.6, 5.1],
+    '矛武器': [3.5, 5.2],
+};
+
+const JOB_CONFIG = {
+    '劍士 (英雄)': {
+        main: 'str', sub: 'dex',
+        weapons: ['單手劍', '雙手劍', '單手斧', '雙手斧'],
+    },
+    '劍士 (聖騎士)': {
+        main: 'str', sub: 'dex',
+        weapons: ['單手劍', '雙手劍', '單手棍', '雙手棍'],
+    },
+    '劍士 (黑騎士)': {
+        main: 'str', sub: 'dex',
+        weapons: ['槍武器', '矛武器'],
+    },
+    '盜賊 (暗影神偷)': {
+        main: 'luk', sub: 'str+dex',
+        coeff: [3.6, 4.2],
+        proficiency: '精準之刀',
+    },
+    '盜賊 (夜使者)': {
+        main: 'luk', sub: 'str+dex',
+        coeff: [3.6, 3.6],
+        proficiency: '精準暗器',
+        projectile: '鏢攻擊力',
+    },
+    '弓箭手 (箭神)': {
+        main: 'dex', sub: 'str',
+        coeff: [3.4, 3.4],
+        proficiency: '精準之弓',
+        projectile: '箭矢攻擊力',
+    },
+    '弓箭手 (神射手)': {
+        main: 'dex', sub: 'str',
+        coeff: [3.6, 3.6],
+        proficiency: '精準之弩',
+        projectile: '箭矢攻擊力',
+    },
+    '海盜 (槍神)': {
+        main: 'dex', sub: 'str',
+        coeff: [3.6, 3.6],
+        proficiency: '精準槍法',
+        projectile: '子彈攻擊力',
+    },
+    '海盜 (拳霸)': {
+        main: 'str', sub: 'dex',
+        coeff: [4.8, 4.8],
+        proficiency: '精準指虎',
+    },
+};
+
+const SWORD_PROFICIENCY = {
+    '槍': '精準之槍',
+    '矛': '精準之矛',
+    '劍': '精準之劍',
+    '斧': '精準之斧',
+    '棍': '精準之棍',
+};
+
+const SUN_SVG  = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>';
+const MOON_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+
+// ────────────────────────────────
+//  工具函式
+// ────────────────────────────────
+
+function clamp(val, min, max) {
+    return Math.max(min, Math.min(max, isNaN(val) ? min : val));
+}
+
+const $ = (id) => document.getElementById(id);
+
+function getVal(id, fallback = 0) {
+    return parseInt($(id).value) || fallback;
+}

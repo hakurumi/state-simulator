@@ -1,0 +1,161 @@
+// ────────────────────────────────
+//  角色資訊
+// ────────────────────────────────
+
+let prevLevel = getVal('level', 1);
+
+function getJob()  { return dom.job.value; }
+function isMage()  { return getJob().includes('法師'); }
+
+function updateAttack() {
+    const job    = getJob();
+    const weapon = clamp(parseInt(dom.weaponAtk.value), 1, MAX_ATK);
+    const armor  = clamp(parseInt(dom.armorAtk.value),  0, MAX_ATK);
+    const elixir = clamp(parseInt(dom.elixirAtk.value), 0, MAX_ATK);
+
+    const projectile = dom.projectileItem.style.display !== 'none'
+        ? clamp(parseInt(dom.projectileAtk.value), 0, MAX_ATK)
+        : 0;
+
+    dom.attackField.style.display = 'flex';
+
+    // 法師
+    if (isMage()) {
+        dom.weaponLabel.textContent = '武器魔攻';
+        dom.armorLabel.textContent  = '防具魔攻';
+        dom.elixirLabel.textContent = '藥水魔攻';
+        dom.attackLabel.textContent = '魔法攻擊力';
+
+        const matk = getStat('int') + weapon + armor + elixir;
+        dom.attackDisplay.textContent = matk;
+        saveState();
+        return;
+    }
+
+    // 物理
+    dom.weaponLabel.textContent = '武器攻擊力';
+    dom.armorLabel.textContent  = '防具攻擊力';
+    dom.elixirLabel.textContent = '藥水攻擊力';
+    dom.attackLabel.textContent = '攻擊力';
+
+    const config = JOB_CONFIG[job];
+    if (!config) return;
+
+    const mainAttr = getStat(config.main);
+    const subAttr  = config.sub === 'str+dex'
+        ? getStat('str') + getStat('dex')
+        : getStat(config.sub);
+
+    const [coeffMin, coeffMax] = config.coeff
+        || WEAPON_COEFF[dom.weaponType.value]
+        || [0, 0];
+
+    const totalAtk = weapon + armor + projectile + elixir;
+    const prof     = (Math.ceil(getVal('proficiency') / 2) * 5 + 10) / 100;
+
+    const max = Math.floor((mainAttr * coeffMax + subAttr) * totalAtk / 100) || 1;
+    const min = Math.floor((mainAttr * coeffMin * 0.9 * prof + subAttr) * totalAtk / 100) || 1;
+
+    dom.attackDisplay.textContent = `${min}\u2007~\u2007${max}`;
+
+    saveState();
+}
+
+function updateProficiencyName() {
+    const job    = getJob();
+    const config = JOB_CONFIG[job];
+
+    if (!config) {
+        dom.proficiencyName.textContent = '';
+        return;
+    }
+
+    let name = '';
+
+    if (config.proficiency) {
+        name = config.proficiency;
+    } else if (config.weapons) {
+        const wt  = dom.weaponType.value;
+        const key = Object.keys(SWORD_PROFICIENCY).find(k => wt.includes(k));
+        name = key ? SWORD_PROFICIENCY[key] : '';
+    }
+
+    dom.proficiencyName.textContent = name || '';
+}
+
+function updateJobUI() {
+    const job    = getJob();
+    const config = JOB_CONFIG[job];
+    const mage   = isMage();
+
+    // 屬性標籤
+    updateAttrTags();
+
+    // 精準技能
+    dom.proficiencyGroup.style.display = mage ? 'none' : 'flex';
+
+    // 武器類型（劍士系）
+    const wrap = $('weapon-type-wrap');
+    if (config?.weapons) {
+        dom.weaponType.innerHTML = config.weapons
+            .map(w => `<option value="${w}">${w}</option>`)
+            .join('');
+        wrap.style.display = 'flex';
+    } else {
+        wrap.style.display = 'none';
+        dom.weaponType.innerHTML = '';
+    }
+
+    // 投射物
+    if (config?.projectile) {
+        dom.projectileItem.style.display = 'flex';
+        dom.projectileLabel.textContent   = config.projectile;
+    } else {
+        dom.projectileItem.style.display = 'none';
+    }
+
+    updateProficiencyName();
+    updateAttack();
+}
+
+function isDark() {
+    return document.documentElement.getAttribute('data-theme') === 'dark';
+}
+
+function setTheme(dark) {
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
+    dom.themeToggle.innerHTML = dark ? SUN_SVG : MOON_SVG;
+}
+
+function initCharacter() {
+    dom.job.addEventListener('change', updateJobUI);
+
+    dom.level.addEventListener('blur', () => {
+        dom.level.value = clamp(parseInt(dom.level.value), 1, MAX_LEVEL);
+        const cur = parseInt(dom.level.value);
+        if (cur < prevLevel) resetStats();
+        prevLevel = cur;
+        updateAttributes();
+        updateTotals();
+        updateAttack();
+    });
+
+    dom.level.addEventListener('input', updateTotals);
+
+    dom.weaponType.addEventListener('change', () => {
+        updateProficiencyName();
+        updateAttack();
+    });
+
+    dom.themeToggle.addEventListener('click', () => setTheme(!isDark()));
+
+    $('btn-reset-char').addEventListener('click', resetCharacter);
+}
+
+function resetCharacter() {
+    dom.job.value = dom.job.options[0].value;
+    dom.level.value = 200;
+    prevLevel = 200;
+    updateJobUI();
+}
