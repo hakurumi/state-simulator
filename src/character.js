@@ -50,8 +50,9 @@ function updateAttack() {
         || WEAPON_COEFF[dom.weaponType.value]
         || [0, 0];
 
-    const totalAtk = weapon + armor + projectile + elixir;
-    const prof     = (Math.ceil(getVal('proficiency') / 2) * 5 + 10) / 100;
+    const masteryLv = config.mastery ? clamp(parseInt(dom.mastery.value), 0, 30) : 0;
+    const totalAtk  = weapon + armor + projectile + elixir + getMasteryAtk(masteryLv);
+    const prof      = (Math.ceil(getVal('proficiency') / 2) * 5 + 10 + getMasteryBonus(masteryLv)) / 100;
 
     const max = Math.floor((mainAttr * coeffMax + subAttr) * totalAtk / 100) || 1;
     const min = Math.floor((mainAttr * coeffMin * 0.9 * prof + subAttr) * totalAtk / 100) || 1;
@@ -114,7 +115,22 @@ function updateJobUI() {
         dom.projectileItem.style.display = 'none';
     }
 
+    // 精通技能（弓箭手四轉）
+    if (config?.mastery) {
+        dom.proficiencyWrap.classList.add('field-value-mid');
+        dom.profPct.style.display = 'none';
+        dom.masteryName.style.display = 'flex';
+        dom.masteryName.textContent = config.mastery;
+        dom.masteryWrap.style.display = 'flex';
+    } else {
+        dom.proficiencyWrap.classList.remove('field-value-mid');
+        dom.profPct.style.display = '';
+        dom.masteryName.style.display = 'none';
+        dom.masteryWrap.style.display = 'none';
+    }
+
     updateProficiencyName();
+    updateMasteryLabel();
     updateAttack();
 }
 
@@ -151,6 +167,19 @@ function initCharacter() {
     dom.themeToggle.addEventListener('click', () => setTheme(!isDark()));
 
     $('btn-reset-char').addEventListener('click', resetCharacter);
+}
+
+function updateMasteryLabel() {
+    const config = JOB_CONFIG[getJob()];
+    if (!config?.mastery) {
+        dom.masteryInfo.textContent = '';
+        return;
+    }
+    const profLv    = clamp(parseInt(dom.proficiency.value), 0, 20);
+    const masteryLv = clamp(parseInt(dom.mastery.value), 0, 30);
+    const combined  = Math.ceil(profLv / 2) * 5 + 10 + getMasteryBonus(masteryLv);
+    const atk       = getMasteryAtk(masteryLv);
+    dom.masteryInfo.textContent = atk > 0 ? `${combined}% +${atk}atk` : `${combined}%`;
 }
 
 function resetCharacter() {

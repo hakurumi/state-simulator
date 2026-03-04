@@ -4,7 +4,7 @@
 
 const STATE_FIELDS = [
     'job', 'level', 'weapon-atk', 'armor-atk', 'elixir-atk', 'projectile-atk',
-    'proficiency', 'weapon-type', 'maple-blessing',
+    'proficiency', 'weapon-type', 'maple-blessing', 'mastery',
     'str', 'dex', 'int', 'luk', 'extra-str', 'extra-dex', 'extra-int', 'extra-luk',
 ];
 
@@ -38,6 +38,12 @@ const dom = {
     mapleBlessing:    $('maple-blessing'),
     maplePct:         $('maple-pct'),
 
+    proficiencyWrap:  $('proficiency-wrap'),
+    masteryName:      $('mastery-name'),
+    masteryWrap:      $('mastery-wrap'),
+    mastery:          $('mastery'),
+    masteryInfo:      $('mastery-info'),
+
     themeToggle:      $('theme-toggle'),
 };
 
@@ -69,7 +75,7 @@ function loadState() {
         if (state['weapon-type'] != null) dom.weaponType.value = state['weapon-type'];
 
         // 3. 設定 equipment 欄位
-        ['weapon-atk', 'armor-atk', 'elixir-atk', 'projectile-atk', 'proficiency', 'maple-blessing'].forEach(id => {
+        ['weapon-atk', 'armor-atk', 'elixir-atk', 'projectile-atk', 'proficiency', 'maple-blessing', 'mastery'].forEach(id => {
             if (state[id] != null) $(id).value = state[id];
         });
 
@@ -85,6 +91,7 @@ function loadState() {
         // 6. 更新所有 UI
         updateProfLabel();
         updateMapleLabel();
+        updateMasteryLabel();
         updateAttributes();
         updateTotals();
         updateAttack();
@@ -107,6 +114,7 @@ setTheme(localStorage.getItem('theme') !== 'light');
 if (!loadState()) {
     updateProfLabel();
     updateMapleLabel();
+    updateMasteryLabel();
     resetStats(false);
     resetStats(true);
     updateJobUI();

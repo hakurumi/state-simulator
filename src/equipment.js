@@ -34,6 +34,7 @@ function initEquipment() {
     dom.proficiency.addEventListener('blur', () => {
         dom.proficiency.value = clamp(parseInt(dom.proficiency.value), 0, 20);
         updateProfLabel();
+        updateMasteryLabel();
         updateAttack();
     });
 
@@ -41,6 +42,12 @@ function initEquipment() {
         dom.mapleBlessing.value = clamp(parseInt(dom.mapleBlessing.value), 0, 30);
         updateMapleLabel();
         updateTotals();
+        updateAttack();
+    });
+
+    dom.mastery.addEventListener('blur', () => {
+        dom.mastery.value = clamp(parseInt(dom.mastery.value), 0, 30);
+        updateMasteryLabel();
         updateAttack();
     });
 
@@ -54,8 +61,10 @@ function resetEquipment() {
     dom.projectileAtk.value = 0;
     dom.proficiency.value = 0;
     dom.mapleBlessing.value = 0;
+    dom.mastery.value = 0;
     updateProfLabel();
     updateMapleLabel();
+    updateMasteryLabel();
     updateTotals();
     updateAttack();
 }

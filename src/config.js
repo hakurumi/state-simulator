@@ -49,12 +49,14 @@ const JOB_CONFIG = {
         coeff: [3.4, 3.4],
         proficiency: '精準之弓',
         projectile: '箭矢攻擊力',
+        mastery: '弓術精通',
     },
     '弓箭手 (神射手)': {
         main: 'dex', sub: 'str',
         coeff: [3.6, 3.6],
         proficiency: '精準之弩',
         projectile: '箭矢攻擊力',
+        mastery: '弩術精通',
     },
     '海盜 (槍神)': {
         main: 'dex', sub: 'str',
@@ -92,4 +94,12 @@ const $ = (id) => document.getElementById(id);
 
 function getVal(id, fallback = 0) {
     return parseInt($(id).value) || fallback;
+}
+
+function getMasteryBonus(level) {
+    return Math.ceil(level / 5) * 5;
+}
+
+function getMasteryAtk(level) {
+    return level < 3 ? 0 : Math.floor(level / 3);
 }
