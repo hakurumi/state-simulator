@@ -183,7 +183,6 @@ function updateMasteryLabel() {
 }
 
 function resetCharacter() {
-    dom.job.value = dom.job.options[0].value;
     dom.level.value = 200;
     prevLevel = 200;
     updateJobUI();
