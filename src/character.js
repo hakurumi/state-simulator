@@ -13,7 +13,7 @@ function updateAttack() {
     const armor  = clamp(parseInt(dom.armorAtk.value),  0, MAX_ATK);
     const elixir = clamp(parseInt(dom.elixirAtk.value), 0, MAX_ATK);
 
-    const projectile = dom.projectileItem.style.display !== 'none'
+    const projectile = dom.projectileWrap.style.display !== 'none'
         ? clamp(parseInt(dom.projectileAtk.value), 0, MAX_ATK)
         : 0;
 
@@ -109,10 +109,14 @@ function updateJobUI() {
 
     // 投射物
     if (config?.projectile) {
-        dom.projectileItem.style.display = 'flex';
+        dom.weaponAtkWrap.classList.add('field-value-mid');
+        dom.projectileLabel.style.display = 'flex';
         dom.projectileLabel.textContent   = config.projectile;
+        dom.projectileWrap.style.display  = 'flex';
     } else {
-        dom.projectileItem.style.display = 'none';
+        dom.weaponAtkWrap.classList.remove('field-value-mid');
+        dom.projectileLabel.style.display = 'none';
+        dom.projectileWrap.style.display  = 'none';
     }
 
     // 精通技能（弓箭手四轉）

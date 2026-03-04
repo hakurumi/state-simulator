@@ -24,9 +24,10 @@ const dom = {
     elixirAtk:        $('elixir-atk'),
 
     weaponLabel:      $('weapon-label'),
+    weaponAtkWrap:    $('weapon-atk-wrap'),
     armorLabel:       $('armor-label'),
-    projectileItem:   $('projectile-item'),
     projectileLabel:  $('projectile-label'),
+    projectileWrap:   $('projectile-wrap'),
     elixirLabel:      $('elixir-label'),
 
     proficiencyGroup: $('proficiency-group'),
