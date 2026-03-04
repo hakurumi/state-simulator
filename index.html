@@ -371,16 +371,18 @@
                 <div class="form-item">
                     <label id="job-label" for="job">職業：</label>
                     <select id="job" name="job">
-                        <option value="劍士 (十字軍)">劍士 (十字軍)</option>
-                        <option value="劍士 (騎士)">劍士 (騎士)</option>
-                        <option value="劍士 (龍騎士)">劍士 (龍騎士)</option>
-                        <option value="盜賊 (神偷)">盜賊 (神偷)</option>
-                        <option value="盜賊 (暗殺者)">盜賊 (暗殺者)</option>
-                        <option value="弓箭手 (遊俠)">弓箭手 (遊俠)</option>
-                        <option value="弓箭手 (狙擊手)">弓箭手 (狙擊手)</option>
-                        <option value="法師">法師</option>
-                        <option value="海盜 (神槍手)">海盜 (神槍手)</option>
-                        <option value="海盜 (格鬥家)">海盜 (格鬥家)</option>
+                        <option value="劍士 (英雄)">劍士 (英雄)</option>
+                        <option value="劍士 (聖騎士)">劍士 (聖騎士)</option>
+                        <option value="劍士 (黑騎士)">劍士 (黑騎士)</option>
+                        <option value="盜賊 (暗影神偷)">盜賊 (暗影神偷)</option>
+                        <option value="盜賊 (夜使者)">盜賊 (夜使者)</option>
+                        <option value="弓箭手 (箭神)">弓箭手 (箭神)</option>
+                        <option value="弓箭手 (神射手)">弓箭手 (神射手)</option>
+                        <option value="法師 (火毒大魔導士)">法師 (火毒大魔導士)</option>
+                        <option value="法師 (冰雷大魔導士)">法師 (冰雷大魔導士)</option>
+                        <option value="法師 (主教)">法師 (主教)</option>
+                        <option value="海盜 (槍神)">海盜 (槍神)</option>
+                        <option value="海盜 (拳霸)">海盜 (拳霸)</option>
                     </select>
                 </div>
             </div>
@@ -481,7 +483,7 @@
             <button type="button" onclick="resetAttrButtonEvent()">重置能力值</button>
             <button type="button" onclick="resetExtraAttrButtonEvent()">重置額外能力值</button>
         </div>
-        <div class="version-label">v1.0.10</div>
+        <div class="version-label">v2.0.0</div>
     </div>
 
     <script>
@@ -636,7 +638,7 @@
             const prof = (Math.ceil(proficiency / 2) * 5 + 10) / 100;
 
             // 魔法職業
-            if (job === "法師") {
+            if (job.includes("法師")) {
                 weaponLabel.textContent = "武器魔法攻擊力：";
                 armorLabel.textContent = "防具魔法攻擊力：";
                 const matk = int + weaponState + armorState + elixirState;
@@ -653,7 +655,7 @@
             if (job.includes("劍士")) {
                 mainAttr = str;
                 subAttr = dex;
-                if (job.includes("龍騎士")) {
+                if (job.includes("黑騎士")) {
                     if (weaponType === "槍武器") {
                         coefficientMin = 3.6;
                         coefficientMax = 5.1;
@@ -661,11 +663,11 @@
                         coefficientMin = 3.5;
                         coefficientMax = 5.2;
                     }
-                } else if (job.includes("十字軍")) {
+                } else if (job.includes("英雄")) {
                     const map = { "單手劍": 4.2, "雙手劍": 4.8, "單手斧": 3.6, "雙手斧": 4.0 };
                     coefficientMin = map[weaponType] || 4.0;
                     coefficientMax = (weaponType === "單手斧") ? 4.8 : (weaponType === "雙手斧") ? 5.2 : coefficientMin;
-                } else if (job.includes("騎士")) {
+                } else if (job.includes("聖騎士")) {
                     const map = { "單手劍": 4.2, "雙手劍": 4.8, "單手棍": 3.6, "雙手棍": 4.0 };
                     coefficientMin = map[weaponType] || 4.0;
                     coefficientMax = (weaponType === "單手棍") ? 4.8 : (weaponType === "雙手棍") ? 5.2 : coefficientMin;
@@ -676,7 +678,7 @@
             else if (job.includes("盜賊")) {
                 mainAttr = luk;
                 subAttr = str + dex;
-                if (job.includes("暗殺者")) {
+                if (job.includes("夜使者")) {
                     coefficientMin = 3.6;
                     coefficientMax = 3.6;
                 } else {
@@ -689,16 +691,16 @@
             else if (job.includes("弓箭手")) {
                 mainAttr = dex;
                 subAttr = str;
-                coefficientMin = job.includes("狙擊手") ? 3.6 : 3.4;
+                coefficientMin = job.includes("神射手") ? 3.6 : 3.4;
                 coefficientMax = coefficientMin;
             }
 
             // 海盜系
             else if (job.includes("海盜")) {
-                mainAttr = job.includes("神槍手") ? dex : str;
-                subAttr = job.includes("神槍手") ? str : dex;
-                coefficientMin = job.includes("神槍手") ? 3.6 : 4.8;
-                coefficientMax = job.includes("神槍手") ? 3.6 : 4.8;
+                mainAttr = job.includes("槍神") ? dex : str;
+                subAttr = job.includes("槍神") ? str : dex;
+                coefficientMin = job.includes("槍神") ? 3.6 : 4.8;
+                coefficientMax = job.includes("槍神") ? 3.6 : 4.8;
             }
 
             // 計算
@@ -724,7 +726,7 @@
         function updateProficiencyVisibility() {
             const job = document.getElementById("job").value;
             const profGroup = document.getElementById("proficiency-group");
-            if (job === "法師") {
+            if (job.includes("法師")) {
                 profGroup.style.display = "none";
             } else {
                 profGroup.style.display = "flex";
@@ -736,9 +738,9 @@
             const select = document.getElementById("weapon-type-select");
 
             const optionsMap = {
-                "劍士 (龍騎士)": ["槍武器", "矛武器"],
-                "劍士 (十字軍)": ["單手劍", "雙手劍", "單手斧", "雙手斧"],
-                "劍士 (騎士)": ["單手劍", "雙手劍", "單手棍", "雙手棍"],
+                "劍士 (黑騎士)": ["槍武器", "矛武器"],
+                "劍士 (英雄)": ["單手劍", "雙手劍", "單手斧", "雙手斧"],
+                "劍士 (聖騎士)": ["單手劍", "雙手劍", "單手棍", "雙手棍"],
             };
 
             if (job in optionsMap) {
@@ -763,11 +765,11 @@
             const item = document.getElementById("projectile-item");
 
             item.style.display = "flex";
-            if (job.includes("暗殺者")) {
+            if (job.includes("夜使者")) {
                 label.textContent = "鏢攻擊力：";
             } else if (job.includes("弓箭手")) {
                 label.textContent = "箭矢攻擊力：";
-            } else if (job.includes("神槍手")) {
+            } else if (job.includes("槍神")) {
                 label.textContent = "子彈攻擊力：";
             } else {
                 item.style.display = "none";
@@ -778,7 +780,7 @@
             const job = document.getElementById("job").value;
             const label = document.getElementById("elixir-label");
 
-            if (job == "法師") {
+            if (job.includes("法師")) {
                 label.textContent = "藥水魔法攻擊力：";
             } else {
                 label.textContent = "藥水攻擊力：";
@@ -792,15 +794,15 @@
             const nameDisplay = document.getElementById("proficiency-name");
 
             const jobWeaponDefaults = {
-                "劍士 (十字軍)": "單手劍",
-                "劍士 (騎士)": "單手劍",
-                "劍士 (龍騎士)": "槍武器",
-                "盜賊 (神偷)": "精準之刀",
-                "盜賊 (暗殺者)": "精準暗器",
-                "海盜 (格鬥家)": "精準指虎",
-                "海盜 (神槍手)": "精準槍法",
-                "弓箭手 (遊俠)": "精準之弓",
-                "弓箭手 (狙擊手)": "精準之弓",
+                "劍士 (英雄)": "單手劍",
+                "劍士 (聖騎士)": "單手劍",
+                "劍士 (黑騎士)": "槍武器",
+                "盜賊 (暗影神偷)": "精準之刀",
+                "盜賊 (夜使者)": "精準暗器",
+                "海盜 (拳霸)": "精準指虎",
+                "海盜 (槍神)": "精準槍法",
+                "弓箭手 (箭神)": "精準之弓",
+                "弓箭手 (神射手)": "精準之弓",
             };
 
             if (!select.value) {
@@ -815,13 +817,13 @@
 
             let name = "";
 
-            if (job === "盜賊 (神偷)") {
+            if (job === "盜賊 (暗影神偷)") {
                 name = "精準之刀";
-            } else if (job === "盜賊 (暗殺者)") {
+            } else if (job === "盜賊 (夜使者)") {
                 name = "精準暗器";
-            } else if (job === "海盜 (格鬥家)") {
+            } else if (job === "海盜 (拳霸)") {
                 name = "精準指虎";
-            } else if (job === "海盜 (神槍手)") {
+            } else if (job === "海盜 (槍神)") {
                 name = "精準槍法";
             } else if (job.includes("劍士")) {
                 if (weaponType.includes("槍")) {
@@ -836,9 +838,9 @@
                     name = "精準之棍";
                 }
             } else if (job.includes("弓箭手")) {
-                if (job.includes("遊俠")) {
+                if (job.includes("箭神")) {
                     name = "精準之弓";
-                } else if (job.includes("狙擊手")) {
+                } else if (job.includes("神射手")) {
                     name = "精準之弩"
                 }
             }
