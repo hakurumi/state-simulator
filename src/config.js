@@ -42,32 +42,34 @@ const JOB_CONFIG = {
         main: 'luk', sub: 'str+dex',
         coeff: [3.6, 3.6],
         proficiency: '精準暗器',
-        projectile: '鏢攻擊力',
+        projectile: '飛鏢攻擊',
     },
     '弓箭手 (箭神)': {
         main: 'dex', sub: 'str',
         coeff: [3.4, 3.4],
         proficiency: '精準之弓',
-        projectile: '箭矢攻擊力',
+        projectile: '箭矢攻擊',
         mastery: '弓術精通',
     },
     '弓箭手 (神射手)': {
         main: 'dex', sub: 'str',
         coeff: [3.6, 3.6],
         proficiency: '精準之弩',
-        projectile: '箭矢攻擊力',
+        projectile: '箭矢攻擊',
         mastery: '弩術精通',
     },
     '海盜 (槍神)': {
         main: 'dex', sub: 'str',
         coeff: [3.6, 3.6],
         proficiency: '精準槍法',
-        projectile: '子彈攻擊力',
+        projectile: '子彈攻擊',
+        accCoeff: [0.9, 0.3],
     },
     '海盜 (拳霸)': {
         main: 'str', sub: 'dex',
         coeff: [4.8, 4.8],
         proficiency: '精準指虎',
+        accCoeff: [0.6, 0.3],
     },
 };
 
@@ -123,6 +125,6 @@ const EQUIPMENT_SLOTS = [
     { id: 'medal',   label: '勳章' },
 ];
 
-const EQUIP_STATS = ['str', 'dex', 'int', 'luk', 'atk', 'matk'];
-const EQUIP_STAT_LABELS = { str:'力', dex:'敏', int:'智', luk:'幸', atk:'攻', matk:'魔' };
-const EQUIP_STAT_TITLES = { str:'力量', dex:'敏捷', int:'智慧', luk:'幸運', atk:'攻擊力', matk:'魔法攻擊力' };
+const EQUIP_STATS = ['str', 'dex', 'int', 'luk', 'atk', 'matk', 'acc'];
+const EQUIP_STAT_LABELS = { str:'力', dex:'敏', int:'智', luk:'幸', atk:'攻', matk:'魔', acc:'命' };
+const EQUIP_STAT_TITLES = { str:'力量', dex:'敏捷', int:'智慧', luk:'幸運', atk:'攻擊力', matk:'魔法攻擊力', acc:'命中' };

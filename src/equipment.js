@@ -31,6 +31,18 @@ function initEquipment() {
     bindAtkInput('projectile-atk', 0);
     bindAtkInput('elixir-atk', 0);
 
+    // 命中欄位
+    $('equip-acc').addEventListener('blur', () => {
+        $('equip-acc').value = clamp(parseInt($('equip-acc').value), 0, MAX_EXTRA);
+        updateAttack();
+    });
+    $('equip-acc').addEventListener('input', updateAttack);
+    $('elixir-acc').addEventListener('blur', () => {
+        $('elixir-acc').value = clamp(parseInt($('elixir-acc').value), 0, MAX_EXTRA);
+        updateAttack();
+    });
+    $('elixir-acc').addEventListener('input', updateAttack);
+
     dom.proficiency.addEventListener('blur', () => {
         dom.proficiency.value = clamp(parseInt(dom.proficiency.value), 0, 20);
         updateProfLabel();
@@ -61,6 +73,8 @@ function resetEquipment() {
     dom.weaponAtk.value = 1;
     dom.armorAtk.value = 0;
     dom.elixirAtk.value = 0;
+    dom.equipAcc.value = 0;
+    dom.elixirAcc.value = 0;
     dom.projectileAtk.value = 0;
     dom.proficiency.value = 0;
     dom.mapleBlessing.value = 0;

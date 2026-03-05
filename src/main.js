@@ -4,6 +4,7 @@
 
 const STATE_FIELDS = [
     'job', 'level', 'weapon-atk', 'armor-atk', 'elixir-atk', 'projectile-atk',
+    'equip-acc', 'elixir-acc',
     'proficiency', 'weapon-type', 'maple-blessing', 'mastery',
     'str', 'dex', 'int', 'luk', 'extra-str', 'extra-dex', 'extra-int', 'extra-luk',
 ];
@@ -29,6 +30,11 @@ const dom = {
     projectileLabel:  $('projectile-label'),
     projectileWrap:   $('projectile-wrap'),
     elixirLabel:      $('elixir-label'),
+
+    equipAcc:         $('equip-acc'),
+    elixirAcc:        $('elixir-acc'),
+    accuracyField:    $('accuracy-field'),
+    accuracyDisplay:  $('accuracy-display'),
 
     proficiencyGroup: $('proficiency-group'),
     proficiencyName:  $('proficiency-name'),
@@ -76,7 +82,7 @@ function loadState() {
         if (state['weapon-type'] != null) dom.weaponType.value = state['weapon-type'];
 
         // 3. 設定 equipment 欄位
-        ['weapon-atk', 'armor-atk', 'elixir-atk', 'projectile-atk', 'proficiency', 'maple-blessing', 'mastery'].forEach(id => {
+        ['weapon-atk', 'armor-atk', 'elixir-atk', 'projectile-atk', 'equip-acc', 'elixir-acc', 'proficiency', 'maple-blessing', 'mastery'].forEach(id => {
             if (state[id] != null) $(id).value = state[id];
         });
 

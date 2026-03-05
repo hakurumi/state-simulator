@@ -316,14 +316,18 @@
 
         .equip-grid-table {
             display: grid;
-            grid-template-columns: 3.5em repeat(6, 1fr);
+            grid-template-columns: 3.5em repeat(7, 1fr);
             gap: 1px;
             border: var(--field-border);
             border-radius: var(--field-radius);
-            overflow: hidden;
             margin-bottom: 10px;
             background: var(--pico-muted-border-color);
         }
+
+        .equip-grid-table > *:first-child { border-radius: var(--field-radius) 0 0 0; }
+        .equip-grid-table > *:nth-child(8) { border-radius: 0 var(--field-radius) 0 0; }
+        .equip-grid-table > *:nth-last-child(8) { border-radius: 0 0 0 var(--field-radius); }
+        .equip-grid-table > *:last-child { border-radius: 0 0 var(--field-radius) 0; }
 
         .equip-grid-table > * {
             background: var(--pico-card-background-color);
@@ -390,6 +394,57 @@
             text-decoration: underline dotted;
             text-underline-offset: 2px;
             cursor: help;
+            position: relative;
+        }
+
+        .has-tooltip[data-tooltip]:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 4px 8px;
+            background: var(--pico-card-sectioning-background-color);
+            border: var(--field-border);
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 400;
+            white-space: nowrap;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        /* ── 精準行三等分（desktop） ── */
+        @media (min-width: 481px) {
+            #proficiency-group.mastery-active {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr 15%;
+            }
+            #proficiency-group.mastery-active > #prof-section-1,
+            #proficiency-group.mastery-active > #prof-section-2 {
+                display: flex !important;
+                align-items: center;
+            }
+            #proficiency-group.mastery-active > #prof-section-2 {
+                border-left: var(--field-border);
+            }
+            #proficiency-group.mastery-active > #prof-section-3 {
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                border-left: var(--field-border);
+                opacity: 0.6;
+                font-size: 0.9em;
+            }
+            #proficiency-group.mastery-active #proficiency-name,
+            #proficiency-group.mastery-active #mastery-name {
+                width: auto;
+                min-width: auto;
+            }
+            #proficiency-group.mastery-active #proficiency-wrap {
+                flex: 1;
+                border-right: none;
+            }
         }
 
         /* ── RWD ── */
@@ -406,8 +461,25 @@
             .field-label { padding: 8px 10px; }
             .field-value { padding: 6px 10px; }
 
-            .equip-grid-table { grid-template-columns: 3em repeat(6, 1fr); }
+            .equip-grid-table { grid-template-columns: 3em repeat(7, 1fr); }
             .equip-grid-table > * { font-size: 0.75em; padding: 3px 1px; }
+
+            #proficiency-group.mastery-active > #prof-section-1,
+            #proficiency-group.mastery-active > #prof-section-2 {
+                display: contents !important;
+            }
+            #proficiency-group.mastery-active > #prof-section-3 {
+                display: flex !important;
+                align-items: center;
+                padding: 6px 10px;
+                opacity: 0.6;
+                font-size: 0.9em;
+            }
+            #proficiency-group.mastery-active #mastery-name {
+                width: auto;
+                min-width: auto;
+                border-left: var(--field-border);
+            }
         }
     </style>
 </head>
@@ -454,6 +526,10 @@
             <div class="field field-result" id="attack-field" style="display:none;">
                 <div class="field-label" id="attack-label">攻擊力</div>
                 <div class="field-value" id="attack-display"></div>
+                <div id="accuracy-field" style="display:none;">
+                    <div class="field-label" style="border-left: var(--field-border);">命中</div>
+                    <div class="field-value" id="accuracy-display"></div>
+                </div>
             </div>
 
             <div class="attr-footer">
@@ -476,24 +552,35 @@
             </header>
 
             <div class="field" id="row-weapon">
-                <div class="field-label" id="weapon-label">武器攻擊力</div>
+                <div class="field-label" id="weapon-label">武器攻擊</div>
                 <div class="field-value" id="weapon-atk-wrap" style="flex:1;">
                     <input type="number" id="weapon-atk" value="1" min="1" max="512" />
                 </div>
-                <div class="field-label" id="projectile-label" style="display:none; border-left: var(--field-border);">鏢攻擊力</div>
+                <div class="field-label" id="projectile-label" style="display:none; border-left: var(--field-border);">飛鏢攻擊</div>
                 <div class="field-value" id="projectile-wrap" style="display:none; flex:1;">
                     <input type="number" id="projectile-atk" value="0" min="0" max="512" />
                 </div>
             </div>
 
             <div class="field" id="row-armor">
-                <div class="field-label" id="armor-label">防具攻擊力</div>
+                <div class="field-label" id="armor-label">防具攻擊</div>
                 <div class="field-value field-value-mid" id="armor-atk-cell" style="flex:1;">
                     <input type="number" id="armor-atk" value="0" min="0" max="512" />
                 </div>
-                <div class="field-label" id="elixir-label" style="border-left: var(--field-border);">藥水攻擊力</div>
+                <div class="field-label" id="elixir-label" style="border-left: var(--field-border);">藥水攻擊</div>
                 <div class="field-value" style="flex:1;">
                     <input type="number" id="elixir-atk" value="0" min="0" max="512" />
+                </div>
+            </div>
+
+            <div class="field" id="row-accuracy">
+                <div class="field-label">裝備命中</div>
+                <div class="field-value field-value-mid" style="flex:1;">
+                    <input type="number" id="equip-acc" value="0" min="0" max="999" />
+                </div>
+                <div class="field-label" style="border-left: var(--field-border);">藥水命中</div>
+                <div class="field-value" style="flex:1;">
+                    <input type="number" id="elixir-acc" value="0" min="0" max="999" />
                 </div>
             </div>
 
@@ -506,24 +593,34 @@
             </div>
 
             <div class="field" id="row-elixir-detail" style="display:none;">
-                <div class="field-label" id="elixir-label-detail">藥水攻擊力</div>
-                <div class="field-value" style="flex:1;">
+                <div class="field-label" id="elixir-label-detail">藥水攻擊</div>
+                <div class="field-value field-value-mid" style="flex:1;">
                     <input type="number" id="elixir-atk-detail" value="0" min="0" max="512" />
+                </div>
+                <div class="field-label" style="border-left: var(--field-border);">藥水命中</div>
+                <div class="field-value" style="flex:1;">
+                    <input type="number" id="elixir-acc-detail" value="0" min="0" max="999" />
                 </div>
             </div>
 
             <div class="field" id="proficiency-group">
-                <div class="field-label" id="proficiency-name"></div>
-                <div class="field-value field-value-mid" id="weapon-type-wrap" style="display:none;">
-                    <select id="weapon-type"></select>
+                <div id="prof-section-1" style="display:contents;">
+                    <div class="field-label" id="proficiency-name"></div>
+                    <div class="field-value field-value-mid" id="weapon-type-wrap" style="display:none;">
+                        <select id="weapon-type"></select>
+                    </div>
+                    <div class="field-value" id="proficiency-wrap">
+                        <input type="number" id="proficiency" value="0" min="0" max="20" style="max-width:4ch;" />
+                        <span id="prof-pct" style="opacity:0.6; font-size:0.9em;"></span>
+                    </div>
                 </div>
-                <div class="field-value" id="proficiency-wrap">
-                    <input type="number" id="proficiency" value="0" min="0" max="20" style="max-width:4ch;" />
-                    <span id="prof-pct" style="opacity:0.6; font-size:0.9em;"></span>
+                <div id="prof-section-2" style="display:none;">
+                    <div class="field-label" id="mastery-name"></div>
+                    <div class="field-value" id="mastery-wrap">
+                        <input type="number" id="mastery" value="0" min="0" max="30" style="max-width:4ch;" />
+                    </div>
                 </div>
-                <div class="field-label" id="mastery-name" style="display:none; border-left: var(--field-border);"></div>
-                <div class="field-value" id="mastery-wrap" style="display:none;">
-                    <input type="number" id="mastery" value="0" min="0" max="30" style="max-width:4ch;" />
+                <div id="prof-section-3" style="display:none;">
                     <span id="mastery-info" style="opacity:0.6; font-size:0.9em;"></span>
                 </div>
             </div>

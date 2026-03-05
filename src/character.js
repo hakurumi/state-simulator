@@ -30,16 +30,17 @@ function updateAttack() {
 
         const matk = getStat('int') + weapon + armor + elixir;
         dom.attackDisplay.textContent = matk;
+        dom.accuracyField.style.display = 'none';
         saveState();
         return;
     }
 
     // 物理
-    dom.weaponLabel.textContent = '武器攻擊力';
-    dom.armorLabel.textContent  = '防具攻擊力';
-    dom.elixirLabel.textContent = '藥水攻擊力';
+    dom.weaponLabel.textContent = '武器攻擊';
+    dom.armorLabel.textContent  = '防具攻擊';
+    dom.elixirLabel.textContent = '藥水攻擊';
     const ed2 = $('elixir-label-detail');
-    if (ed2) ed2.textContent = '藥水攻擊力';
+    if (ed2) ed2.textContent = '藥水攻擊';
     dom.attackLabel.textContent = '攻擊力';
 
     const config = JOB_CONFIG[job];
@@ -62,6 +63,17 @@ function updateAttack() {
     const min = Math.floor((mainAttr * coeffMin * 0.9 * prof + subAttr) * totalAtk / 100) || 1;
 
     dom.attackDisplay.textContent = `${min}\u2007~\u2007${max}`;
+
+    // 命中計算
+    const accCoeff = config.accCoeff || [0.8, 0.5];
+    const accBase  = Math.floor(getStat('dex') * accCoeff[0] + getStat('luk') * accCoeff[1]);
+    const equipAcc = clamp(parseInt(dom.equipAcc.value), 0, MAX_EXTRA);
+    const elixirAcc = clamp(parseInt(dom.elixirAcc.value), 0, MAX_EXTRA);
+    const profLv   = clamp(parseInt(dom.proficiency.value), 0, 20);
+    const profAcc  = profLv <= 6 || profLv >= 19 ? profLv : Math.floor(profLv / 2) * 2;
+    const totalAcc = accBase + profAcc + equipAcc + elixirAcc;
+    dom.accuracyField.style.display = 'contents';
+    dom.accuracyDisplay.textContent = totalAcc;
 
     saveState();
 }
@@ -126,16 +138,19 @@ function updateJobUI() {
     // 精通技能（弓箭手四轉）
     if (config?.mastery) {
         dom.proficiencyWrap.classList.add('field-value-mid');
+        $('proficiency-group').classList.add('mastery-active');
         dom.profPct.style.display = 'none';
-        dom.masteryName.style.display = 'flex';
         dom.masteryName.textContent = config.mastery;
-        dom.masteryWrap.style.display = 'flex';
     } else {
         dom.proficiencyWrap.classList.remove('field-value-mid');
+        $('proficiency-group').classList.remove('mastery-active');
         dom.profPct.style.display = '';
-        dom.masteryName.style.display = 'none';
-        dom.masteryWrap.style.display = 'none';
     }
+
+    // 命中欄位（法師隱藏）
+    const accDisplay = mage ? 'none' : 'flex';
+    if (equipMode !== 'detail') $('row-accuracy').style.display = accDisplay;
+    dom.accuracyField.style.display = mage ? 'none' : 'contents';
 
     updateProficiencyName();
     updateMasteryLabel();
@@ -192,7 +207,7 @@ function updateMasteryLabel() {
     const masteryLv = clamp(parseInt(dom.mastery.value), 0, 30);
     const combined  = Math.ceil(profLv / 2) * 5 + 10 + getMasteryBonus(masteryLv);
     const atk       = getMasteryAtk(masteryLv);
-    dom.masteryInfo.textContent = atk > 0 ? `${combined}% + ${atk} 攻擊力` : `${combined}%`;
+    dom.masteryInfo.textContent = atk > 0 ? `${combined}%+${atk}攻` : `${combined}%`;
 }
 
 function resetCharacter() {

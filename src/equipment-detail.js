@@ -8,7 +8,7 @@ let equipData  = {};
 let equipDetailReady = false;
 
 function makeEmptySlot() {
-    return { str: 0, dex: 0, int: 0, luk: 0, atk: 0, matk: 0 };
+    return { str: 0, dex: 0, int: 0, luk: 0, atk: 0, matk: 0, acc: 0 };
 }
 
 function initEquipData() {
@@ -36,7 +36,7 @@ function buildEquipGrid() {
         const h = document.createElement('div');
         h.className = 'equip-grid-header has-tooltip';
         h.textContent = EQUIP_STAT_LABELS[stat];
-        h.title = EQUIP_STAT_TITLES[stat];
+        h.setAttribute('data-tooltip', EQUIP_STAT_TITLES[stat]);
         table.appendChild(h);
     });
 
@@ -142,6 +142,7 @@ function setEquipMode(mode) {
     // show/hide rows
     $('row-weapon').style.display        = isDetail ? 'none' : 'flex';
     $('row-armor').style.display         = isDetail ? 'none' : 'flex';
+    $('row-accuracy').style.display      = isDetail ? 'none' : (!isMage() ? 'flex' : 'none');
     $('row-elixir-detail').style.display = isDetail ? 'flex' : 'none';
 
     // equip detail section
@@ -150,8 +151,10 @@ function setEquipMode(mode) {
     // sync elixir values
     if (isDetail) {
         $('elixir-atk-detail').value = $('elixir-atk').value;
+        $('elixir-acc-detail').value = $('elixir-acc').value;
     } else {
         $('elixir-atk').value = $('elixir-atk-detail').value;
+        $('elixir-acc').value = $('elixir-acc-detail').value;
     }
 
     // extra fields readonly
@@ -216,6 +219,10 @@ function syncEquipToAttack() {
 
     // projectile = 0 in detail mode
     dom.projectileAtk.value = 0;
+
+    // equip acc
+    const accSum = getActiveSlots().reduce((sum, s) => sum + (equipData[s.id].acc || 0), 0);
+    dom.equipAcc.value = accSum;
 }
 
 function updateEquipTotals() {
@@ -246,6 +253,7 @@ function saveEquipDetail() {
         armorMode: armorMode,
         equip: equipData,
         elixirDetail: parseInt($('elixir-atk-detail').value) || 0,
+        elixirAccDetail: parseInt($('elixir-acc-detail').value) || 0,
     };
     localStorage.setItem(EQUIP_DETAIL_KEY, JSON.stringify(data));
 }
@@ -274,8 +282,9 @@ function loadEquipDetail() {
         $('btn-top-bottom').classList.toggle('active', armorMode === 'top-bottom');
         $('btn-overall').classList.toggle('active', armorMode === 'overall');
         updateArmorMode();
-        // restore elixir detail value
+        // restore elixir detail values
         if (data.elixirDetail != null) $('elixir-atk-detail').value = data.elixirDetail;
+        if (data.elixirAccDetail != null) $('elixir-acc-detail').value = data.elixirAccDetail;
         // restore equip mode last
         if (data.mode) setEquipMode(data.mode);
     } catch { /* ignore */ }
@@ -290,6 +299,7 @@ function resetEquipDetail() {
         });
     });
     $('elixir-atk-detail').value = 0;
+    $('elixir-acc-detail').value = 0;
     onEquipDataChange();
 }
 
@@ -329,6 +339,19 @@ function initEquipDetail() {
 
     $('elixir-atk-detail').addEventListener('input', () => {
         $('elixir-atk').value = parseInt($('elixir-atk-detail').value) || 0;
+        updateAttack();
+    });
+
+    // elixir acc detail sync
+    $('elixir-acc-detail').addEventListener('blur', () => {
+        const v = clamp(parseInt($('elixir-acc-detail').value), 0, MAX_EXTRA);
+        $('elixir-acc-detail').value = v;
+        $('elixir-acc').value = v;
+        updateAttack();
+    });
+
+    $('elixir-acc-detail').addEventListener('input', () => {
+        $('elixir-acc').value = parseInt($('elixir-acc-detail').value) || 0;
         updateAttack();
     });
 
