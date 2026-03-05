@@ -183,7 +183,7 @@ function updateMasteryLabel() {
     const masteryLv = clamp(parseInt(dom.mastery.value), 0, 30);
     const combined  = Math.ceil(profLv / 2) * 5 + 10 + getMasteryBonus(masteryLv);
     const atk       = getMasteryAtk(masteryLv);
-    dom.masteryInfo.textContent = atk > 0 ? `${combined}% +${atk} 攻擊力` : `${combined}%`;
+    dom.masteryInfo.textContent = atk > 0 ? `${combined}% + ${atk} 攻擊力` : `${combined}%`;
 }
 
 function resetCharacter() {
