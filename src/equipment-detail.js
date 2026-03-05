@@ -142,19 +142,28 @@ function setEquipMode(mode) {
     // show/hide rows
     $('row-weapon').style.display        = isDetail ? 'none' : 'flex';
     $('row-armor').style.display         = isDetail ? 'none' : 'flex';
-    $('row-accuracy').style.display      = isDetail ? 'none' : (!isMage() ? 'flex' : 'none');
+    $('row-elixir').style.display        = isDetail ? 'none' : 'flex';
     $('row-elixir-detail').style.display = isDetail ? 'flex' : 'none';
+
+    // projectile row in detail mode
+    const hasProjectile = dom.projectileWrap.style.display !== 'none';
+    $('row-projectile-detail').style.display = isDetail && hasProjectile ? 'flex' : 'none';
+    if (isDetail && hasProjectile) {
+        $('projectile-label-detail').textContent = dom.projectileLabel.textContent;
+    }
 
     // equip detail section
     $('equip-detail-section').style.display = isDetail ? '' : 'none';
 
-    // sync elixir values
+    // sync elixir & projectile values
     if (isDetail) {
         $('elixir-atk-detail').value = $('elixir-atk').value;
         $('elixir-acc-detail').value = $('elixir-acc').value;
+        if (hasProjectile) $('projectile-atk-detail').value = dom.projectileAtk.value;
     } else {
         $('elixir-atk').value = $('elixir-atk-detail').value;
         $('elixir-acc').value = $('elixir-acc-detail').value;
+        if (hasProjectile) dom.projectileAtk.value = $('projectile-atk-detail').value;
     }
 
     // extra fields readonly
@@ -217,8 +226,9 @@ function syncEquipToAttack() {
         .reduce((sum, s) => sum + (equipData[s.id][atkKey] || 0), 0);
     dom.armorAtk.value = armorSum;
 
-    // projectile = 0 in detail mode
-    dom.projectileAtk.value = 0;
+    // projectile: sync from detail input
+    const projDetail = $('projectile-atk-detail');
+    dom.projectileAtk.value = projDetail ? parseInt(projDetail.value) || 0 : 0;
 
     // equip acc
     const accSum = getActiveSlots().reduce((sum, s) => sum + (equipData[s.id].acc || 0), 0);
@@ -254,6 +264,7 @@ function saveEquipDetail() {
         equip: equipData,
         elixirDetail: parseInt($('elixir-atk-detail').value) || 0,
         elixirAccDetail: parseInt($('elixir-acc-detail').value) || 0,
+        projectileDetail: parseInt($('projectile-atk-detail').value) || 0,
     };
     localStorage.setItem(EQUIP_DETAIL_KEY, JSON.stringify(data));
 }
@@ -285,6 +296,7 @@ function loadEquipDetail() {
         // restore elixir detail values
         if (data.elixirDetail != null) $('elixir-atk-detail').value = data.elixirDetail;
         if (data.elixirAccDetail != null) $('elixir-acc-detail').value = data.elixirAccDetail;
+        if (data.projectileDetail != null) $('projectile-atk-detail').value = data.projectileDetail;
         // restore equip mode last
         if (data.mode) setEquipMode(data.mode);
     } catch { /* ignore */ }
@@ -300,6 +312,7 @@ function resetEquipDetail() {
     });
     $('elixir-atk-detail').value = 0;
     $('elixir-acc-detail').value = 0;
+    $('projectile-atk-detail').value = 0;
     onEquipDataChange();
 }
 
@@ -339,6 +352,19 @@ function initEquipDetail() {
 
     $('elixir-atk-detail').addEventListener('input', () => {
         $('elixir-atk').value = parseInt($('elixir-atk-detail').value) || 0;
+        updateAttack();
+    });
+
+    // projectile detail sync
+    $('projectile-atk-detail').addEventListener('blur', () => {
+        const v = clamp(parseInt($('projectile-atk-detail').value), 0, MAX_ATK);
+        $('projectile-atk-detail').value = v;
+        dom.projectileAtk.value = v;
+        updateAttack();
+    });
+
+    $('projectile-atk-detail').addEventListener('input', () => {
+        dom.projectileAtk.value = parseInt($('projectile-atk-detail').value) || 0;
         updateAttack();
     });
 

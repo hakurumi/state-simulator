@@ -14,8 +14,17 @@ function updateMapleLabel() {
 
 function updateMasteryLabel() {
     const lv = clamp(parseInt(dom.mastery.value), 0, 20);
-    const pct = Math.ceil(lv / 2) * 5 + 10;
-    dom.masteryPct.textContent = `${pct}%`;
+    const basePct = Math.ceil(lv / 2) * 5 + 10;
+    const config = JOB_CONFIG[getJob()];
+    const enhSkill = config?.expert || config?.beholder;
+    const enhMax = config?.expertMax || config?.beholderMax;
+    let expertPct = 0;
+    if (enhSkill) {
+        const expertLv = clamp(parseInt(dom.expert.value), 0, enhMax || 30);
+        expertPct = enhMax ? Math.ceil(expertLv / 3) * 5 : getMasteryBonus(expertLv);
+    }
+    const profAcc = lv <= 6 || lv >= 19 ? lv : Math.floor(lv / 2) * 2;
+    dom.masteryPct.textContent = profAcc > 0 ? `${basePct + expertPct}%+${profAcc}命` : `${basePct + expertPct}%`;
 }
 
 function bindAtkInput(id, min) {
@@ -61,6 +70,7 @@ function initEquipment() {
         const cfg = JOB_CONFIG[getJob()];
         const max = cfg?.expertMax || cfg?.beholderMax || 30;
         dom.expert.value = clamp(parseInt(dom.expert.value), 0, max);
+        updateMasteryLabel();
         updateExpertLabel();
         updateAttack();
     });
@@ -75,10 +85,12 @@ function initEquipment() {
     // 弓箭手技能
     dom.boaLevel.addEventListener('blur', () => {
         dom.boaLevel.value = clamp(parseInt(dom.boaLevel.value), 0, 16);
+        updateBoaLabel();
         updateAttack();
     });
     dom.focusLevel.addEventListener('blur', () => {
         dom.focusLevel.value = clamp(parseInt(dom.focusLevel.value), 0, 20);
+        updateFocusLabel();
         updateAttack();
     });
     dom.concentrateLevel.addEventListener('blur', () => {
@@ -112,6 +124,8 @@ function resetEquipment() {
     updateExpertLabel();
     updateHexLabel();
     updateConcentrateLabel();
+    updateBoaLabel();
+    updateFocusLabel();
     updateTotals();
     updateAttack();
 }

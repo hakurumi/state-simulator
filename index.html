@@ -414,41 +414,6 @@
             pointer-events: none;
         }
 
-        /* ── 精準行三等分（desktop） ── */
-        @media (min-width: 481px) {
-            #mastery-group.expert-active {
-                display: grid !important;
-                grid-template-columns: 3fr 2fr 15%;
-            }
-            #mastery-group.expert-active > #mastery-section-1,
-            #mastery-group.expert-active > #mastery-section-2 {
-                display: flex !important;
-                align-items: center;
-            }
-            #mastery-group.expert-active > #mastery-section-2 {
-                border-left: var(--field-border);
-            }
-            #mastery-group.expert-active > #mastery-section-3 {
-                display: flex !important;
-                align-items: center;
-                justify-content: center;
-                border-left: var(--field-border);
-                opacity: 0.6;
-                font-size: 0.9em;
-            }
-            #mastery-group.expert-active #mastery-name {
-                width: auto;
-                min-width: auto;
-            }
-            #mastery-group.expert-active #expert-name {
-                width: auto;
-                min-width: auto;
-            }
-            #mastery-group.expert-active #mastery-wrap {
-                flex: 1;
-                border-right: none;
-            }
-        }
 
         /* ── RWD ── */
         @media (max-width: 480px) {
@@ -467,22 +432,6 @@
             .equip-grid-table { grid-template-columns: 3em repeat(7, 1fr); }
             .equip-grid-table > * { font-size: 0.75em; padding: 3px 1px; }
 
-            #mastery-group.expert-active > #mastery-section-1,
-            #mastery-group.expert-active > #mastery-section-2 {
-                display: contents !important;
-            }
-            #mastery-group.expert-active > #mastery-section-3 {
-                display: flex !important;
-                align-items: center;
-                padding: 6px 10px;
-                opacity: 0.6;
-                font-size: 0.9em;
-            }
-            #mastery-group.expert-active #expert-name {
-                width: auto;
-                min-width: auto;
-                border-left: var(--field-border);
-            }
         }
     </style>
 </head>
@@ -549,7 +498,7 @@
                 <span>裝備技能</span>
                 <span class="equip-mode-toggle">
                     <input type="checkbox" id="equip-mode" hidden />
-                    <label class="mode-seg active" id="mode-summary" for="equip-mode">摘要</label>
+                    <label class="mode-seg active" id="mode-summary" for="equip-mode">精簡</label>
                     <label class="mode-seg" id="mode-detail" for="equip-mode">詳細</label>
                 </span>
             </header>
@@ -570,19 +519,19 @@
                 <div class="field-value field-value-mid" id="armor-atk-cell" style="flex:1;">
                     <input type="number" id="armor-atk" value="0" min="0" max="512" />
                 </div>
-                <div class="field-label" id="elixir-label" style="border-left: var(--field-border);">藥水攻擊</div>
-                <div class="field-value" style="flex:1;">
-                    <input type="number" id="elixir-atk" value="0" min="0" max="512" />
+                <div class="field-label" id="equip-acc-label" style="border-left: var(--field-border);">裝備命中</div>
+                <div class="field-value" id="equip-acc-wrap" style="flex:1;">
+                    <input type="number" id="equip-acc" value="0" min="0" max="999" />
                 </div>
             </div>
 
-            <div class="field" id="row-accuracy">
-                <div class="field-label">裝備命中</div>
-                <div class="field-value field-value-mid" style="flex:1;">
-                    <input type="number" id="equip-acc" value="0" min="0" max="999" />
+            <div class="field" id="row-elixir">
+                <div class="field-label" id="elixir-label">藥水攻擊</div>
+                <div class="field-value field-value-mid" id="elixir-atk-cell" style="flex:1;">
+                    <input type="number" id="elixir-atk" value="0" min="0" max="512" />
                 </div>
-                <div class="field-label" style="border-left: var(--field-border);">藥水命中</div>
-                <div class="field-value" style="flex:1;">
+                <div class="field-label" id="elixir-acc-label" style="border-left: var(--field-border);">藥水命中</div>
+                <div class="field-value" id="elixir-acc-wrap" style="flex:1;">
                     <input type="number" id="elixir-acc" value="0" min="0" max="999" />
                 </div>
             </div>
@@ -595,62 +544,64 @@
                 <div id="equip-grid"></div>
             </div>
 
+            <div class="field" id="row-projectile-detail" style="display:none;">
+                <div class="field-label" id="projectile-label-detail">飛鏢攻擊</div>
+                <div class="field-value" style="flex:1;">
+                    <input type="number" id="projectile-atk-detail" value="0" min="0" max="512" />
+                </div>
+            </div>
+
             <div class="field" id="row-elixir-detail" style="display:none;">
                 <div class="field-label" id="elixir-label-detail">藥水攻擊</div>
-                <div class="field-value field-value-mid" style="flex:1;">
+                <div class="field-value field-value-mid" id="elixir-atk-detail-cell" style="flex:1;">
                     <input type="number" id="elixir-atk-detail" value="0" min="0" max="512" />
                 </div>
-                <div class="field-label" style="border-left: var(--field-border);">藥水命中</div>
-                <div class="field-value" style="flex:1;">
+                <div class="field-label" id="elixir-acc-detail-label" style="border-left: var(--field-border);">藥水命中</div>
+                <div class="field-value" id="elixir-acc-detail-wrap" style="flex:1;">
                     <input type="number" id="elixir-acc-detail" value="0" min="0" max="999" />
                 </div>
             </div>
 
             <div class="field" id="mastery-group">
-                <div id="mastery-section-1" style="display:contents;">
-                    <div class="field-label" id="mastery-name"></div>
-                    <div class="field-value field-value-mid" id="weapon-type-wrap" style="display:none;">
-                        <select id="weapon-type"></select>
-                    </div>
-                    <div class="field-value" id="mastery-wrap">
-                        <input type="number" id="mastery" value="0" min="0" max="20" style="max-width:4ch;" />
-                        <span id="mastery-pct" style="opacity:0.6; font-size:0.9em;"></span>
-                    </div>
+                <div class="field-label" id="weapon-type-label">武器類型</div>
+                <div class="field-value field-value-mid" id="weapon-type-wrap" style="flex:1;">
+                    <select id="weapon-type"></select>
+                    <span id="weapon-type-text" style="display:none; margin-left:1ch;"></span>
                 </div>
-                <div id="mastery-section-2" style="display:none;">
-                    <div class="field-label" id="expert-name"></div>
-                    <div class="field-value" id="expert-wrap">
-                        <input type="number" id="expert" value="0" min="0" max="30" style="max-width:4ch;" />
-                    </div>
-                </div>
-                <div id="mastery-section-3" style="display:none;">
-                    <span id="expert-info" style="opacity:0.6; font-size:0.9em;"></span>
+                <div class="field-label" id="mastery-name"></div>
+                <div class="field-value" id="mastery-wrap" style="flex:1;">
+                    <input type="number" id="mastery" value="0" min="0" max="20" />
+                    <span id="mastery-pct" style="opacity:0.6; font-size:0.9em;"></span>
                 </div>
             </div>
 
             <div class="field" id="archer-acc-row" style="display:none;">
                 <div class="field-label" id="boa-name">精準強化</div>
                 <div class="field-value field-value-mid" id="boa-wrap" style="flex:1;">
-                    <input type="number" id="boa-level" value="0" min="0" max="16" style="max-width:4ch;" />
+                    <input type="number" id="boa-level" value="0" min="0" max="16" />
+                    <span id="boa-info" style="opacity:0.6; font-size:0.9em;"></span>
                 </div>
                 <div class="field-label" id="focus-name" style="border-left: var(--field-border);">集中術</div>
                 <div class="field-value" id="focus-wrap" style="flex:1;">
-                    <input type="number" id="focus-level" value="0" min="0" max="20" style="max-width:4ch;" />
+                    <input type="number" id="focus-level" value="0" min="0" max="20" />
+                    <span id="focus-info" style="opacity:0.6; font-size:0.9em;"></span>
                 </div>
             </div>
 
-            <div class="field" id="concentrate-row" style="display:none;">
-                <div class="field-label" id="concentrate-name">念力集中</div>
-                <div class="field-value" id="concentrate-wrap" style="flex:1;">
-                    <input type="number" id="concentrate-level" value="0" min="0" max="30" style="max-width:4ch;" />
+            <div class="field" id="expert-row" style="display:none;">
+                <div class="field-label" id="expert-name"></div>
+                <div class="field-value" id="expert-value" style="flex:1;">
+                    <input type="number" id="expert" value="0" min="0" max="30" />
+                    <span id="expert-info" style="opacity:0.6; font-size:0.9em;"></span>
+                </div>
+                <div class="field-label" id="concentrate-name" style="display:none; border-left: var(--field-border);">念力集中</div>
+                <div class="field-value" id="concentrate-wrap" style="display:none; flex:1;">
+                    <input type="number" id="concentrate-level" value="0" min="0" max="30" />
                     <span id="concentrate-info" style="opacity:0.6; font-size:0.9em;"></span>
                 </div>
-            </div>
-
-            <div class="field" id="hex-row" style="display:none;">
-                <div class="field-label" id="hex-name">黑暗守護</div>
-                <div class="field-value" id="hex-wrap" style="flex:1;">
-                    <input type="number" id="hex-level" value="0" min="0" max="25" style="max-width:4ch;" />
+                <div class="field-label" id="hex-name" style="display:none; border-left: var(--field-border);">黑暗守護</div>
+                <div class="field-value" id="hex-wrap" style="display:none; flex:1;">
+                    <input type="number" id="hex-level" value="0" min="0" max="25" />
                     <span id="hex-info" style="opacity:0.6; font-size:0.9em;"></span>
                 </div>
             </div>
@@ -658,7 +609,7 @@
             <div class="field">
                 <div class="field-label">楓葉祝福</div>
                 <div class="field-value" style="flex:1;">
-                    <input type="number" id="maple-blessing" value="0" min="0" max="30" style="max-width:4ch;" />
+                    <input type="number" id="maple-blessing" value="0" min="0" max="30" />
                     <span id="maple-pct" style="opacity:0.6; font-size:0.9em;"></span>
                 </div>
             </div>
@@ -736,7 +687,7 @@
             </div>
         </article>
 
-        <div class="version-label">v2.7.0</div>
+        <div class="version-label">v2.8.0</div>
     </main>
 
     <script src="src/config.js"></script>

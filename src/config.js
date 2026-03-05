@@ -41,17 +41,20 @@ const JOB_CONFIG = {
     '盜賊 (暗影神偷)': {
         main: 'luk', sub: 'str+dex',
         coeff: [3.6, 4.2],
+        weapon: '短劍',
         mastery: '精準之刀',
     },
     '盜賊 (夜使者)': {
         main: 'luk', sub: 'str+dex',
         coeff: [3.6, 3.6],
+        weapon: '拳套',
         mastery: '精準暗器',
         projectile: '飛鏢攻擊',
     },
     '弓箭手 (箭神)': {
         main: 'dex', sub: 'str',
         coeff: [3.4, 3.4],
+        weapon: '弓',
         mastery: '精準之弓',
         projectile: '箭矢攻擊',
         expert: '弓術精通',
@@ -62,6 +65,7 @@ const JOB_CONFIG = {
     '弓箭手 (神射手)': {
         main: 'dex', sub: 'str',
         coeff: [3.6, 3.6],
+        weapon: '弩',
         mastery: '精準之弩',
         projectile: '箭矢攻擊',
         expert: '弩術精通',
@@ -71,6 +75,7 @@ const JOB_CONFIG = {
     '海盜 (槍神)': {
         main: 'dex', sub: 'str',
         coeff: [3.6, 3.6],
+        weapon: '火槍',
         mastery: '精通槍法',
         projectile: '子彈攻擊',
         accCoeff: [0.9, 0.3],
@@ -78,6 +83,7 @@ const JOB_CONFIG = {
     '海盜 (拳霸)': {
         main: 'str', sub: 'dex',
         coeff: [4.8, 4.8],
+        weapon: '指虎',
         mastery: '精通指虎',
         accCoeff: [0.6, 0.3],
     },

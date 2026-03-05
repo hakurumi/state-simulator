@@ -122,15 +122,23 @@ function updateJobUI() {
     // 精準技能
     dom.masteryGroup.style.display = mage ? 'none' : 'flex';
 
-    // 武器類型（劍士系）
-    const wrap = $('weapon-type-wrap');
+    // 武器類型
+    const weaponWrap = $('weapon-type-wrap');
+    const weaponText = $('weapon-type-text');
     if (config?.weapons) {
         dom.weaponType.innerHTML = config.weapons
             .map(w => `<option value="${w}">${w}</option>`)
             .join('');
-        wrap.style.display = 'flex';
+        dom.weaponType.style.display = '';
+        weaponText.style.display = 'none';
+        weaponWrap.style.display = '';
+    } else if (config?.weapon) {
+        dom.weaponType.style.display = 'none';
+        weaponText.textContent = config.weapon;
+        weaponText.style.display = '';
+        weaponWrap.style.display = '';
     } else {
-        wrap.style.display = 'none';
+        weaponWrap.style.display = 'none';
         dom.weaponType.innerHTML = '';
     }
 
@@ -150,34 +158,46 @@ function updateJobUI() {
     const enhSkillUI = config?.expert || config?.beholder;
     const enhMaxUI   = config?.expertMax || config?.beholderMax;
     if (enhSkillUI) {
-        dom.masteryWrap.classList.add('field-value-mid');
-        $('mastery-group').classList.add('expert-active');
-        dom.masteryPct.style.display = 'none';
         dom.expertName.textContent = enhSkillUI;
         dom.expert.max = enhMaxUI || 30;
         dom.expert.value = clamp(parseInt(dom.expert.value), 0, enhMaxUI || 30);
+        $('expert-row').style.display = 'flex';
     } else {
-        dom.masteryWrap.classList.remove('field-value-mid');
-        $('mastery-group').classList.remove('expert-active');
-        dom.masteryPct.style.display = '';
+        $('expert-row').style.display = 'none';
     }
 
-    // 黑暗守護
-    $('hex-row').style.display = config?.hexOfTheBeholder ? 'flex' : 'none';
+    // expert-row 右側（念力集中、黑暗守護各自獨立）
+    const hasConcentrate = !!config?.concentrate;
+    const hasHex = !!config?.hexOfTheBeholder;
+    $('concentrate-name').style.display = hasConcentrate ? '' : 'none';
+    $('concentrate-wrap').style.display = hasConcentrate ? '' : 'none';
+    $('hex-name').style.display = hasHex ? '' : 'none';
+    $('hex-wrap').style.display = hasHex ? '' : 'none';
+    $('expert-value').classList.toggle('field-value-mid', hasConcentrate || hasHex);
 
-    // 弓箭手技能（精準強化 + 集中術 / 念力集中）
+    // 弓箭手技能（精準強化 + 集中術）
     $('archer-acc-row').style.display = config?.blessingOfAmazon ? 'flex' : 'none';
-    $('concentrate-row').style.display = config?.concentrate ? 'flex' : 'none';
 
-    // 命中欄位（法師隱藏）
-    const accDisplay = mage ? 'none' : 'flex';
-    if (equipMode !== 'detail') $('row-accuracy').style.display = accDisplay;
+    // 命中欄位（法師隱藏半邊）
+    const showAcc = !mage;
+    $('equip-acc-label').style.display = showAcc ? '' : 'none';
+    $('equip-acc-wrap').style.display  = showAcc ? '' : 'none';
+    $('elixir-acc-label').style.display = showAcc ? '' : 'none';
+    $('elixir-acc-wrap').style.display  = showAcc ? '' : 'none';
+    $('armor-atk-cell').classList.toggle('field-value-mid', showAcc);
+    $('elixir-atk-cell').classList.toggle('field-value-mid', showAcc);
+    $('elixir-acc-detail-label').style.display = showAcc ? '' : 'none';
+    $('elixir-acc-detail-wrap').style.display  = showAcc ? '' : 'none';
+    $('elixir-atk-detail-cell').classList.toggle('field-value-mid', showAcc);
     dom.accuracyField.style.display = mage ? 'none' : 'contents';
 
     updateMasteryName();
+    updateMasteryLabel();
     updateExpertLabel();
     updateHexLabel();
     updateConcentrateLabel();
+    updateBoaLabel();
+    updateFocusLabel();
 
     if (typeof equipMode !== 'undefined' && equipMode === 'detail') {
         syncEquipToAttack();
@@ -228,13 +248,10 @@ function updateExpertLabel() {
         dom.expertInfo.textContent = '';
         return;
     }
-    const enhMax    = config?.expertMax || config?.beholderMax;
-    const profLv    = clamp(parseInt(dom.mastery.value), 0, 20);
-    const expertLv  = clamp(parseInt(dom.expert.value), 0, enhMax || 30);
-    const expertPct = enhMax ? Math.ceil(expertLv / 3) * 5 : getMasteryBonus(expertLv);
-    const atk       = enhMax ? 0 : getMasteryAtk(expertLv);
-    const combined  = Math.ceil(profLv / 2) * 5 + 10 + expertPct;
-    dom.expertInfo.textContent = atk > 0 ? `${combined}%+${atk}攻` : `${combined}%`;
+    const enhMax   = config?.expertMax || config?.beholderMax;
+    const expertLv = clamp(parseInt(dom.expert.value), 0, enhMax || 30);
+    const atk      = enhMax ? 0 : getMasteryAtk(expertLv);
+    dom.expertInfo.textContent = atk > 0 ? `+${atk}攻` : '';
 }
 
 function updateConcentrateLabel() {
@@ -257,6 +274,16 @@ function updateHexLabel() {
     const lv  = clamp(parseInt(dom.hexLevel.value), 0, config.hexOfTheBeholderMax || 25);
     const atk = lv <= 15 ? 0 : Math.min(lv - 15, 5);
     dom.hexInfo.textContent = atk > 0 ? `+${atk}攻` : '';
+}
+
+function updateBoaLabel() {
+    const lv = clamp(parseInt(dom.boaLevel.value), 0, 16);
+    $('boa-info').textContent = lv > 0 ? `+${lv}命` : '';
+}
+
+function updateFocusLabel() {
+    const lv = clamp(parseInt(dom.focusLevel.value), 0, 20);
+    $('focus-info').textContent = lv > 0 ? `+${lv}命` : '';
 }
 
 function resetCharacter() {

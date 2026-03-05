@@ -46,9 +46,7 @@ const dom = {
     mapleBlessing:    $('maple-blessing'),
     maplePct:         $('maple-pct'),
 
-    masteryWrap:      $('mastery-wrap'),
     expertName:       $('expert-name'),
-    expertWrap:       $('expert-wrap'),
     expert:           $('expert'),
     expertInfo:       $('expert-info'),
 
