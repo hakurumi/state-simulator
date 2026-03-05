@@ -267,6 +267,25 @@
             letter-spacing: 0.05em;
         }
 
+        .coeff-frac {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1.2;
+            vertical-align: middle;
+            font-family: monospace;
+            font-size: 0.8em;
+        }
+
+        .coeff-frac > span:first-child {
+            border-bottom: 1px solid currentColor;
+            padding-bottom: 1px;
+        }
+
+        .coeff-frac > span:last-child {
+            padding-top: 1px;
+        }
+
         /* ── 裝備詳細模式 ── */
         .equip-mode-toggle {
             display: flex;
@@ -562,6 +581,7 @@
                 <div class="field-value field-value-mid" id="weapon-type-wrap" style="flex:1;">
                     <select id="weapon-type"></select>
                     <span id="weapon-type-text" style="display:none; margin-left:1ch;"></span>
+                    <span id="weapon-coeff" style="opacity:0.6; font-size:0.9em; margin-left:auto;"></span>
                 </div>
                 <div class="field-label" id="mastery-name"></div>
                 <div class="field-value" id="mastery-wrap" style="flex:1;">
@@ -682,7 +702,7 @@
             </div>
         </article>
 
-        <div class="version-label">v2.9.0</div>
+        <div class="version-label">v2.10.0</div>
     </main>
 
     <script src="src/config.js"></script>

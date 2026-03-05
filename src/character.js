@@ -89,6 +89,22 @@ function updateAttack() {
     saveState();
 }
 
+function updateWeaponCoeff() {
+    const config = JOB_CONFIG[getJob()];
+    const el = $('weapon-coeff');
+    const coeff = config?.coeff || WEAPON_COEFF[dom.weaponType.value];
+    if (coeff) {
+        const [lo, hi] = coeff;
+        if (lo === hi) {
+            el.innerHTML = lo;
+        } else {
+            el.innerHTML = `<span class="coeff-frac"><span>${lo}</span><span>${hi}</span></span>`;
+        }
+    } else {
+        el.innerHTML = '';
+    }
+}
+
 function updateMasteryName() {
     const job    = getJob();
     const config = JOB_CONFIG[job];
@@ -191,6 +207,7 @@ function updateJobUI() {
     $('elixir-atk-detail-cell').classList.toggle('field-value-mid', showAcc);
     dom.accuracyField.style.display = mage ? 'none' : 'contents';
 
+    updateWeaponCoeff();
     updateMasteryName();
     updateMasteryLabel();
     updateExpertLabel();
@@ -232,6 +249,7 @@ function initCharacter() {
     dom.level.addEventListener('input', updateTotals);
 
     dom.weaponType.addEventListener('change', () => {
+        updateWeaponCoeff();
         updateMasteryName();
         updateAttack();
     });
