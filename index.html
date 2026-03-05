@@ -110,7 +110,7 @@
             color: var(--pico-color);
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 4px center;
+            background-position: right 0px center;
             background-size: 14px;
             -webkit-appearance: none;
             -moz-appearance: none;
@@ -319,10 +319,8 @@
                 <div class="field-value">
                     <input type="number" id="level" value="200" style="max-width:5ch;" />
                 </div>
-                <div class="field-label field-label-mid">可分配</div>
-                <div class="field-value">
-                    <span id="points" style="font-family:monospace; font-weight:700;">9</span>
-                </div>
+                <div class="attr-tag active" style="opacity:0.5; font-size:0.85em;">可分配</div>
+                <div class="attr-tag active" style="opacity:0.5; font-size:0.85em;"><span id="points" style="font-family:monospace; font-weight:700;">9</span></div>
             </div>
 
             <div class="field field-result" id="attack-field" style="display:none;">
@@ -461,7 +459,7 @@
             </div>
         </article>
 
-        <div class="version-label">v2.4.2</div>
+        <div class="version-label">v2.4.3</div>
     </main>
 
     <script src="src/config.js"></script>
