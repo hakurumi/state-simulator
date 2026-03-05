@@ -416,19 +416,19 @@
 
         /* ── 精準行三等分（desktop） ── */
         @media (min-width: 481px) {
-            #proficiency-group.mastery-active {
+            #mastery-group.expert-active {
                 display: grid !important;
-                grid-template-columns: 1fr 1fr 15%;
+                grid-template-columns: 3fr 2fr 15%;
             }
-            #proficiency-group.mastery-active > #prof-section-1,
-            #proficiency-group.mastery-active > #prof-section-2 {
+            #mastery-group.expert-active > #mastery-section-1,
+            #mastery-group.expert-active > #mastery-section-2 {
                 display: flex !important;
                 align-items: center;
             }
-            #proficiency-group.mastery-active > #prof-section-2 {
+            #mastery-group.expert-active > #mastery-section-2 {
                 border-left: var(--field-border);
             }
-            #proficiency-group.mastery-active > #prof-section-3 {
+            #mastery-group.expert-active > #mastery-section-3 {
                 display: flex !important;
                 align-items: center;
                 justify-content: center;
@@ -436,12 +436,15 @@
                 opacity: 0.6;
                 font-size: 0.9em;
             }
-            #proficiency-group.mastery-active #proficiency-name,
-            #proficiency-group.mastery-active #mastery-name {
+            #mastery-group.expert-active #mastery-name {
                 width: auto;
                 min-width: auto;
             }
-            #proficiency-group.mastery-active #proficiency-wrap {
+            #mastery-group.expert-active #expert-name {
+                width: auto;
+                min-width: auto;
+            }
+            #mastery-group.expert-active #mastery-wrap {
                 flex: 1;
                 border-right: none;
             }
@@ -464,18 +467,18 @@
             .equip-grid-table { grid-template-columns: 3em repeat(7, 1fr); }
             .equip-grid-table > * { font-size: 0.75em; padding: 3px 1px; }
 
-            #proficiency-group.mastery-active > #prof-section-1,
-            #proficiency-group.mastery-active > #prof-section-2 {
+            #mastery-group.expert-active > #mastery-section-1,
+            #mastery-group.expert-active > #mastery-section-2 {
                 display: contents !important;
             }
-            #proficiency-group.mastery-active > #prof-section-3 {
+            #mastery-group.expert-active > #mastery-section-3 {
                 display: flex !important;
                 align-items: center;
                 padding: 6px 10px;
                 opacity: 0.6;
                 font-size: 0.9em;
             }
-            #proficiency-group.mastery-active #mastery-name {
+            #mastery-group.expert-active #expert-name {
                 width: auto;
                 min-width: auto;
                 border-left: var(--field-border);
@@ -603,31 +606,58 @@
                 </div>
             </div>
 
-            <div class="field" id="proficiency-group">
-                <div id="prof-section-1" style="display:contents;">
-                    <div class="field-label" id="proficiency-name"></div>
+            <div class="field" id="mastery-group">
+                <div id="mastery-section-1" style="display:contents;">
+                    <div class="field-label" id="mastery-name"></div>
                     <div class="field-value field-value-mid" id="weapon-type-wrap" style="display:none;">
                         <select id="weapon-type"></select>
                     </div>
-                    <div class="field-value" id="proficiency-wrap">
-                        <input type="number" id="proficiency" value="0" min="0" max="20" style="max-width:4ch;" />
-                        <span id="prof-pct" style="opacity:0.6; font-size:0.9em;"></span>
-                    </div>
-                </div>
-                <div id="prof-section-2" style="display:none;">
-                    <div class="field-label" id="mastery-name"></div>
                     <div class="field-value" id="mastery-wrap">
-                        <input type="number" id="mastery" value="0" min="0" max="30" style="max-width:4ch;" />
+                        <input type="number" id="mastery" value="0" min="0" max="20" style="max-width:4ch;" />
+                        <span id="mastery-pct" style="opacity:0.6; font-size:0.9em;"></span>
                     </div>
                 </div>
-                <div id="prof-section-3" style="display:none;">
-                    <span id="mastery-info" style="opacity:0.6; font-size:0.9em;"></span>
+                <div id="mastery-section-2" style="display:none;">
+                    <div class="field-label" id="expert-name"></div>
+                    <div class="field-value" id="expert-wrap">
+                        <input type="number" id="expert" value="0" min="0" max="30" style="max-width:4ch;" />
+                    </div>
+                </div>
+                <div id="mastery-section-3" style="display:none;">
+                    <span id="expert-info" style="opacity:0.6; font-size:0.9em;"></span>
+                </div>
+            </div>
+
+            <div class="field" id="archer-acc-row" style="display:none;">
+                <div class="field-label" id="boa-name">精準強化</div>
+                <div class="field-value field-value-mid" id="boa-wrap" style="flex:1;">
+                    <input type="number" id="boa-level" value="0" min="0" max="16" style="max-width:4ch;" />
+                </div>
+                <div class="field-label" id="focus-name" style="border-left: var(--field-border);">集中術</div>
+                <div class="field-value" id="focus-wrap" style="flex:1;">
+                    <input type="number" id="focus-level" value="0" min="0" max="20" style="max-width:4ch;" />
+                </div>
+            </div>
+
+            <div class="field" id="concentrate-row" style="display:none;">
+                <div class="field-label" id="concentrate-name">念力集中</div>
+                <div class="field-value" id="concentrate-wrap" style="flex:1;">
+                    <input type="number" id="concentrate-level" value="0" min="0" max="30" style="max-width:4ch;" />
+                    <span id="concentrate-info" style="opacity:0.6; font-size:0.9em;"></span>
+                </div>
+            </div>
+
+            <div class="field" id="hex-row" style="display:none;">
+                <div class="field-label" id="hex-name">黑暗守護</div>
+                <div class="field-value" id="hex-wrap" style="flex:1;">
+                    <input type="number" id="hex-level" value="0" min="0" max="25" style="max-width:4ch;" />
+                    <span id="hex-info" style="opacity:0.6; font-size:0.9em;"></span>
                 </div>
             </div>
 
             <div class="field">
                 <div class="field-label">楓葉祝福</div>
-                <div class="field-value">
+                <div class="field-value" style="flex:1;">
                     <input type="number" id="maple-blessing" value="0" min="0" max="30" style="max-width:4ch;" />
                     <span id="maple-pct" style="opacity:0.6; font-size:0.9em;"></span>
                 </div>

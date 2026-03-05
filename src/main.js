@@ -5,7 +5,8 @@
 const STATE_FIELDS = [
     'job', 'level', 'weapon-atk', 'armor-atk', 'elixir-atk', 'projectile-atk',
     'equip-acc', 'elixir-acc',
-    'proficiency', 'weapon-type', 'maple-blessing', 'mastery',
+    'mastery', 'weapon-type', 'maple-blessing', 'expert', 'hex-level',
+    'boa-level', 'focus-level', 'concentrate-level',
     'str', 'dex', 'int', 'luk', 'extra-str', 'extra-dex', 'extra-int', 'extra-luk',
 ];
 
@@ -36,20 +37,28 @@ const dom = {
     accuracyField:    $('accuracy-field'),
     accuracyDisplay:  $('accuracy-display'),
 
-    proficiencyGroup: $('proficiency-group'),
-    proficiencyName:  $('proficiency-name'),
-    proficiency:      $('proficiency'),
+    masteryGroup:     $('mastery-group'),
+    masteryName:      $('mastery-name'),
+    mastery:          $('mastery'),
     weaponType:       $('weapon-type'),
 
-    profPct:          $('prof-pct'),
+    masteryPct:       $('mastery-pct'),
     mapleBlessing:    $('maple-blessing'),
     maplePct:         $('maple-pct'),
 
-    proficiencyWrap:  $('proficiency-wrap'),
-    masteryName:      $('mastery-name'),
     masteryWrap:      $('mastery-wrap'),
-    mastery:          $('mastery'),
-    masteryInfo:      $('mastery-info'),
+    expertName:       $('expert-name'),
+    expertWrap:       $('expert-wrap'),
+    expert:           $('expert'),
+    expertInfo:       $('expert-info'),
+
+    boaLevel:           $('boa-level'),
+    focusLevel:         $('focus-level'),
+    concentrateLevel:   $('concentrate-level'),
+    concentrateInfo:    $('concentrate-info'),
+
+    hexLevel:         $('hex-level'),
+    hexInfo:          $('hex-info'),
 
     themeToggle:      $('theme-toggle'),
 };
@@ -82,7 +91,7 @@ function loadState() {
         if (state['weapon-type'] != null) dom.weaponType.value = state['weapon-type'];
 
         // 3. 設定 equipment 欄位
-        ['weapon-atk', 'armor-atk', 'elixir-atk', 'projectile-atk', 'equip-acc', 'elixir-acc', 'proficiency', 'maple-blessing', 'mastery'].forEach(id => {
+        ['weapon-atk', 'armor-atk', 'elixir-atk', 'projectile-atk', 'equip-acc', 'elixir-acc', 'mastery', 'maple-blessing', 'expert', 'hex-level', 'boa-level', 'focus-level', 'concentrate-level'].forEach(id => {
             if (state[id] != null) $(id).value = state[id];
         });
 
@@ -96,9 +105,9 @@ function loadState() {
         prevLevel = getVal('level', 1);
 
         // 6. 更新所有 UI
-        updateProfLabel();
-        updateMapleLabel();
         updateMasteryLabel();
+        updateMapleLabel();
+        updateExpertLabel();
         updateAttributes();
         updateTotals();
         updateAttack();
@@ -119,9 +128,9 @@ initAttributes();
 
 setTheme(localStorage.getItem('theme') !== 'light');
 if (!loadState()) {
-    updateProfLabel();
-    updateMapleLabel();
     updateMasteryLabel();
+    updateMapleLabel();
+    updateExpertLabel();
     resetStats(false);
     resetStats(true);
     updateJobUI();

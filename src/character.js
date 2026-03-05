@@ -55,9 +55,17 @@ function updateAttack() {
         || WEAPON_COEFF[dom.weaponType.value]
         || [0, 0];
 
-    const masteryLv = config.mastery ? clamp(parseInt(dom.mastery.value), 0, 30) : 0;
-    const totalAtk  = weapon + armor + projectile + elixir + getMasteryAtk(masteryLv);
-    const prof      = (Math.ceil(getVal('proficiency') / 2) * 5 + 10 + getMasteryBonus(masteryLv)) / 100;
+    const enhSkill = config.expert || config.beholder;
+    const enhMax   = config.expertMax || config.beholderMax;
+    const expertLv = enhSkill ? clamp(parseInt(dom.expert.value), 0, enhMax || 30) : 0;
+    const expertPct = enhMax ? Math.ceil(expertLv / 3) * 5 : getMasteryBonus(expertLv);
+    const expertAtk = enhMax ? 0 : getMasteryAtk(expertLv);
+    const guardLv   = config.hexOfTheBeholder ? clamp(parseInt(dom.hexLevel.value), 0, config.hexOfTheBeholderMax || 25) : 0;
+    const guardAtk  = guardLv <= 15 ? 0 : Math.min(guardLv - 15, 5);
+    const concentrateLv  = config.concentrate ? clamp(parseInt(dom.concentrateLevel.value), 0, 30) : 0;
+    const concentrateAtk = concentrateLv > 0 ? 10 + Math.ceil(concentrateLv / 2) : 0;
+    const totalAtk  = weapon + armor + projectile + elixir + expertAtk + guardAtk + concentrateAtk;
+    const prof      = (Math.ceil(getVal('mastery') / 2) * 5 + 10 + expertPct) / 100;
 
     const max = Math.floor((mainAttr * coeffMax + subAttr) * totalAtk / 100) || 1;
     const min = Math.floor((mainAttr * coeffMin * 0.9 * prof + subAttr) * totalAtk / 100) || 1;
@@ -65,39 +73,42 @@ function updateAttack() {
     dom.attackDisplay.textContent = `${min}\u2007~\u2007${max}`;
 
     // 命中計算
+    // TODO: 劍士/海盜 精準命中非線性加成（需查表確認各等級數值）
     const accCoeff = config.accCoeff || [0.8, 0.5];
     const accBase  = Math.floor(getStat('dex') * accCoeff[0] + getStat('luk') * accCoeff[1]);
     const equipAcc = clamp(parseInt(dom.equipAcc.value), 0, MAX_EXTRA);
     const elixirAcc = clamp(parseInt(dom.elixirAcc.value), 0, MAX_EXTRA);
-    const profLv   = clamp(parseInt(dom.proficiency.value), 0, 20);
+    const profLv   = clamp(parseInt(dom.mastery.value), 0, 20);
     const profAcc  = profLv <= 6 || profLv >= 19 ? profLv : Math.floor(profLv / 2) * 2;
-    const totalAcc = accBase + profAcc + equipAcc + elixirAcc;
+    const boaLv   = config.blessingOfAmazon ? clamp(parseInt(dom.boaLevel.value), 0, 16) : 0;
+    const focusLv = config.focus ? clamp(parseInt(dom.focusLevel.value), 0, 20) : 0;
+    const totalAcc = accBase + profAcc + equipAcc + elixirAcc + boaLv + focusLv;
     dom.accuracyField.style.display = 'contents';
     dom.accuracyDisplay.textContent = totalAcc;
 
     saveState();
 }
 
-function updateProficiencyName() {
+function updateMasteryName() {
     const job    = getJob();
     const config = JOB_CONFIG[job];
 
     if (!config) {
-        dom.proficiencyName.textContent = '';
+        dom.masteryName.textContent = '';
         return;
     }
 
     let name = '';
 
-    if (config.proficiency) {
-        name = config.proficiency;
+    if (config.mastery) {
+        name = config.mastery;
     } else if (config.weapons) {
         const wt  = dom.weaponType.value;
         const key = Object.keys(SWORD_PROFICIENCY).find(k => wt.includes(k));
         name = key ? SWORD_PROFICIENCY[key] : '';
     }
 
-    dom.proficiencyName.textContent = name || '';
+    dom.masteryName.textContent = name || '';
 }
 
 function updateJobUI() {
@@ -109,7 +120,7 @@ function updateJobUI() {
     updateAttrTags();
 
     // 精準技能
-    dom.proficiencyGroup.style.display = mage ? 'none' : 'flex';
+    dom.masteryGroup.style.display = mage ? 'none' : 'flex';
 
     // 武器類型（劍士系）
     const wrap = $('weapon-type-wrap');
@@ -135,25 +146,38 @@ function updateJobUI() {
         dom.projectileWrap.style.display  = 'none';
     }
 
-    // 精通技能（弓箭手四轉）
-    if (config?.mastery) {
-        dom.proficiencyWrap.classList.add('field-value-mid');
-        $('proficiency-group').classList.add('mastery-active');
-        dom.profPct.style.display = 'none';
-        dom.masteryName.textContent = config.mastery;
+    // 精通技能（Expert / Beholder）
+    const enhSkillUI = config?.expert || config?.beholder;
+    const enhMaxUI   = config?.expertMax || config?.beholderMax;
+    if (enhSkillUI) {
+        dom.masteryWrap.classList.add('field-value-mid');
+        $('mastery-group').classList.add('expert-active');
+        dom.masteryPct.style.display = 'none';
+        dom.expertName.textContent = enhSkillUI;
+        dom.expert.max = enhMaxUI || 30;
+        dom.expert.value = clamp(parseInt(dom.expert.value), 0, enhMaxUI || 30);
     } else {
-        dom.proficiencyWrap.classList.remove('field-value-mid');
-        $('proficiency-group').classList.remove('mastery-active');
-        dom.profPct.style.display = '';
+        dom.masteryWrap.classList.remove('field-value-mid');
+        $('mastery-group').classList.remove('expert-active');
+        dom.masteryPct.style.display = '';
     }
+
+    // 黑暗守護
+    $('hex-row').style.display = config?.hexOfTheBeholder ? 'flex' : 'none';
+
+    // 弓箭手技能（精準強化 + 集中術 / 念力集中）
+    $('archer-acc-row').style.display = config?.blessingOfAmazon ? 'flex' : 'none';
+    $('concentrate-row').style.display = config?.concentrate ? 'flex' : 'none';
 
     // 命中欄位（法師隱藏）
     const accDisplay = mage ? 'none' : 'flex';
     if (equipMode !== 'detail') $('row-accuracy').style.display = accDisplay;
     dom.accuracyField.style.display = mage ? 'none' : 'contents';
 
-    updateProficiencyName();
-    updateMasteryLabel();
+    updateMasteryName();
+    updateExpertLabel();
+    updateHexLabel();
+    updateConcentrateLabel();
 
     if (typeof equipMode !== 'undefined' && equipMode === 'detail') {
         syncEquipToAttack();
@@ -188,7 +212,7 @@ function initCharacter() {
     dom.level.addEventListener('input', updateTotals);
 
     dom.weaponType.addEventListener('change', () => {
-        updateProficiencyName();
+        updateMasteryName();
         updateAttack();
     });
 
@@ -197,17 +221,42 @@ function initCharacter() {
     $('btn-reset-char').addEventListener('click', resetCharacter);
 }
 
-function updateMasteryLabel() {
+function updateExpertLabel() {
     const config = JOB_CONFIG[getJob()];
-    if (!config?.mastery) {
-        dom.masteryInfo.textContent = '';
+    const enhSkill = config?.expert || config?.beholder;
+    if (!enhSkill) {
+        dom.expertInfo.textContent = '';
         return;
     }
-    const profLv    = clamp(parseInt(dom.proficiency.value), 0, 20);
-    const masteryLv = clamp(parseInt(dom.mastery.value), 0, 30);
-    const combined  = Math.ceil(profLv / 2) * 5 + 10 + getMasteryBonus(masteryLv);
-    const atk       = getMasteryAtk(masteryLv);
-    dom.masteryInfo.textContent = atk > 0 ? `${combined}%+${atk}攻` : `${combined}%`;
+    const enhMax    = config?.expertMax || config?.beholderMax;
+    const profLv    = clamp(parseInt(dom.mastery.value), 0, 20);
+    const expertLv  = clamp(parseInt(dom.expert.value), 0, enhMax || 30);
+    const expertPct = enhMax ? Math.ceil(expertLv / 3) * 5 : getMasteryBonus(expertLv);
+    const atk       = enhMax ? 0 : getMasteryAtk(expertLv);
+    const combined  = Math.ceil(profLv / 2) * 5 + 10 + expertPct;
+    dom.expertInfo.textContent = atk > 0 ? `${combined}%+${atk}攻` : `${combined}%`;
+}
+
+function updateConcentrateLabel() {
+    const config = JOB_CONFIG[getJob()];
+    if (!config?.concentrate) {
+        dom.concentrateInfo.textContent = '';
+        return;
+    }
+    const lv  = clamp(parseInt(dom.concentrateLevel.value), 0, 30);
+    const atk = lv > 0 ? 10 + Math.ceil(lv / 2) : 0;
+    dom.concentrateInfo.textContent = atk > 0 ? `+${atk}攻` : '';
+}
+
+function updateHexLabel() {
+    const config = JOB_CONFIG[getJob()];
+    if (!config?.hexOfTheBeholder) {
+        dom.hexInfo.textContent = '';
+        return;
+    }
+    const lv  = clamp(parseInt(dom.hexLevel.value), 0, config.hexOfTheBeholderMax || 25);
+    const atk = lv <= 15 ? 0 : Math.min(lv - 15, 5);
+    dom.hexInfo.textContent = atk > 0 ? `+${atk}攻` : '';
 }
 
 function resetCharacter() {

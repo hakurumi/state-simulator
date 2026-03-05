@@ -24,6 +24,7 @@ const JOB_CONFIG = {
     '劍士 (英雄)': {
         main: 'str', sub: 'dex',
         weapons: ['單手劍', '雙手劍', '單手斧', '雙手斧'],
+        // TODO: 鬥氣爆發 (4轉, max 30, +10+ceil(lv/2) atk, 6分鐘冷卻 buff)
     },
     '劍士 (聖騎士)': {
         main: 'str', sub: 'dex',
@@ -32,45 +33,55 @@ const JOB_CONFIG = {
     '劍士 (黑騎士)': {
         main: 'str', sub: 'dex',
         weapons: ['槍武器', '矛武器'],
+        beholder: '暗之靈魂',
+        beholderMax: 10,
+        hexOfTheBeholder: '黑暗守護',
+        hexOfTheBeholderMax: 25,
     },
     '盜賊 (暗影神偷)': {
         main: 'luk', sub: 'str+dex',
         coeff: [3.6, 4.2],
-        proficiency: '精準之刀',
+        mastery: '精準之刀',
     },
     '盜賊 (夜使者)': {
         main: 'luk', sub: 'str+dex',
         coeff: [3.6, 3.6],
-        proficiency: '精準暗器',
+        mastery: '精準暗器',
         projectile: '飛鏢攻擊',
     },
     '弓箭手 (箭神)': {
         main: 'dex', sub: 'str',
         coeff: [3.4, 3.4],
-        proficiency: '精準之弓',
+        mastery: '精準之弓',
         projectile: '箭矢攻擊',
-        mastery: '弓術精通',
+        expert: '弓術精通',
+        concentrate: '念力集中',         // 4轉, +10+ceil(lv/2) atk, max 30
+        blessingOfAmazon: '精準強化',   // 1轉, +lv acc passive, max 16
+        focus: '集中術',                // 1轉, +lv acc buff, max 20
     },
     '弓箭手 (神射手)': {
         main: 'dex', sub: 'str',
         coeff: [3.6, 3.6],
-        proficiency: '精準之弩',
+        mastery: '精準之弩',
         projectile: '箭矢攻擊',
-        mastery: '弩術精通',
+        expert: '弩術精通',
+        blessingOfAmazon: '精準強化',   // 1轉, +lv acc passive, max 16
+        focus: '集中術',                // 1轉, +lv acc buff, max 20
     },
     '海盜 (槍神)': {
         main: 'dex', sub: 'str',
         coeff: [3.6, 3.6],
-        proficiency: '精準槍法',
+        mastery: '精通槍法',
         projectile: '子彈攻擊',
         accCoeff: [0.9, 0.3],
     },
     '海盜 (拳霸)': {
         main: 'str', sub: 'dex',
         coeff: [4.8, 4.8],
-        proficiency: '精準指虎',
+        mastery: '精通指虎',
         accCoeff: [0.6, 0.3],
     },
+    // TODO: 法師 (主教) 天使祝福 (2轉, max 20, +lv 命中/迴避/防禦)
 };
 
 const SWORD_PROFICIENCY = {

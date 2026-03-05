@@ -12,10 +12,10 @@ function updateMapleLabel() {
     dom.maplePct.textContent = pct > 0 ? `+${pct}%` : '';
 }
 
-function updateProfLabel() {
-    const lv = clamp(parseInt(dom.proficiency.value), 0, 20);
-    const mastery = Math.ceil(lv / 2) * 5 + 10;
-    dom.profPct.textContent = `${mastery}%`;
+function updateMasteryLabel() {
+    const lv = clamp(parseInt(dom.mastery.value), 0, 20);
+    const pct = Math.ceil(lv / 2) * 5 + 10;
+    dom.masteryPct.textContent = `${pct}%`;
 }
 
 function bindAtkInput(id, min) {
@@ -43,10 +43,10 @@ function initEquipment() {
     });
     $('elixir-acc').addEventListener('input', updateAttack);
 
-    dom.proficiency.addEventListener('blur', () => {
-        dom.proficiency.value = clamp(parseInt(dom.proficiency.value), 0, 20);
-        updateProfLabel();
+    dom.mastery.addEventListener('blur', () => {
+        dom.mastery.value = clamp(parseInt(dom.mastery.value), 0, 20);
         updateMasteryLabel();
+        updateExpertLabel();
         updateAttack();
     });
 
@@ -57,9 +57,33 @@ function initEquipment() {
         updateAttack();
     });
 
-    dom.mastery.addEventListener('blur', () => {
-        dom.mastery.value = clamp(parseInt(dom.mastery.value), 0, 30);
-        updateMasteryLabel();
+    dom.expert.addEventListener('blur', () => {
+        const cfg = JOB_CONFIG[getJob()];
+        const max = cfg?.expertMax || cfg?.beholderMax || 30;
+        dom.expert.value = clamp(parseInt(dom.expert.value), 0, max);
+        updateExpertLabel();
+        updateAttack();
+    });
+
+    dom.hexLevel.addEventListener('blur', () => {
+        const max = JOB_CONFIG[getJob()]?.hexOfTheBeholderMax || 25;
+        dom.hexLevel.value = clamp(parseInt(dom.hexLevel.value), 0, max);
+        updateHexLabel();
+        updateAttack();
+    });
+
+    // 弓箭手技能
+    dom.boaLevel.addEventListener('blur', () => {
+        dom.boaLevel.value = clamp(parseInt(dom.boaLevel.value), 0, 16);
+        updateAttack();
+    });
+    dom.focusLevel.addEventListener('blur', () => {
+        dom.focusLevel.value = clamp(parseInt(dom.focusLevel.value), 0, 20);
+        updateAttack();
+    });
+    dom.concentrateLevel.addEventListener('blur', () => {
+        dom.concentrateLevel.value = clamp(parseInt(dom.concentrateLevel.value), 0, 30);
+        updateConcentrateLabel();
         updateAttack();
     });
 
@@ -76,12 +100,18 @@ function resetEquipment() {
     dom.equipAcc.value = 0;
     dom.elixirAcc.value = 0;
     dom.projectileAtk.value = 0;
-    dom.proficiency.value = 0;
-    dom.mapleBlessing.value = 0;
     dom.mastery.value = 0;
-    updateProfLabel();
-    updateMapleLabel();
+    dom.mapleBlessing.value = 0;
+    dom.expert.value = 0;
+    dom.hexLevel.value = 0;
+    dom.boaLevel.value = 0;
+    dom.focusLevel.value = 0;
+    dom.concentrateLevel.value = 0;
     updateMasteryLabel();
+    updateMapleLabel();
+    updateExpertLabel();
+    updateHexLabel();
+    updateConcentrateLabel();
     updateTotals();
     updateAttack();
 }
