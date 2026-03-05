@@ -276,11 +276,12 @@
         }
 
         .mastery-acc {
-            font-size: 0.95em;
+            font-size: 1em;
         }
 
         #mastery-pct .coeff-frac {
             flex-direction: row;
+            font-size: inherit;
         }
 
         #mastery-pct .coeff-frac > span:first-child {
@@ -456,11 +457,18 @@
 
         /* ── RWD ── */
         @media (max-width: 540px) {
-            #mastery-pct .coeff-frac { flex-direction: column; }
+            #mastery-pct .coeff-frac {
+                flex-direction: column;
+                font-size: 0.8em;
+            }
+            #mastery-pct .mastery-acc {
+                font-size: 0.85em;
+            }
             #mastery-pct .coeff-frac > span:first-child {
                 border-bottom: 1px solid currentColor;
                 padding-bottom: 1px;
             }
+            #mastery { max-width: 4ch; }
         }
 
         @media (max-width: 480px) {
@@ -779,7 +787,7 @@
             </div>
         </article>
 
-        <div class="version-label">v2.14.1</div>
+        <div class="version-label">v2.14.2</div>
     </main>
 
     <script src="src/config.js"></script>
