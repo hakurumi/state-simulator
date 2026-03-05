@@ -130,7 +130,7 @@
             font-weight: 700;
             font-family: monospace;
             font-size: 1em;
-            padding-left: 18px;
+            justify-content: center;
         }
 
         /* ── 能力值欄位 ── */
@@ -273,6 +273,19 @@
             opacity: 0.6;
             font-size: 0.9em;
             margin-left: auto;
+        }
+
+        .mastery-acc {
+            font-size: 0.95em;
+        }
+
+        #mastery-pct .coeff-frac {
+            flex-direction: row;
+        }
+
+        #mastery-pct .coeff-frac > span:first-child {
+            border-bottom: none;
+            padding-bottom: 0;
         }
 
         .coeff-frac {
@@ -442,8 +455,16 @@
 
 
         /* ── RWD ── */
+        @media (max-width: 540px) {
+            #mastery-pct .coeff-frac { flex-direction: column; }
+            #mastery-pct .coeff-frac > span:first-child {
+                border-bottom: 1px solid currentColor;
+                padding-bottom: 1px;
+            }
+        }
+
         @media (max-width: 480px) {
-            :root { --field-label-w: 6.5em; }
+            :root { --field-label-w: 5em; }
 
             article { padding: 16px; }
 
@@ -452,12 +473,52 @@
                 padding: 12px 16px;
             }
 
-            .field-label { padding: 8px 10px; }
-            .field-value { padding: 6px 10px; }
+            .field-label { padding: 8px 8px; }
+            .field-value { padding: 6px 8px; gap: 4px; }
+            .skill-hint { font-size: 0.78em; }
+            #weapon-type { font-size: 0.85em; }
+            #weapon-coeff { font-size: 0.75em !important; }
+
 
             .equip-grid-table { grid-template-columns: 3em repeat(7, 1fr); }
             .equip-grid-table > * { font-size: 0.75em; padding: 3px 1px; }
+        }
 
+        @media (max-width: 400px) {
+            #mastery, #maple-blessing, #expert,
+            #hex-level, #boa-level, #focus-level,
+            #concentrate-level { max-width: 4ch; }
+        }
+
+        @media (max-width: 380px) {
+            :root {
+                --field-label-w: 5.2em;
+                --pico-font-size: 13px;
+            }
+
+            main.container { padding-top: 40px; }
+            article { padding: 12px; }
+
+            article header {
+                margin: -12px -12px 12px;
+                padding: 10px 12px;
+                font-size: 0.9em;
+            }
+
+            .field-label { padding: 6px 6px; font-size: 0.88em; }
+            .field-value { padding: 4px 6px; gap: 4px; min-height: 34px; }
+            .field-label-mid { padding: 4px 6px; font-size: 0.8em; }
+
+            .skill-hint { font-size: 0.82em; }
+            .coeff-frac { font-size: 0.75em; }
+
+            .equip-grid-table { grid-template-columns: 2.8em repeat(7, 1fr); }
+            .equip-grid-table > * { font-size: 0.7em; padding: 2px 1px; min-height: 26px; }
+
+            .equip-mode-toggle { font-size: 0.72em; }
+            .mode-seg { padding: 3px 10px; }
+
+            .attr-actions button { padding: 4px 8px; font-size: 0.7em; }
         }
     </style>
 </head>
@@ -492,13 +553,17 @@
                 </div>
             </div>
 
-            <div class="field">
+            <div class="field" style="position:relative;">
                 <div class="field-label">等級</div>
-                <div class="field-value">
+                <div class="field-value" style="flex:1; justify-content:center;">
                     <input type="number" id="level" value="200" style="max-width:5ch;" />
                 </div>
-                <div class="attr-tag active" style="opacity:0.5; font-size:0.85em;">可分配</div>
-                <div class="attr-tag active" style="opacity:0.5; font-size:0.85em;"><span id="points" style="font-family:monospace; font-weight:700;">9</span></div>
+                <div class="field-label" style="background:transparent; border-color:transparent;"></div>
+                <div class="field-value" style="flex:1;"></div>
+                <div style="position:absolute; right:0; top:0; bottom:0; display:flex; align-items:center; font-size:0.85em; font-weight:500; opacity:0.5;">
+                    <span style="padding:8px 10px; background:var(--field-label-bg); border-left:var(--field-border);">可分配</span>
+                    <span style="padding:8px 10px; background:var(--field-label-bg); border-left:var(--field-border); font-family:monospace; font-weight:700;"><span id="points">9</span></span>
+                </div>
             </div>
 
             <div class="field field-result" id="attack-field" style="display:none;">
@@ -508,6 +573,8 @@
                     <div class="field-label" style="border-left: var(--field-border);">命中</div>
                     <div class="field-value" id="accuracy-display"></div>
                 </div>
+                <div class="field-label atk-spacer" style="display:none; background:transparent; border-color:transparent;"></div>
+                <div class="field-value atk-spacer" style="display:none;"></div>
             </div>
 
             <div class="attr-footer">
@@ -594,7 +661,7 @@
                 <div class="field-label" id="mastery-name"></div>
                 <div class="field-value" id="mastery-wrap" style="flex:1;">
                     <input type="number" id="mastery" value="0" min="0" max="20" />
-                    <span id="mastery-pct" class="skill-hint"></span>
+                    <span id="mastery-pct" class="skill-hint has-tooltip" style="position:relative;"></span>
                 </div>
             </div>
 
@@ -635,8 +702,8 @@
                     <input type="number" id="maple-blessing" value="0" min="0" max="30" />
                     <span id="maple-pct" class="skill-hint"></span>
                 </div>
-                <div class="field-label" style="background:transparent; border-color:transparent;"></div>
-                <div class="field-value" style="flex:1;"></div>
+                <div class="field-label maple-spacer" style="background:transparent; border-color:transparent;"></div>
+                <div class="field-value maple-spacer" style="flex:1;"></div>
             </div>
 
             <div class="attr-footer">
@@ -712,7 +779,7 @@
             </div>
         </article>
 
-        <div class="version-label">v2.13.0</div>
+        <div class="version-label">v2.14.0</div>
     </main>
 
     <script src="src/config.js"></script>

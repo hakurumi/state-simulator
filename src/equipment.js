@@ -24,7 +24,14 @@ function updateMasteryLabel() {
         expertPct = enhMax ? Math.ceil(expertLv / 3) * 5 : getMasteryBonus(expertLv);
     }
     const profAcc = lv <= 6 || lv >= 19 ? lv : Math.floor(lv / 2) * 2;
-    dom.masteryPct.textContent = profAcc > 0 ? `${basePct + expertPct}%+${profAcc}命` : `${basePct + expertPct}%`;
+    const pct = basePct + expertPct;
+    if (profAcc > 0) {
+        dom.masteryPct.innerHTML = `<span class="coeff-frac"><span>${pct}%</span><span class="mastery-acc">+${profAcc}命</span></span>`;
+        dom.masteryPct.setAttribute('data-tooltip', `熟練度 ${pct}%\n命中 +${profAcc}`);
+    } else {
+        dom.masteryPct.innerHTML = `${pct}%`;
+        dom.masteryPct.setAttribute('data-tooltip', `熟練度 ${pct}%`);
+    }
 }
 
 function bindAtkInput(id, min) {
@@ -51,6 +58,23 @@ function initEquipment() {
         updateAttack();
     });
     $('elixir-acc').addEventListener('input', updateAttack);
+
+    // mastery-pct long-press tooltip
+    (function() {
+        const el = dom.masteryPct;
+        let timer, skip = false;
+        el.addEventListener('touchstart', () => {
+            skip = false;
+            timer = setTimeout(() => { skip = true; el.classList.add('show-tooltip'); }, 400);
+        }, { passive: true });
+        el.addEventListener('touchend', () => {
+            clearTimeout(timer);
+            if (skip) setTimeout(() => el.classList.remove('show-tooltip'), 1500);
+        });
+        el.addEventListener('touchmove', () => {
+            clearTimeout(timer); el.classList.remove('show-tooltip'); skip = false;
+        }, { passive: true });
+    })();
 
     dom.mastery.addEventListener('blur', () => {
         dom.mastery.value = clamp(parseInt(dom.mastery.value), 0, 20);

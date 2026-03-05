@@ -31,6 +31,7 @@ function updateAttack() {
         const matk = getStat('int') + weapon + armor + elixir;
         dom.attackDisplay.textContent = matk;
         dom.accuracyField.style.display = 'none';
+        document.querySelectorAll('.atk-spacer').forEach(el => el.style.display = '');
         saveState();
         return;
     }
@@ -84,6 +85,7 @@ function updateAttack() {
     const focusLv = config.focus ? clamp(parseInt(dom.focusLevel.value), 0, 20) : 0;
     const totalAcc = accBase + profAcc + equipAcc + elixirAcc + boaLv + focusLv;
     dom.accuracyField.style.display = 'contents';
+    document.querySelectorAll('.atk-spacer').forEach(el => el.style.display = 'none');
     dom.accuracyDisplay.textContent = totalAcc;
 
     saveState();
@@ -209,6 +211,7 @@ function updateJobUI() {
     $('elixir-acc-detail-wrap').style.display  = showAcc ? '' : 'none';
     $('elixir-atk-detail-cell').classList.toggle('field-value-mid', showAcc);
     dom.accuracyField.style.display = mage ? 'none' : 'contents';
+    document.querySelectorAll('.atk-spacer').forEach(el => el.style.display = mage ? '' : 'none');
 
     updateWeaponCoeff();
     updateMasteryName();
