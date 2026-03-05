@@ -162,6 +162,7 @@ function setEquipMode(mode) {
     });
 
     if (isDetail) {
+        importSummaryToDetail();
         syncEquipToExtra();
         syncEquipToAttack();
     }
@@ -175,6 +176,20 @@ function setEquipMode(mode) {
 function getActiveSlots() {
     const disabled = armorMode === 'overall' ? ['top', 'bottom'] : ['overall'];
     return EQUIPMENT_SLOTS.filter(s => !disabled.includes(s.id));
+}
+
+function importSummaryToDetail() {
+    const atkKey = isMage() ? 'matk' : 'atk';
+
+    // weapon atk: always sync from summary
+    const weaponVal = parseInt(dom.weaponAtk.value) || 0;
+    equipData.weapon[atkKey] = weaponVal;
+    const weaponInput = $(`equip-weapon-${atkKey}`);
+    if (weaponInput) weaponInput.value = weaponVal;
+
+    // elixir already handled in setEquipMode
+
+    updateEquipTotals();
 }
 
 function syncEquipToExtra() {
