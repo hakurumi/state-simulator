@@ -46,6 +46,41 @@ function buildEquipGrid() {
         label.className = 'equip-grid-label';
         label.id = `equip-label-${slot.id}`;
         label.textContent = slot.label;
+
+        if (['top', 'bottom', 'overall'].includes(slot.id)) {
+            label.classList.add('clickable', 'has-tooltip');
+
+            let pressTimer;
+            let skipClick = false;
+
+            label.addEventListener('click', () => {
+                if (skipClick) { skipClick = false; return; }
+                armorMode = slot.id === 'overall' ? 'overall' : 'top-bottom';
+                updateArmorMode();
+            });
+
+            label.addEventListener('touchstart', () => {
+                skipClick = false;
+                pressTimer = setTimeout(() => {
+                    skipClick = true;
+                    label.classList.add('show-tooltip');
+                }, 400);
+            }, { passive: true });
+
+            label.addEventListener('touchend', () => {
+                clearTimeout(pressTimer);
+                if (skipClick) {
+                    setTimeout(() => label.classList.remove('show-tooltip'), 1500);
+                }
+            });
+
+            label.addEventListener('touchmove', () => {
+                clearTimeout(pressTimer);
+                label.classList.remove('show-tooltip');
+                skipClick = false;
+            }, { passive: true });
+        }
+
         table.appendChild(label);
 
         EQUIP_STATS.forEach(stat => {
@@ -104,7 +139,12 @@ function updateArmorMode() {
 
     disableSlots.forEach(id => {
         const label = $(`equip-label-${id}`);
-        if (label) label.classList.add('disabled');
+        if (label) {
+            label.classList.add('disabled');
+            label.classList.remove('armor-active');
+            label.setAttribute('data-tooltip',
+                id === 'overall' ? '切換至套服' : '切換至上衣+下褲');
+        }
         EQUIP_STATS.forEach(stat => {
             const cell = $(`equip-cell-${id}-${stat}`);
             if (cell) cell.classList.add('disabled');
@@ -118,7 +158,11 @@ function updateArmorMode() {
 
     enableSlots.forEach(id => {
         const label = $(`equip-label-${id}`);
-        if (label) label.classList.remove('disabled');
+        if (label) {
+            label.classList.remove('disabled');
+            label.classList.add('armor-active');
+            label.removeAttribute('data-tooltip');
+        }
         EQUIP_STATS.forEach(stat => {
             const cell = $(`equip-cell-${id}-${stat}`);
             if (cell) cell.classList.remove('disabled');
@@ -289,9 +333,6 @@ function loadEquipDetail() {
                 if (input) input.value = equipData[slot.id][stat] || 0;
             });
         });
-        // restore armor mode buttons
-        $('btn-top-bottom').classList.toggle('active', armorMode === 'top-bottom');
-        $('btn-overall').classList.toggle('active', armorMode === 'overall');
         updateArmorMode();
         // restore elixir detail values
         if (data.elixirDetail != null) $('elixir-atk-detail').value = data.elixirDetail;
@@ -325,21 +366,6 @@ function initEquipDetail() {
     // mode toggle
     $('equip-mode').addEventListener('change', () => {
         setEquipMode($('equip-mode').checked ? 'detail' : 'summary');
-    });
-
-    // armor mode toggle
-    $('btn-top-bottom').addEventListener('click', () => {
-        armorMode = 'top-bottom';
-        $('btn-top-bottom').classList.add('active');
-        $('btn-overall').classList.remove('active');
-        updateArmorMode();
-    });
-
-    $('btn-overall').addEventListener('click', () => {
-        armorMode = 'overall';
-        $('btn-overall').classList.add('active');
-        $('btn-top-bottom').classList.remove('active');
-        updateArmorMode();
     });
 
     // elixir detail sync

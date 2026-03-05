@@ -292,28 +292,6 @@
             background: var(--field-label-bg);
         }
 
-        .equip-body-toggle {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 10px;
-        }
-
-        .equip-body-btn {
-            flex: 1;
-            margin: 0;
-            padding: 5px 8px;
-            font-size: 0.8em;
-            letter-spacing: 0.03em;
-        }
-
-        .equip-body-btn.active {
-            opacity: 1;
-        }
-
-        .equip-body-btn:not(.active) {
-            opacity: 0.4;
-        }
-
         .equip-grid-table {
             display: grid;
             grid-template-columns: 3.5em repeat(7, 1fr);
@@ -350,6 +328,26 @@
             background: var(--field-label-bg);
             font-weight: 500;
             font-size: 0.82em;
+        }
+
+        .equip-grid-label.clickable {
+            cursor: pointer;
+            position: relative;
+        }
+
+        .equip-grid-label.clickable:hover,
+        .equip-grid-label.clickable.show-tooltip {
+            z-index: 2;
+        }
+
+        .equip-grid-label.clickable.disabled:hover,
+        .equip-grid-label.clickable.disabled.show-tooltip {
+            opacity: 1;
+        }
+
+        .equip-grid-label.armor-active {
+            background: color-mix(in srgb, var(--field-label-bg), var(--pico-color) 6%);
+            border-bottom: 1.5px dashed var(--pico-secondary-border);
         }
 
         .equip-grid-label.disabled {
@@ -397,7 +395,8 @@
             position: relative;
         }
 
-        .has-tooltip[data-tooltip]:hover::after {
+        .has-tooltip[data-tooltip]:hover::after,
+        .has-tooltip.show-tooltip[data-tooltip]::after {
             content: attr(data-tooltip);
             position: absolute;
             bottom: 100%;
@@ -506,18 +505,18 @@
             <div class="field" id="row-weapon">
                 <div class="field-label" id="weapon-label">武器攻擊</div>
                 <div class="field-value" id="weapon-atk-wrap" style="flex:1;">
-                    <input type="number" id="weapon-atk" value="1" min="1" max="512" />
+                    <input type="number" id="weapon-atk" value="1" min="1" max="999" />
                 </div>
                 <div class="field-label" id="projectile-label" style="display:none; border-left: var(--field-border);">飛鏢攻擊</div>
                 <div class="field-value" id="projectile-wrap" style="display:none; flex:1;">
-                    <input type="number" id="projectile-atk" value="0" min="0" max="512" />
+                    <input type="number" id="projectile-atk" value="0" min="0" max="999" />
                 </div>
             </div>
 
             <div class="field" id="row-armor">
                 <div class="field-label" id="armor-label">防具攻擊</div>
                 <div class="field-value field-value-mid" id="armor-atk-cell" style="flex:1;">
-                    <input type="number" id="armor-atk" value="0" min="0" max="512" />
+                    <input type="number" id="armor-atk" value="0" min="0" max="999" />
                 </div>
                 <div class="field-label" id="equip-acc-label" style="border-left: var(--field-border);">裝備命中</div>
                 <div class="field-value" id="equip-acc-wrap" style="flex:1;">
@@ -528,7 +527,7 @@
             <div class="field" id="row-elixir">
                 <div class="field-label" id="elixir-label">藥水攻擊</div>
                 <div class="field-value field-value-mid" id="elixir-atk-cell" style="flex:1;">
-                    <input type="number" id="elixir-atk" value="0" min="0" max="512" />
+                    <input type="number" id="elixir-atk" value="0" min="0" max="999" />
                 </div>
                 <div class="field-label" id="elixir-acc-label" style="border-left: var(--field-border);">藥水命中</div>
                 <div class="field-value" id="elixir-acc-wrap" style="flex:1;">
@@ -537,24 +536,20 @@
             </div>
 
             <div id="equip-detail-section" style="display:none;">
-                <div class="equip-body-toggle">
-                    <button type="button" class="equip-body-btn active" id="btn-top-bottom">上衣+下褲</button>
-                    <button type="button" class="equip-body-btn" id="btn-overall">套服</button>
-                </div>
                 <div id="equip-grid"></div>
             </div>
 
             <div class="field" id="row-projectile-detail" style="display:none;">
                 <div class="field-label" id="projectile-label-detail">飛鏢攻擊</div>
                 <div class="field-value" style="flex:1;">
-                    <input type="number" id="projectile-atk-detail" value="0" min="0" max="512" />
+                    <input type="number" id="projectile-atk-detail" value="0" min="0" max="999" />
                 </div>
             </div>
 
             <div class="field" id="row-elixir-detail" style="display:none;">
                 <div class="field-label" id="elixir-label-detail">藥水攻擊</div>
                 <div class="field-value field-value-mid" id="elixir-atk-detail-cell" style="flex:1;">
-                    <input type="number" id="elixir-atk-detail" value="0" min="0" max="512" />
+                    <input type="number" id="elixir-atk-detail" value="0" min="0" max="999" />
                 </div>
                 <div class="field-label" id="elixir-acc-detail-label" style="border-left: var(--field-border);">藥水命中</div>
                 <div class="field-value" id="elixir-acc-detail-wrap" style="flex:1;">
@@ -687,7 +682,7 @@
             </div>
         </article>
 
-        <div class="version-label">v2.8.0</div>
+        <div class="version-label">v2.9.0</div>
     </main>
 
     <script src="src/config.js"></script>

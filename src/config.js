@@ -5,7 +5,7 @@
 const STORAGE_KEY = 'artale-sim-state';
 const BASE_STAT  = 4;
 const MAX_LEVEL  = 200;
-const MAX_ATK    = 512;
+const MAX_ATK    = 999;
 const MAX_EXTRA  = 999;
 const ATTRS      = ['str', 'dex', 'int', 'luk'];
 
