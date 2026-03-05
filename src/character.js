@@ -97,11 +97,14 @@ function updateWeaponCoeff() {
         const [lo, hi] = coeff;
         if (lo === hi) {
             el.innerHTML = lo;
+            el.setAttribute('data-tooltip', `武器係數 ${lo}（表攻公式乘數）`);
         } else {
             el.innerHTML = `<span class="coeff-frac"><span>${lo}</span><span>${hi}</span></span>`;
+            el.setAttribute('data-tooltip', `武器係數（表攻公式乘數）\n最小 ${lo} ／最大 ${hi}`);
         }
     } else {
         el.innerHTML = '';
+        el.removeAttribute('data-tooltip');
     }
 }
 

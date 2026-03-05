@@ -48,9 +48,11 @@
             display: flex;
             border: var(--field-border);
             border-radius: var(--field-radius);
-            overflow: hidden;
             margin-bottom: 10px;
         }
+
+        .field > *:first-child { border-radius: var(--field-radius) 0 0 var(--field-radius); }
+        .field > *:last-child { border-radius: 0 var(--field-radius) var(--field-radius) 0; }
 
         .field:last-child {
             margin-bottom: 0;
@@ -433,7 +435,7 @@
             border-radius: 4px;
             font-size: 0.85em;
             font-weight: 400;
-            white-space: nowrap;
+            white-space: pre;
             z-index: 10;
             pointer-events: none;
         }
@@ -587,7 +589,7 @@
                 <div class="field-value field-value-mid" id="weapon-type-wrap" style="flex:1;">
                     <select id="weapon-type"></select>
                     <span id="weapon-type-text" style="display:none; margin-left:1ch;"></span>
-                    <span id="weapon-coeff" style="opacity:0.6; font-size:0.9em; margin-left:auto;"></span>
+                    <span id="weapon-coeff" class="has-tooltip" style="opacity:0.6; font-size:0.9em; margin-left:auto; position:relative;"></span>
                 </div>
                 <div class="field-label" id="mastery-name"></div>
                 <div class="field-value" id="mastery-wrap" style="flex:1;">
@@ -710,7 +712,7 @@
             </div>
         </article>
 
-        <div class="version-label">v2.12.0</div>
+        <div class="version-label">v2.13.0</div>
     </main>
 
     <script src="src/config.js"></script>
