@@ -27,7 +27,7 @@ function updateMasteryLabel() {
     const pct = basePct + expertPct;
     if (profAcc > 0) {
         dom.masteryPct.innerHTML = `<span class="coeff-frac"><span>${pct}%</span><span class="mastery-acc">+${profAcc}命</span></span>`;
-        dom.masteryPct.setAttribute('data-tooltip', `熟練度 ${pct}%\n命中 +${profAcc}`);
+        dom.masteryPct.setAttribute('data-tooltip', `熟練度 ${pct}%  命中 +${profAcc}`);
     } else {
         dom.masteryPct.innerHTML = `${pct}%`;
         dom.masteryPct.setAttribute('data-tooltip', `熟練度 ${pct}%`);

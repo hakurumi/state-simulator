@@ -102,7 +102,7 @@ function updateWeaponCoeff() {
             el.setAttribute('data-tooltip', `武器係數 ${lo}（表攻公式乘數）`);
         } else {
             el.innerHTML = `<span class="coeff-frac"><span>${lo}</span><span>${hi}</span></span>`;
-            el.setAttribute('data-tooltip', `武器係數（表攻公式乘數）\n最小 ${lo} ／最大 ${hi}`);
+            el.setAttribute('data-tooltip', `武器係數 最小${lo} 最大${hi}（表攻公式乘數）`);
         }
     } else {
         el.innerHTML = '';
