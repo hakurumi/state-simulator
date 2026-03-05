@@ -267,6 +267,12 @@
             letter-spacing: 0.05em;
         }
 
+        .skill-hint {
+            opacity: 0.6;
+            font-size: 0.9em;
+            margin-left: auto;
+        }
+
         .coeff-frac {
             display: inline-flex;
             flex-direction: column;
@@ -586,7 +592,7 @@
                 <div class="field-label" id="mastery-name"></div>
                 <div class="field-value" id="mastery-wrap" style="flex:1;">
                     <input type="number" id="mastery" value="0" min="0" max="20" />
-                    <span id="mastery-pct" style="opacity:0.6; font-size:0.9em;"></span>
+                    <span id="mastery-pct" class="skill-hint"></span>
                 </div>
             </div>
 
@@ -594,12 +600,12 @@
                 <div class="field-label" id="boa-name">精準強化</div>
                 <div class="field-value field-value-mid" id="boa-wrap" style="flex:1;">
                     <input type="number" id="boa-level" value="0" min="0" max="16" />
-                    <span id="boa-info" style="opacity:0.6; font-size:0.9em;"></span>
+                    <span id="boa-info" class="skill-hint"></span>
                 </div>
                 <div class="field-label" id="focus-name" style="border-left: var(--field-border);">集中術</div>
                 <div class="field-value" id="focus-wrap" style="flex:1;">
                     <input type="number" id="focus-level" value="0" min="0" max="20" />
-                    <span id="focus-info" style="opacity:0.6; font-size:0.9em;"></span>
+                    <span id="focus-info" class="skill-hint"></span>
                 </div>
             </div>
 
@@ -607,26 +613,28 @@
                 <div class="field-label" id="expert-name"></div>
                 <div class="field-value" id="expert-value" style="flex:1;">
                     <input type="number" id="expert" value="0" min="0" max="30" />
-                    <span id="expert-info" style="opacity:0.6; font-size:0.9em;"></span>
+                    <span id="expert-info" class="skill-hint"></span>
                 </div>
                 <div class="field-label" id="concentrate-name" style="display:none; border-left: var(--field-border);">念力集中</div>
                 <div class="field-value" id="concentrate-wrap" style="display:none; flex:1;">
                     <input type="number" id="concentrate-level" value="0" min="0" max="30" />
-                    <span id="concentrate-info" style="opacity:0.6; font-size:0.9em;"></span>
+                    <span id="concentrate-info" class="skill-hint"></span>
                 </div>
                 <div class="field-label" id="hex-name" style="display:none; border-left: var(--field-border);">黑暗守護</div>
                 <div class="field-value" id="hex-wrap" style="display:none; flex:1;">
                     <input type="number" id="hex-level" value="0" min="0" max="25" />
-                    <span id="hex-info" style="opacity:0.6; font-size:0.9em;"></span>
+                    <span id="hex-info" class="skill-hint"></span>
                 </div>
             </div>
 
             <div class="field">
                 <div class="field-label">楓葉祝福</div>
-                <div class="field-value" style="flex:1;">
+                <div class="field-value field-value-mid" style="flex:1;">
                     <input type="number" id="maple-blessing" value="0" min="0" max="30" />
-                    <span id="maple-pct" style="opacity:0.6; font-size:0.9em;"></span>
+                    <span id="maple-pct" class="skill-hint"></span>
                 </div>
+                <div class="field-label" style="border-left: var(--field-border);"></div>
+                <div class="field-value" style="flex:1;"></div>
             </div>
 
             <div class="attr-footer">
@@ -702,7 +710,7 @@
             </div>
         </article>
 
-        <div class="version-label">v2.10.0</div>
+        <div class="version-label">v2.11.0</div>
     </main>
 
     <script src="src/config.js"></script>

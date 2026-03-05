@@ -103,9 +103,14 @@ function loadState() {
         prevLevel = getVal('level', 1);
 
         // 6. 更新所有 UI
+        updateWeaponCoeff();
         updateMasteryLabel();
         updateMapleLabel();
         updateExpertLabel();
+        updateHexLabel();
+        updateConcentrateLabel();
+        updateBoaLabel();
+        updateFocusLabel();
         updateAttributes();
         updateTotals();
         updateAttack();
@@ -126,9 +131,14 @@ initAttributes();
 
 setTheme(localStorage.getItem('theme') !== 'light');
 if (!loadState()) {
+    updateWeaponCoeff();
     updateMasteryLabel();
     updateMapleLabel();
     updateExpertLabel();
+    updateHexLabel();
+    updateConcentrateLabel();
+    updateBoaLabel();
+    updateFocusLabel();
     resetStats(false);
     resetStats(true);
     updateJobUI();
