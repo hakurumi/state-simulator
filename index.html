@@ -267,6 +267,131 @@
             letter-spacing: 0.05em;
         }
 
+        /* ── 裝備詳細模式 ── */
+        .equip-mode-toggle {
+            display: flex;
+            border: var(--field-border);
+            border-radius: var(--field-radius);
+            overflow: hidden;
+            font-size: 0.78em;
+            font-weight: 400;
+        }
+
+        .mode-seg {
+            padding: 4px 14px;
+            cursor: pointer;
+            user-select: none;
+            transition: opacity 0.2s, background 0.2s;
+            opacity: 0.35;
+            letter-spacing: 0.04em;
+        }
+
+        .mode-seg.active {
+            opacity: 1;
+            font-weight: 600;
+            background: var(--field-label-bg);
+        }
+
+        .equip-body-toggle {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .equip-body-btn {
+            flex: 1;
+            margin: 0;
+            padding: 5px 8px;
+            font-size: 0.8em;
+            letter-spacing: 0.03em;
+        }
+
+        .equip-body-btn.active {
+            opacity: 1;
+        }
+
+        .equip-body-btn:not(.active) {
+            opacity: 0.4;
+        }
+
+        .equip-grid-table {
+            display: grid;
+            grid-template-columns: 3.5em repeat(6, 1fr);
+            gap: 1px;
+            border: var(--field-border);
+            border-radius: var(--field-radius);
+            overflow: hidden;
+            margin-bottom: 10px;
+            background: var(--pico-muted-border-color);
+        }
+
+        .equip-grid-table > * {
+            background: var(--pico-card-background-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 2px;
+            min-height: 32px;
+            font-size: 0.82em;
+        }
+
+        .equip-grid-header {
+            background: var(--field-label-bg);
+            font-weight: 600;
+            font-size: 0.78em;
+            opacity: 0.7;
+        }
+
+        .equip-grid-label {
+            background: var(--field-label-bg);
+            font-weight: 500;
+            font-size: 0.82em;
+        }
+
+        .equip-grid-label.disabled {
+            opacity: 0.25;
+        }
+
+        .equip-grid-cell input {
+            border: none;
+            background: transparent;
+            margin: 0;
+            padding: 2px;
+            height: auto;
+            box-shadow: none;
+            outline: none;
+            color: inherit;
+            width: 100%;
+            text-align: center;
+            font-family: monospace, 'Noto Sans TC', sans-serif;
+            font-size: 1em;
+            border-bottom: 1.5px dashed var(--pico-secondary-border);
+            border-radius: 0;
+        }
+
+        .equip-grid-cell.disabled input {
+            opacity: 0.2;
+            pointer-events: none;
+        }
+
+        .equip-grid-total {
+            font-weight: 700;
+            font-family: monospace;
+            font-size: 0.85em;
+        }
+
+        .equip-grid-total-label {
+            background: var(--field-label-bg);
+            font-weight: 600;
+            font-size: 0.78em;
+        }
+
+        .equip-grid-header.has-tooltip {
+            text-decoration: underline dotted;
+            text-underline-offset: 2px;
+            cursor: help;
+        }
+
         /* ── RWD ── */
         @media (max-width: 480px) {
             :root { --field-label-w: 6.5em; }
@@ -280,6 +405,9 @@
 
             .field-label { padding: 8px 10px; }
             .field-value { padding: 6px 10px; }
+
+            .equip-grid-table { grid-template-columns: 3em repeat(6, 1fr); }
+            .equip-grid-table > * { font-size: 0.75em; padding: 3px 1px; }
         }
     </style>
 </head>
@@ -338,9 +466,16 @@
 
         <!-- 裝備技能 -->
         <article>
-            <header>裝備技能</header>
+            <header style="display:flex; align-items:center; justify-content:space-between;">
+                <span>裝備技能</span>
+                <span class="equip-mode-toggle">
+                    <input type="checkbox" id="equip-mode" hidden />
+                    <label class="mode-seg active" id="mode-summary" for="equip-mode">摘要</label>
+                    <label class="mode-seg" id="mode-detail" for="equip-mode">詳細</label>
+                </span>
+            </header>
 
-            <div class="field">
+            <div class="field" id="row-weapon">
                 <div class="field-label" id="weapon-label">武器攻擊力</div>
                 <div class="field-value" id="weapon-atk-wrap" style="flex:1;">
                     <input type="number" id="weapon-atk" value="1" min="1" max="512" />
@@ -351,14 +486,29 @@
                 </div>
             </div>
 
-            <div class="field">
+            <div class="field" id="row-armor">
                 <div class="field-label" id="armor-label">防具攻擊力</div>
-                <div class="field-value field-value-mid" style="flex:1;">
+                <div class="field-value field-value-mid" id="armor-atk-cell" style="flex:1;">
                     <input type="number" id="armor-atk" value="0" min="0" max="512" />
                 </div>
                 <div class="field-label" id="elixir-label" style="border-left: var(--field-border);">藥水攻擊力</div>
                 <div class="field-value" style="flex:1;">
                     <input type="number" id="elixir-atk" value="0" min="0" max="512" />
+                </div>
+            </div>
+
+            <div id="equip-detail-section" style="display:none;">
+                <div class="equip-body-toggle">
+                    <button type="button" class="equip-body-btn active" id="btn-top-bottom">上衣+下褲</button>
+                    <button type="button" class="equip-body-btn" id="btn-overall">套服</button>
+                </div>
+                <div id="equip-grid"></div>
+            </div>
+
+            <div class="field" id="row-elixir-detail" style="display:none;">
+                <div class="field-label" id="elixir-label-detail">藥水攻擊力</div>
+                <div class="field-value" style="flex:1;">
+                    <input type="number" id="elixir-atk-detail" value="0" min="0" max="512" />
                 </div>
             </div>
 
@@ -466,6 +616,7 @@
     <script src="src/equipment.js"></script>
     <script src="src/attributes.js"></script>
     <script src="src/character.js"></script>
+    <script src="src/equipment-detail.js"></script>
     <script src="src/main.js"></script>
 </body>
 

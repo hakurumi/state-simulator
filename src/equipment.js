@@ -55,6 +55,9 @@ function initEquipment() {
 }
 
 function resetEquipment() {
+    if (equipMode === 'detail') {
+        resetEquipDetail();
+    }
     dom.weaponAtk.value = 1;
     dom.armorAtk.value = 0;
     dom.elixirAtk.value = 0;

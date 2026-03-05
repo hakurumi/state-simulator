@@ -120,3 +120,4 @@ if (!loadState()) {
     resetStats(true);
     updateJobUI();
 }
+initEquipDetail();

@@ -103,13 +103,23 @@ function initAttributes() {
     ATTRS.forEach(a => {
         const id = `extra-${a}`;
         $(id).addEventListener('blur', () => {
+            if (typeof equipMode !== 'undefined' && equipMode === 'detail') return;
             $(id).value = clamp(parseInt($(id).value), 0, MAX_EXTRA);
             updateTotals();
             updateAttack();
         });
-        $(id).addEventListener('input', updateTotals);
+        $(id).addEventListener('input', () => {
+            if (typeof equipMode !== 'undefined' && equipMode === 'detail') return;
+            updateTotals();
+        });
     });
 
     $('btn-reset-attr').addEventListener('click',  () => resetStats(false));
-    $('btn-reset-extra').addEventListener('click', () => resetStats(true));
+    $('btn-reset-extra').addEventListener('click', () => {
+        if (typeof equipMode !== 'undefined' && equipMode === 'detail') {
+            resetEquipDetail();
+        } else {
+            resetStats(true);
+        }
+    });
 }

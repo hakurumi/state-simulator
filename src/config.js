@@ -103,3 +103,26 @@ function getMasteryBonus(level) {
 function getMasteryAtk(level) {
     return level < 3 ? 0 : Math.floor(level / 3);
 }
+
+const EQUIP_DETAIL_KEY = 'artale-sim-equip-detail';
+
+const EQUIPMENT_SLOTS = [
+    { id: 'weapon',  label: '武器' },
+    { id: 'hat',     label: '帽子' },
+    { id: 'top',     label: '上衣',  mutex: 'overall' },
+    { id: 'bottom',  label: '下褲',  mutex: 'overall' },
+    { id: 'overall', label: '套服',  mutex: 'top-bottom' },
+    { id: 'gloves',  label: '手套' },
+    { id: 'shoes',   label: '鞋子' },
+    { id: 'cape',    label: '披風' },
+    { id: 'shield',  label: '盾牌' },
+    { id: 'earring', label: '耳環' },
+    { id: 'face',    label: '臉飾' },
+    { id: 'eye',     label: '眼飾' },
+    { id: 'pendant', label: '墜飾' },
+    { id: 'medal',   label: '勳章' },
+];
+
+const EQUIP_STATS = ['str', 'dex', 'int', 'luk', 'atk', 'matk'];
+const EQUIP_STAT_LABELS = { str:'力', dex:'敏', int:'智', luk:'幸', atk:'攻', matk:'魔' };
+const EQUIP_STAT_TITLES = { str:'力量', dex:'敏捷', int:'智慧', luk:'幸運', atk:'攻擊力', matk:'魔法攻擊力' };

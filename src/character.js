@@ -24,6 +24,8 @@ function updateAttack() {
         dom.weaponLabel.textContent = '武器魔攻';
         dom.armorLabel.textContent  = '防具魔攻';
         dom.elixirLabel.textContent = '藥水魔攻';
+        const ed1 = $('elixir-label-detail');
+        if (ed1) ed1.textContent = '藥水魔攻';
         dom.attackLabel.textContent = '魔法攻擊力';
 
         const matk = getStat('int') + weapon + armor + elixir;
@@ -36,6 +38,8 @@ function updateAttack() {
     dom.weaponLabel.textContent = '武器攻擊力';
     dom.armorLabel.textContent  = '防具攻擊力';
     dom.elixirLabel.textContent = '藥水攻擊力';
+    const ed2 = $('elixir-label-detail');
+    if (ed2) ed2.textContent = '藥水攻擊力';
     dom.attackLabel.textContent = '攻擊力';
 
     const config = JOB_CONFIG[job];
@@ -135,6 +139,11 @@ function updateJobUI() {
 
     updateProficiencyName();
     updateMasteryLabel();
+
+    if (typeof equipMode !== 'undefined' && equipMode === 'detail') {
+        syncEquipToAttack();
+    }
+
     updateAttack();
 }
 
