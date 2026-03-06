@@ -9,7 +9,13 @@ function getMaplePct() {
 
 function updateMapleLabel() {
     const pct = getMaplePct();
-    dom.maplePct.textContent = pct > 0 ? `+${pct}%` : '';
+    if (pct > 0) {
+        dom.maplePct.textContent = `+${pct}%`;
+        dom.maplePct.setAttribute('data-tooltip', `全屬性+${pct}%`);
+    } else {
+        dom.maplePct.textContent = '';
+        dom.maplePct.removeAttribute('data-tooltip');
+    }
 }
 
 function updateMasteryLabel() {
@@ -27,11 +33,67 @@ function updateMasteryLabel() {
     const pct = basePct + expertPct;
     if (profAcc > 0) {
         dom.masteryPct.innerHTML = `<span class="coeff-frac"><span>${pct}%</span><span class="mastery-acc">+${profAcc}命</span></span>`;
-        dom.masteryPct.setAttribute('data-tooltip', `熟練度 ${pct}%  命中 +${profAcc}`);
+        dom.masteryPct.setAttribute('data-tooltip', `熟練度${pct}%, 命中+${profAcc}`);
     } else {
         dom.masteryPct.innerHTML = `${pct}%`;
-        dom.masteryPct.setAttribute('data-tooltip', `熟練度 ${pct}%`);
+        dom.masteryPct.setAttribute('data-tooltip', `熟練度${pct}%`);
     }
+}
+
+function getPotionList() {
+    return isMage() ? MAGE_POTION_OPTIONS : POTION_OPTIONS;
+}
+
+function buildPotionOptions() {
+    const prev = dom.potionSelect.value;
+    dom.potionSelect.innerHTML = '';
+    getPotionList().forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.value;
+        opt.textContent = `${p.label} (+${p.atk})`;
+        dom.potionSelect.appendChild(opt);
+    });
+    // restore previous selection if it exists in the new list
+    if ([...dom.potionSelect.options].some(o => o.value === prev)) {
+        dom.potionSelect.value = prev;
+    }
+    resizePotionSelect();
+}
+
+function resizePotionSelect() {
+    const text = dom.potionSelect.options[dom.potionSelect.selectedIndex]?.text || '';
+    const span = document.createElement('span');
+    span.style.cssText = 'visibility:hidden;position:absolute;white-space:nowrap;font:inherit;';
+    dom.potionSelect.parentNode.appendChild(span);
+    span.textContent = text;
+    dom.potionSelect.style.width = (span.offsetWidth + 20) + 'px';
+    span.remove();
+}
+
+function applyPotionBuff() {
+    const on = dom.potionBuff.checked;
+    dom.potionSelect.disabled = !on;
+    if (on) {
+        const chosen = getPotionList().find(p => p.value === dom.potionSelect.value);
+        const atk = chosen ? chosen.atk : 0;
+        dom.elixirAtk.value = atk;
+        $('elixir-atk-detail').value = atk;
+    }
+    dom.elixirAtk.disabled = on;
+    $('elixir-atk-detail').disabled = on;
+    $('elixir-atk-cell').style.opacity = on ? '0.35' : '';
+    $('elixir-atk-detail-cell').style.opacity = on ? '0.35' : '';
+    resizePotionSelect();
+    updateAttack();
+}
+
+function applyAngelBlessing() {
+    const on = dom.angelBlessing.checked;
+    dom.elixirAcc.disabled = on;
+    $('elixir-acc-wrap').style.opacity = on ? '0.35' : '';
+    $('elixir-acc-detail').disabled = on;
+    $('elixir-acc-detail-wrap').style.opacity = on ? '0.35' : '';
+    updateAttack();
 }
 
 function bindAtkInput(id, min) {
@@ -123,6 +185,15 @@ function initEquipment() {
         updateAttack();
     });
 
+    dom.angelBlessing.addEventListener('change', () => { applyAngelBlessing(); saveState(); });
+
+    buildPotionOptions();
+    dom.potionBuff.addEventListener('change', () => { applyPotionBuff(); saveState(); });
+    dom.potionSelect.addEventListener('change', () => {
+        resizePotionSelect();
+        if (dom.potionBuff.checked) { applyPotionBuff(); saveState(); }
+    });
+
     $('btn-reset-equip').addEventListener('click', resetEquipment);
 }
 
@@ -130,6 +201,10 @@ function resetEquipment() {
     if (equipMode === 'detail') {
         resetEquipDetail();
     }
+    dom.angelBlessing.checked = false;
+    applyAngelBlessing();
+    dom.potionBuff.checked = false;
+    applyPotionBuff();
     dom.weaponAtk.value = 1;
     dom.armorAtk.value = 0;
     dom.elixirAtk.value = 0;
@@ -152,4 +227,5 @@ function resetEquipment() {
     updateFocusLabel();
     updateTotals();
     updateAttack();
+    saveState();
 }

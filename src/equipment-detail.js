@@ -210,6 +210,18 @@ function setEquipMode(mode) {
         if (hasProjectile) dom.projectileAtk.value = $('projectile-atk-detail').value;
     }
 
+    // potion buff: re-apply disabled state & value after elixir sync
+    if (dom.potionBuff.checked) {
+        const chosen = getPotionList().find(p => p.value === dom.potionSelect.value);
+        const atk = chosen ? chosen.atk : 0;
+        dom.elixirAtk.value = atk;
+        $('elixir-atk-detail').value = atk;
+        dom.elixirAtk.disabled = true;
+        $('elixir-atk-detail').disabled = true;
+        $('elixir-atk-cell').style.opacity = '0.35';
+        $('elixir-atk-detail-cell').style.opacity = '0.35';
+    }
+
     // extra fields readonly
     ATTRS.forEach(a => {
         const el = $(`extra-${a}`);

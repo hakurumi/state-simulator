@@ -61,6 +61,7 @@ function resetStats(extra = false) {
     updateAttributes();
     updateTotals();
     updateAttack();
+    saveState();
 }
 
 function updateAttrTags() {
@@ -118,6 +119,7 @@ function initAttributes() {
     $('btn-reset-extra').addEventListener('click', () => {
         if (typeof equipMode !== 'undefined' && equipMode === 'detail') {
             resetEquipDetail();
+            saveState();
         } else {
             resetStats(true);
         }

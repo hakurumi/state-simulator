@@ -58,6 +58,12 @@ const dom = {
     hexLevel:         $('hex-level'),
     hexInfo:          $('hex-info'),
 
+    angelBlessing:      $('angel-blessing'),
+    angelBlessingLabel: $('angel-blessing-label'),
+
+    potionBuff:         $('potion-buff'),
+    potionSelect:       $('potion-select'),
+
     themeToggle:      $('theme-toggle'),
 };
 
@@ -71,6 +77,9 @@ function saveState() {
         const el = $(id);
         if (el) state[id] = el.value;
     });
+    state['angel-blessing'] = dom.angelBlessing.checked;
+    state['potion-buff'] = dom.potionBuff.checked;
+    state['potion-select'] = dom.potionSelect.value;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
@@ -98,11 +107,20 @@ function loadState() {
             if (state[id] != null) $(id).value = state[id];
         });
 
-        // 5. 設定 level & prevLevel
+        // 5. 天使祝福
+        dom.angelBlessing.checked = !!state['angel-blessing'];
+        applyAngelBlessing();
+
+        // 5.5 藥水 Buff
+        if (state['potion-select'] != null) dom.potionSelect.value = state['potion-select'];
+        dom.potionBuff.checked = !!state['potion-buff'];
+        applyPotionBuff();
+
+        // 6. 設定 level & prevLevel
         if (state['level'] != null) dom.level.value = state['level'];
         prevLevel = getVal('level', 1);
 
-        // 6. 更新所有 UI
+        // 7. 更新所有 UI
         updateWeaponCoeff();
         updateMasteryLabel();
         updateMapleLabel();

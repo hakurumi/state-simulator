@@ -18,6 +18,7 @@
             --field-label-w: 8em;
         }
 
+        html { overflow-x: hidden; }
         body { letter-spacing: 0.03em; overflow-x: hidden; }
 
         input[type=number]::-webkit-outer-spin-button,
@@ -28,6 +29,7 @@
         main.container {
             max-width: 580px;
             padding-top: 48px;
+            overflow-x: hidden;
         }
 
         article {
@@ -214,6 +216,7 @@
             margin-top: 14px;
             padding-top: 12px;
             border-top: var(--field-border);
+            overflow: hidden;
         }
 
         .remaining {
@@ -439,6 +442,49 @@
             position: relative;
         }
 
+        #potion-select {
+            border: none !important;
+            background: transparent;
+            margin: 0;
+            padding: 2px 18px 2px 4px;
+            width: auto;
+            max-width: 100%;
+            height: auto;
+            box-shadow: none;
+            outline: none;
+            color: inherit;
+            font-size: 1em;
+            font-family: 'Noto Sans TC', sans-serif;
+            cursor: pointer;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 2px center;
+            background-size: 12px;
+        }
+
+        #potion-select:disabled {
+            opacity: 0.35;
+            cursor: default;
+        }
+
+        .footer-divider {
+            width: 1px;
+            height: 14px;
+            background: var(--pico-muted-border-color);
+        }
+
+        .attr-footer input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+            padding: 0;
+            border-width: 2px;
+            flex-shrink: 0;
+        }
+
         .has-tooltip[data-tooltip]:hover::after,
         .has-tooltip.show-tooltip[data-tooltip]::after {
             content: attr(data-tooltip);
@@ -450,7 +496,9 @@
             background: var(--pico-card-sectioning-background-color);
             border: var(--field-border);
             border-radius: 4px;
-            font-size: 0.85em;
+            font-size: 12px;
+            font-family: 'Noto Sans TC', sans-serif;
+            letter-spacing: 0.03em;
             font-weight: 400;
             white-space: pre;
             z-index: 10;
@@ -713,14 +761,24 @@
                 <div class="field-label">楓葉祝福</div>
                 <div class="field-value field-value-mid" style="flex:1 !important; border-color:transparent;">
                     <input type="number" id="maple-blessing" value="0" min="0" max="30" />
-                    <span id="maple-pct" class="skill-hint"></span>
+                    <span id="maple-pct" class="skill-hint has-tooltip" style="position:relative; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none;"></span>
                 </div>
                 <div class="field-label maple-spacer" style="background:transparent; border-color:transparent;"></div>
                 <div class="field-value maple-spacer" style="flex:1;"></div>
             </div>
 
             <div class="attr-footer">
-                <span></span>
+                <span style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; min-width:0;">
+                    <label id="angel-blessing-label" style="font-size:0.85em; cursor:pointer; display:none; align-items:center; gap:4px;">
+                        <input type="checkbox" id="angel-blessing" />
+                        <span class="has-tooltip" data-tooltip="Lv.20 命中+20, 迴避+20, 物防+20, 魔防+20" style="position:relative;">天使祝福</span>
+                    </label>
+                    <span class="footer-divider" id="potion-divider"></span>
+                    <span id="potion-buff-label" style="font-size:0.85em; display:flex; align-items:center; gap:4px; ">
+                        <input type="checkbox" id="potion-buff" />
+                        <select id="potion-select" disabled></select>
+                    </span>
+                </span>
                 <span class="attr-actions">
                     <button class="secondary outline" type="button" id="btn-reset-equip">重置</button>
                 </span>
@@ -792,7 +850,7 @@
             </div>
         </article>
 
-        <div class="version-label">v2.14.4</div>
+        <div class="version-label">v2.15.0</div>
     </main>
 
     <script src="src/config.js"></script>

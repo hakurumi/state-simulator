@@ -78,12 +78,13 @@ function updateAttack() {
     const accCoeff = config.accCoeff || [0.8, 0.5];
     const accBase  = Math.floor(getStat('dex') * accCoeff[0] + getStat('luk') * accCoeff[1]);
     const equipAcc = clamp(parseInt(dom.equipAcc.value), 0, MAX_EXTRA);
-    const elixirAcc = clamp(parseInt(dom.elixirAcc.value), 0, MAX_EXTRA);
+    const blessAcc = dom.angelBlessing.checked ? 20 : 0;
+    const elixirAcc = dom.angelBlessing.checked ? 0 : clamp(parseInt(dom.elixirAcc.value), 0, MAX_EXTRA);
     const profLv   = clamp(parseInt(dom.mastery.value), 0, 20);
     const profAcc  = profLv <= 6 || profLv >= 19 ? profLv : Math.floor(profLv / 2) * 2;
     const boaLv   = config.blessingOfAmazon ? clamp(parseInt(dom.boaLevel.value), 0, 16) : 0;
     const focusLv = config.focus ? clamp(parseInt(dom.focusLevel.value), 0, 20) : 0;
-    const totalAcc = accBase + profAcc + equipAcc + elixirAcc + boaLv + focusLv;
+    const totalAcc = accBase + profAcc + equipAcc + elixirAcc + blessAcc + boaLv + focusLv;
     dom.accuracyField.style.display = 'contents';
     document.querySelectorAll('.atk-spacer').forEach(el => el.style.display = 'none');
     dom.accuracyDisplay.textContent = totalAcc;
@@ -215,6 +216,10 @@ function updateJobUI() {
     $('elixir-acc-detail-label').style.display = showAcc ? '' : 'none';
     $('elixir-acc-detail-wrap').style.display  = showAcc ? '' : 'none';
     $('elixir-atk-detail-cell').classList.toggle('field-value-mid', showAcc);
+    $('angel-blessing-label').style.display = showAcc ? '' : 'none';
+    $('potion-divider').style.display = showAcc ? '' : 'none';
+    buildPotionOptions();
+    if (dom.potionBuff.checked) applyPotionBuff();
     dom.accuracyField.style.display = mage ? 'none' : 'contents';
     document.querySelectorAll('.atk-spacer').forEach(el => el.style.display = mage ? '' : 'none');
 
@@ -319,4 +324,8 @@ function resetCharacter() {
     dom.level.value = 200;
     prevLevel = 200;
     updateJobUI();
+    updateAttributes();
+    updateTotals();
+    updateAttack();
+    saveState();
 }

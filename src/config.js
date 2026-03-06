@@ -145,3 +145,18 @@ const EQUIPMENT_SLOTS = [
 const EQUIP_STATS = ['str', 'dex', 'int', 'luk', 'atk', 'matk', 'acc'];
 const EQUIP_STAT_LABELS = { str:'力', dex:'敏', int:'智', luk:'幸', atk:'攻', matk:'魔', acc:'命' };
 const EQUIP_STAT_TITLES = { str:'力量', dex:'敏捷', int:'智慧', luk:'幸運', atk:'攻擊力', matk:'魔法攻擊力', acc:'命中' };
+
+const POTION_OPTIONS = [
+    { value: 'snowflake',  label: '雪花',     atk: 20 },
+    { value: 'atk-pill',   label: '攻擊藥丸', atk: 5 },
+    { value: 'takoyaki',   label: '章魚燒',   atk: 8 },
+    { value: 'dragon',     label: '龍血',     atk: 8 },
+    { value: 'encourage',  label: '激勵',     atk: 10 },
+];
+
+const MAGE_POTION_OPTIONS = [
+    { value: 'yakisoba',       label: '日式炒麵', atk: 10 },
+    { value: 'ancient-sap',    label: '枯木樹液', atk: 10 },
+    { value: 'magic-pill',     label: '魔力藥丸', atk: 5 },
+    { value: 'magic-potion',   label: '魔力藥水', atk: 5 },
+];
