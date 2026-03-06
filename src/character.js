@@ -171,10 +171,12 @@ function updateJobUI() {
         dom.projectileLabel.textContent   = config.projectile;
         $('projectile-label-detail').textContent = config.projectile;
         dom.projectileWrap.style.display  = 'flex';
+        if (equipMode === 'detail') $('row-projectile-detail').style.display = 'flex';
     } else {
         dom.weaponAtkWrap.classList.remove('field-value-mid');
         dom.projectileLabel.style.display = 'none';
         dom.projectileWrap.style.display  = 'none';
+        $('row-projectile-detail').style.display = 'none';
     }
 
     // 精通技能（Expert / Beholder）
