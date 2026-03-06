@@ -3,6 +3,7 @@
 // ────────────────────────────────
 
 let prevLevel = getVal('level', 1);
+let charMode = 'summary';
 
 function getJob()  { return dom.job.value; }
 function isMage()  { return getJob().includes('法師'); }
@@ -239,6 +240,7 @@ function updateJobUI() {
         syncEquipToAttack();
     }
 
+    fitJobSelect();
     updateAttack();
 }
 
@@ -252,7 +254,49 @@ function setTheme(dark) {
     dom.themeToggle.innerHTML = dark ? SUN_SVG : MOON_SVG;
 }
 
+function setCharMode(mode) {
+    charMode = mode;
+    const s = $('char-mode-summary');
+    const d = $('char-mode-detail');
+    if (mode === 'detail') {
+        s.classList.remove('active');
+        d.classList.add('active');
+        $('char-mode').checked = true;
+    } else {
+        s.classList.add('active');
+        d.classList.remove('active');
+        $('char-mode').checked = false;
+    }
+    updateJobOptions();
+    saveState();
+}
+
+function updateJobOptions() {
+    for (const opt of dom.job.options) {
+        opt.textContent = charMode === 'detail'
+            ? (JOB_DETAIL_LABELS[opt.value] || opt.value)
+            : opt.value;
+    }
+    fitJobSelect();
+}
+
+function fitJobSelect() {
+    const sel = dom.job;
+    const opt = sel.options[sel.selectedIndex];
+    if (!opt) return;
+    const span = document.createElement('span');
+    span.style.cssText = 'visibility:hidden;position:absolute;white-space:nowrap;font:inherit;';
+    sel.parentNode.appendChild(span);
+    span.textContent = opt.textContent;
+    sel.style.width = (span.offsetWidth + 28) + 'px';
+    span.remove();
+}
+
 function initCharacter() {
+    $('char-mode').addEventListener('change', function () {
+        setCharMode(this.checked ? 'detail' : 'summary');
+    });
+
     dom.job.addEventListener('change', updateJobUI);
 
     dom.level.addEventListener('blur', () => {

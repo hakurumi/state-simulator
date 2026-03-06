@@ -66,7 +66,7 @@ function resizePotionSelect() {
     span.style.cssText = 'visibility:hidden;position:absolute;white-space:nowrap;font:inherit;';
     dom.potionSelect.parentNode.appendChild(span);
     span.textContent = text;
-    dom.potionSelect.style.width = (span.offsetWidth + 20) + 'px';
+    dom.potionSelect.style.width = (span.offsetWidth + 24) + 'px';
     span.remove();
 }
 

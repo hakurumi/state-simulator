@@ -599,7 +599,14 @@
 
         <!-- 角色資訊 -->
         <article>
-            <header>角色資訊</header>
+            <header style="display:flex; align-items:center; justify-content:space-between;">
+                <span>角色資訊</span>
+                <span class="equip-mode-toggle">
+                    <input type="checkbox" id="char-mode" hidden />
+                    <label class="mode-seg active" id="char-mode-summary" for="char-mode">精簡</label>
+                    <label class="mode-seg" id="char-mode-detail" for="char-mode">詳細</label>
+                </span>
+            </header>
 
             <div class="field">
                 <div class="field-label">職業</div>
@@ -859,7 +866,7 @@
             </div>
         </article>
 
-        <div class="version-label">v2.15.5</div>
+        <div class="version-label">v2.16.0</div>
     </main>
 
     <script src="src/config.js"></script>

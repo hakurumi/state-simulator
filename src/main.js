@@ -80,6 +80,7 @@ function saveState() {
     state['angel-blessing'] = dom.angelBlessing.checked;
     state['potion-buff'] = dom.potionBuff.checked;
     state['potion-select'] = dom.potionSelect.value;
+    state['char-mode'] = charMode;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
@@ -90,37 +91,40 @@ function loadState() {
     try {
         const state = JSON.parse(raw);
 
-        // 1. 設定 job → 產生 weapon-type 選項
+        // 1. 角色資訊模式
+        if (state['char-mode']) setCharMode(state['char-mode']);
+
+        // 2. 設定 job → 產生 weapon-type 選項
         if (state['job'] != null) dom.job.value = state['job'];
         updateJobUI();
 
-        // 2. 設定 weapon-type（選項已由 updateJobUI 產生）
+        // 3. 設定 weapon-type（選項已由 updateJobUI 產生）
         if (state['weapon-type'] != null) dom.weaponType.value = state['weapon-type'];
 
-        // 3. 設定 equipment 欄位
+        // 4. 設定 equipment 欄位
         ['weapon-atk', 'armor-atk', 'elixir-atk', 'projectile-atk', 'equip-acc', 'elixir-acc', 'mastery', 'maple-blessing', 'expert', 'hex-level', 'boa-level', 'focus-level', 'concentrate-level'].forEach(id => {
             if (state[id] != null) $(id).value = state[id];
         });
 
-        // 4. 設定 attribute 欄位
+        // 5. 設定 attribute 欄位
         ['str', 'dex', 'int', 'luk', 'extra-str', 'extra-dex', 'extra-int', 'extra-luk'].forEach(id => {
             if (state[id] != null) $(id).value = state[id];
         });
 
-        // 5. 天使祝福
+        // 6. 天使祝福
         dom.angelBlessing.checked = !!state['angel-blessing'];
         applyAngelBlessing();
 
-        // 5.5 藥水 Buff
+        // 7. 藥水 Buff
         if (state['potion-select'] != null) dom.potionSelect.value = state['potion-select'];
         dom.potionBuff.checked = !!state['potion-buff'];
         applyPotionBuff();
 
-        // 6. 設定 level & prevLevel
+        // 8. 設定 level & prevLevel
         if (state['level'] != null) dom.level.value = state['level'];
         prevLevel = getVal('level', 1);
 
-        // 7. 更新所有 UI
+        // 9. 更新所有 UI
         updateWeaponCoeff();
         updateMasteryLabel();
         updateMapleLabel();
