@@ -419,7 +419,7 @@
         }
 
         .equip-grid-cell.disabled input {
-            opacity: 0.2;
+            opacity: 0.5;
             pointer-events: none;
         }
 
@@ -466,7 +466,7 @@
         }
 
         #potion-select:disabled {
-            opacity: 0.35;
+            opacity: 0.6;
             cursor: default;
         }
 
@@ -483,6 +483,8 @@
             padding: 0;
             border-width: 2px;
             flex-shrink: 0;
+            --pico-primary-background: var(--pico-secondary-background);
+            --pico-primary-border: var(--pico-secondary-border);
         }
 
         .has-tooltip[data-tooltip]:hover::after,
@@ -850,7 +852,7 @@
             </div>
         </article>
 
-        <div class="version-label">v2.15.0</div>
+        <div class="version-label">v2.15.1</div>
     </main>
 
     <script src="src/config.js"></script>

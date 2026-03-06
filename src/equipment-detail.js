@@ -218,8 +218,8 @@ function setEquipMode(mode) {
         $('elixir-atk-detail').value = atk;
         dom.elixirAtk.disabled = true;
         $('elixir-atk-detail').disabled = true;
-        $('elixir-atk-cell').style.opacity = '0.35';
-        $('elixir-atk-detail-cell').style.opacity = '0.35';
+        dom.elixirAtk.style.opacity = '0.6';
+        $('elixir-atk-detail').style.opacity = '0.6';
     }
 
     // extra fields readonly

@@ -80,9 +80,9 @@ function applyPotionBuff() {
         $('elixir-atk-detail').value = atk;
     }
     dom.elixirAtk.disabled = on;
+    dom.elixirAtk.style.opacity = on ? '0.6' : '';
     $('elixir-atk-detail').disabled = on;
-    $('elixir-atk-cell').style.opacity = on ? '0.35' : '';
-    $('elixir-atk-detail-cell').style.opacity = on ? '0.35' : '';
+    $('elixir-atk-detail').style.opacity = on ? '0.6' : '';
     resizePotionSelect();
     updateAttack();
 }
@@ -90,9 +90,9 @@ function applyPotionBuff() {
 function applyAngelBlessing() {
     const on = dom.angelBlessing.checked;
     dom.elixirAcc.disabled = on;
-    $('elixir-acc-wrap').style.opacity = on ? '0.35' : '';
+    dom.elixirAcc.style.opacity = on ? '0.6' : '';
     $('elixir-acc-detail').disabled = on;
-    $('elixir-acc-detail-wrap').style.opacity = on ? '0.35' : '';
+    $('elixir-acc-detail').style.opacity = on ? '0.6' : '';
     updateAttack();
 }
 
