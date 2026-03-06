@@ -198,7 +198,7 @@ function updateJobUI() {
     const ev = $('expert-value');
     ev.classList.toggle('field-value-mid', hasConcentrate || hasHex || showExpertSpacer);
     ev.style.borderColor = showExpertSpacer ? 'transparent' : '';
-    ev.style.flex = showExpertSpacer ? '1' : '';
+    ev.style.flex = (hasConcentrate || hasHex || showExpertSpacer) ? '1' : '';
     document.querySelectorAll('.expert-spacer').forEach(el => el.style.display = showExpertSpacer ? '' : 'none');
 
     // 弓箭手技能（精準強化 + 集中術）

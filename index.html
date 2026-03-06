@@ -18,7 +18,7 @@
             --field-label-w: 8em;
         }
 
-        body { letter-spacing: 0.03em; }
+        body { letter-spacing: 0.03em; overflow-x: hidden; }
 
         input[type=number]::-webkit-outer-spin-button,
         input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
@@ -374,6 +374,9 @@
         .equip-grid-label.clickable {
             cursor: pointer;
             position: relative;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
         }
 
         .equip-grid-label.clickable:hover,
@@ -669,7 +672,7 @@
                 <div class="field-label" id="mastery-name"></div>
                 <div class="field-value" id="mastery-wrap" style="flex:1;">
                     <input type="number" id="mastery" value="0" min="0" max="20" />
-                    <span id="mastery-pct" class="skill-hint has-tooltip" style="position:relative;"></span>
+                    <span id="mastery-pct" class="skill-hint has-tooltip" style="position:relative; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none;"></span>
                 </div>
             </div>
 
@@ -789,7 +792,7 @@
             </div>
         </article>
 
-        <div class="version-label">v2.14.3</div>
+        <div class="version-label">v2.14.4</div>
     </main>
 
     <script src="src/config.js"></script>
