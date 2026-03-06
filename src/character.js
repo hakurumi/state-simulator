@@ -220,7 +220,7 @@ function updateJobUI() {
     $('elixir-acc-detail-label').style.display = showAcc ? '' : 'none';
     $('elixir-acc-detail-wrap').style.display  = showAcc ? '' : 'none';
     $('elixir-atk-detail-cell').classList.toggle('field-value-mid', showAcc);
-    $('angel-blessing-label').style.display = showAcc ? '' : 'none';
+    $('angel-blessing-label').style.display = showAcc ? 'flex' : 'none';
     $('potion-divider').style.display = showAcc ? '' : 'none';
     buildPotionOptions();
     if (dom.potionBuff.checked) applyPotionBuff();
