@@ -169,6 +169,7 @@ function updateJobUI() {
         dom.weaponAtkWrap.classList.add('field-value-mid');
         dom.projectileLabel.style.display = 'flex';
         dom.projectileLabel.textContent   = config.projectile;
+        $('projectile-label-detail').textContent = config.projectile;
         dom.projectileWrap.style.display  = 'flex';
     } else {
         dom.weaponAtkWrap.classList.remove('field-value-mid');
