@@ -194,7 +194,12 @@ function updateJobUI() {
     $('concentrate-wrap').style.display = hasConcentrate ? '' : 'none';
     $('hex-name').style.display = hasHex ? '' : 'none';
     $('hex-wrap').style.display = hasHex ? '' : 'none';
-    $('expert-value').classList.toggle('field-value-mid', hasConcentrate || hasHex);
+    const showExpertSpacer = enhSkillUI && !hasConcentrate && !hasHex;
+    const ev = $('expert-value');
+    ev.classList.toggle('field-value-mid', hasConcentrate || hasHex || showExpertSpacer);
+    ev.style.borderColor = showExpertSpacer ? 'transparent' : '';
+    ev.style.flex = showExpertSpacer ? '1' : '';
+    document.querySelectorAll('.expert-spacer').forEach(el => el.style.display = showExpertSpacer ? '' : 'none');
 
     // 弓箭手技能（精準強化 + 集中術）
     $('archer-acc-row').style.display = config?.blessingOfAmazon ? 'flex' : 'none';
