@@ -35,6 +35,7 @@
         article {
             margin-bottom: 16px;
             padding: 24px;
+            overflow: visible;
         }
 
         article header {
@@ -216,7 +217,6 @@
             margin-top: 14px;
             padding-top: 12px;
             border-top: var(--field-border);
-            overflow: hidden;
         }
 
         .remaining {
@@ -487,25 +487,32 @@
             --pico-primary-border: var(--pico-secondary-border);
         }
 
-        .has-tooltip[data-tooltip]:hover::after,
-        .has-tooltip.show-tooltip[data-tooltip]::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 4px 8px;
-            background: var(--pico-card-sectioning-background-color);
-            border: var(--field-border);
-            border-radius: 4px;
-            font-size: 12px;
-            font-family: 'Noto Sans TC', sans-serif;
-            letter-spacing: 0.03em;
-            font-weight: 400;
-            white-space: pre;
-            z-index: 10;
-            pointer-events: none;
+        /* 停用 pico 箭頭和自訂 ::after tooltip，統一用 pico ::before */
+        [data-tooltip]::after {
+            display: none !important;
         }
+
+        /* 覆蓋 pico tooltip 樣式 */
+        [data-tooltip]::before {
+            font-size: 12px !important;
+            font-family: 'Noto Sans TC', sans-serif !important;
+            letter-spacing: 0.03em !important;
+            white-space: pre !important;
+            overflow: visible !important;
+            text-overflow: unset !important;
+        }
+
+        /* 讓所有 tooltip 亮度對齊武器係數（武器係數因父層 opacity:0.6 較暗） */
+        [data-tooltip]:not(#weapon-coeff)::before {
+            background: rgba(239, 241, 244, 0.6) !important;
+        }
+
+        /* 天使祝福 tooltip 靠左對齊，避免超出左邊界被裁切 */
+        #angel-blessing-label [data-tooltip]::before {
+            left: 0 !important;
+            transform: translate(0, -.25rem) !important;
+        }
+
 
 
         /* ── RWD ── */
@@ -773,7 +780,7 @@
                 <span style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; min-width:0;">
                     <label id="angel-blessing-label" style="font-size:0.85em; cursor:pointer; display:none; align-items:center; gap:4px;">
                         <input type="checkbox" id="angel-blessing" />
-                        <span class="has-tooltip" data-tooltip="Lv.20 命中+20, 迴避+20, 物防+20, 魔防+20" style="position:relative;">天使祝福</span>
+                        <span data-tooltip="Lv.20 命中+20, 迴避+20, 物防+20, 魔防+20" style="position:relative;">天使祝福</span>
                     </label>
                     <span class="footer-divider" id="potion-divider"></span>
                     <span id="potion-buff-label" style="font-size:0.85em; display:flex; align-items:center; gap:4px; ">
@@ -852,7 +859,7 @@
             </div>
         </article>
 
-        <div class="version-label">v2.15.1</div>
+        <div class="version-label">v2.15.2</div>
     </main>
 
     <script src="src/config.js"></script>
