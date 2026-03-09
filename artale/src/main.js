@@ -260,14 +260,20 @@ function applyFullState(state) {
     if (state['level'] != null) dom.level.value = state['level'];
     prevLevel = getVal('level', 1);
 
-    // 9. equip detail 部分
+    // 9. equip detail 部分：先全部重置再套用
+    EQUIPMENT_SLOTS.forEach(s => {
+        equipData[s.id] = makeEmptySlot();
+        EQUIP_STATS.forEach(stat => {
+            const input = $(`equip-${s.id}-${stat}`);
+            if (input) input.value = 0;
+        });
+    });
     if (state['equipData']) {
         EQUIPMENT_SLOTS.forEach(s => {
             if (state['equipData'][s.id]) {
                 equipData[s.id] = { ...makeEmptySlot(), ...state['equipData'][s.id] };
             }
         });
-        // 更新 grid values
         EQUIPMENT_SLOTS.forEach(slot => {
             EQUIP_STATS.forEach(stat => {
                 const input = $(`equip-${slot.id}-${stat}`);
@@ -427,9 +433,16 @@ async function loadFromHash() {
 window.addEventListener('hashchange', () => loadFromHash());
 
 (async function() {
-    if (await loadFromHash()) {
-        initEquipDetail();
-        return;
+    const hash = location.hash.slice(1);
+    if (hash) {
+        try {
+            const raw = await decompressState(hash);
+            const state = fromShortKeys(raw);
+            initEquipDetail();
+            applyFullState(state);
+            history.replaceState(null, '', location.pathname);
+            return;
+        } catch { /* fallback to localStorage */ }
     }
     if (!loadState()) {
         updateWeaponCoeff();
