@@ -256,6 +256,98 @@
             cursor: pointer;
         }
 
+        /* ── 設定按鈕 ── */
+        .settings-toggle {
+            position: fixed;
+            top: 62px;
+            right: 14px;
+            z-index: 1000;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border-radius: 50%;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* ── 設定 dialog ── */
+        #settings-dialog article {
+            max-width: 320px;
+            margin: auto;
+        }
+
+        #settings-dialog header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        #settings-dialog .close-btn {
+            background: none;
+            border: none;
+            padding: 0;
+            margin: 0;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0.5;
+            font-size: 1.4em;
+            line-height: 1;
+            color: var(--pico-color);
+        }
+
+        #settings-dialog .close-btn:hover {
+            opacity: 1;
+        }
+
+        .settings-body {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .settings-body button {
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .settings-body hr {
+            margin: 6px 0;
+            border: none;
+            border-top: var(--field-border);
+        }
+
+        /* ── Toast 提示 ── */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--pico-card-background-color);
+            border: var(--field-border);
+            color: var(--pico-color);
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
         .app-title {
             text-align: center;
             margin-bottom: 24px;
@@ -593,6 +685,26 @@
 
 <body>
     <button id="theme-toggle" class="theme-toggle outline secondary"></button>
+    <button id="btn-settings" class="settings-toggle outline secondary"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
+
+    <dialog id="settings-dialog">
+        <article>
+            <header>
+                <span>設定</span>
+                <button id="btn-settings-close" class="close-btn" aria-label="關閉">&times;</button>
+            </header>
+            <div class="settings-body">
+                <button id="btn-share" class="outline"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>分享連結</button>
+                <button id="btn-export" class="outline"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>匯出檔案</button>
+                <button id="btn-import-trigger" class="outline"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>匯入檔案</button>
+                <input type="file" id="file-import" accept=".json" hidden />
+                <hr />
+                <button id="btn-reset-all" class="secondary outline"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>全部重置</button>
+            </div>
+        </article>
+    </dialog>
+
+    <div id="toast" class="toast"></div>
 
     <main class="container">
         <div class="app-title">Artale 表攻計算模擬器</div>
@@ -866,7 +978,7 @@
             </div>
         </article>
 
-        <div class="version-label">v2.16.2</div>
+        <div class="version-label">v2.17.0</div>
     </main>
 
     <script src="src/config.js"></script>
