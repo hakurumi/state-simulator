@@ -147,22 +147,52 @@ function loadState() {
 //  分享 / 匯入匯出
 // ────────────────────────────────
 
-function collectFullState() {
+const STATE_DEFAULTS = {
+    'job': '劍士 (英雄)', 'level': '200', 'weapon-atk': '1',
+    'armor-atk': '0', 'elixir-atk': '0', 'projectile-atk': '0',
+    'equip-acc': '0', 'elixir-acc': '0', 'mastery': '0',
+    'maple-blessing': '0', 'expert': '0', 'hex-level': '0',
+    'boa-level': '0', 'focus-level': '0', 'concentrate-level': '0',
+    'str': '4', 'dex': '4', 'int': '4', 'luk': '4',
+    'extra-str': '0', 'extra-dex': '0', 'extra-int': '0', 'extra-luk': '0',
+};
+
+function collectFullState(compact) {
     const state = {};
     STATE_FIELDS.forEach(id => {
         const el = $(id);
-        if (el) state[id] = el.value;
+        if (!el) return;
+        if (compact && el.value === (STATE_DEFAULTS[id] ?? '')) return;
+        state[id] = el.value;
     });
-    state['angel-blessing'] = dom.angelBlessing.checked;
-    state['potion-buff'] = dom.potionBuff.checked;
-    state['potion-select'] = dom.potionSelect.value;
-    state['char-mode'] = charMode;
-    state['equipMode'] = equipMode;
-    state['armorMode'] = armorMode;
-    state['equipData'] = equipData;
-    state['elixirDetail'] = parseInt($('elixir-atk-detail').value) || 0;
-    state['elixirAccDetail'] = parseInt($('elixir-acc-detail').value) || 0;
-    state['projectileDetail'] = parseInt($('projectile-atk-detail').value) || 0;
+    if (!compact || dom.angelBlessing.checked) state['angel-blessing'] = dom.angelBlessing.checked;
+    if (!compact || dom.potionBuff.checked) state['potion-buff'] = dom.potionBuff.checked;
+    if (!compact || dom.potionBuff.checked) state['potion-select'] = dom.potionSelect.value;
+    if (!compact || charMode !== 'summary') state['char-mode'] = charMode;
+    if (!compact || equipMode !== 'summary') state['equipMode'] = equipMode;
+    if (!compact || armorMode !== 'top-bottom') state['armorMode'] = armorMode;
+
+    // equipData: 只保留非零值的欄位
+    const ed = {};
+    let hasEquipData = false;
+    EQUIPMENT_SLOTS.forEach(s => {
+        const slot = equipData[s.id];
+        if (!slot) return;
+        const nonZero = {};
+        let any = false;
+        EQUIP_STATS.forEach(stat => {
+            if (slot[stat]) { nonZero[stat] = slot[stat]; any = true; }
+        });
+        if (any) { ed[s.id] = nonZero; hasEquipData = true; }
+    });
+    if (!compact || hasEquipData) state['equipData'] = compact ? ed : equipData;
+
+    const elixirD = parseInt($('elixir-atk-detail').value) || 0;
+    const elixirAccD = parseInt($('elixir-acc-detail').value) || 0;
+    const projD = parseInt($('projectile-atk-detail').value) || 0;
+    if (!compact || elixirD) state['elixirDetail'] = elixirD;
+    if (!compact || elixirAccD) state['elixirAccDetail'] = elixirAccD;
+    if (!compact || projD) state['projectileDetail'] = projD;
     return state;
 }
 
@@ -270,7 +300,7 @@ function showToast(msg) {
 
 async function shareState() {
     try {
-        const compressed = await compressState(collectFullState());
+        const compressed = await compressState(collectFullState(true));
         const url = location.origin + location.pathname + '#' + compressed;
         await navigator.clipboard.writeText(url);
         showToast('已複製分享連結');
