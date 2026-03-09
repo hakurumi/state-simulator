@@ -411,18 +411,25 @@ initSettings();
 
 setTheme(localStorage.getItem('theme') !== 'light');
 
-// URL hash 載入（優先於 localStorage）
-(async function() {
+// URL hash 載入
+async function loadFromHash() {
     const hash = location.hash.slice(1);
-    if (hash) {
-        try {
-            const raw = await decompressState(hash);
-            const state = fromShortKeys(raw);
-            initEquipDetail();
-            applyFullState(state);
-            history.replaceState(null, '', location.pathname);
-            return;
-        } catch { /* fallback to localStorage */ }
+    if (!hash) return false;
+    try {
+        const raw = await decompressState(hash);
+        const state = fromShortKeys(raw);
+        applyFullState(state);
+        history.replaceState(null, '', location.pathname);
+        return true;
+    } catch { return false; }
+}
+
+window.addEventListener('hashchange', () => loadFromHash());
+
+(async function() {
+    if (await loadFromHash()) {
+        initEquipDetail();
+        return;
     }
     if (!loadState()) {
         updateWeaponCoeff();
