@@ -147,6 +147,36 @@ function loadState() {
 //  分享 / 匯入匯出
 // ────────────────────────────────
 
+// 短鍵名映射（分享連結用）
+const KEY_TO_SHORT = {
+    'job':'j', 'level':'lv', 'weapon-atk':'wa', 'armor-atk':'aa',
+    'elixir-atk':'ea', 'projectile-atk':'pa', 'equip-acc':'ec', 'elixir-acc':'xa',
+    'mastery':'ms', 'weapon-type':'wt', 'maple-blessing':'mb', 'expert':'ex',
+    'hex-level':'hx', 'boa-level':'ba', 'focus-level':'fc', 'concentrate-level':'cc',
+    'str':'s', 'dex':'d', 'int':'i', 'luk':'l',
+    'extra-str':'es', 'extra-dex':'ed', 'extra-int':'ei', 'extra-luk':'el',
+    'angel-blessing':'ab', 'potion-buff':'pb', 'potion-select':'ps',
+    'char-mode':'cm', 'equipMode':'em', 'armorMode':'am',
+    'equipData':'eq', 'elixirDetail':'xd', 'elixirAccDetail':'xc', 'projectileDetail':'pd',
+};
+const SHORT_TO_KEY = Object.fromEntries(Object.entries(KEY_TO_SHORT).map(([k, v]) => [v, k]));
+
+function toShortKeys(obj) {
+    const out = {};
+    for (const [k, v] of Object.entries(obj)) {
+        out[KEY_TO_SHORT[k] || k] = v;
+    }
+    return out;
+}
+
+function fromShortKeys(obj) {
+    const out = {};
+    for (const [k, v] of Object.entries(obj)) {
+        out[SHORT_TO_KEY[k] || k] = v;
+    }
+    return out;
+}
+
 const STATE_DEFAULTS = {
     'job': '劍士 (英雄)', 'level': '200', 'weapon-atk': '1',
     'armor-atk': '0', 'elixir-atk': '0', 'projectile-atk': '0',
@@ -300,7 +330,7 @@ function showToast(msg) {
 
 async function shareState() {
     try {
-        const compressed = await compressState(collectFullState(true));
+        const compressed = await compressState(toShortKeys(collectFullState(true)));
         const url = location.origin + location.pathname + '#' + compressed;
         await navigator.clipboard.writeText(url);
         showToast('已複製分享連結');
@@ -386,7 +416,8 @@ setTheme(localStorage.getItem('theme') !== 'light');
     const hash = location.hash.slice(1);
     if (hash) {
         try {
-            const state = await decompressState(hash);
+            const raw = await decompressState(hash);
+            const state = fromShortKeys(raw);
             initEquipDetail();
             applyFullState(state);
             history.replaceState(null, '', location.pathname);
