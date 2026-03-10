@@ -394,20 +394,34 @@ function updateFocusLabel() {
 }
 
 function updateBulletTimeLabel() {
+    const el = $('bullet-time-info');
     const lv = clamp(parseInt(dom.bulletTimeLevel.value), 0, 20);
-    $('bullet-time-info').textContent = lv > 0 ? `+${lv}命` : '';
+    if (lv > 0) {
+        el.textContent = `+${lv}命`;
+        el.setAttribute('data-tooltip', `命中+${lv}`);
+    } else {
+        el.textContent = '';
+        el.removeAttribute('data-tooltip');
+    }
 }
 
 function updateEnergyLabel() {
+    const el = $('energy-info');
     const config = JOB_CONFIG[getJob()];
-    if (!config?.energyCharge) { $('energy-info').textContent = ''; return; }
+    if (!config?.energyCharge) { el.innerHTML = ''; el.removeAttribute('data-tooltip'); return; }
     const lv  = clamp(parseInt(dom.energyLevel.value), 0, config.energyChargeMax || 40);
     const atk = lv > 0 ? 10 + Math.ceil(lv / 4) : 0;
     const acc = lv > 0 ? Math.ceil(lv / 2) : 0;
-    const parts = [];
-    if (atk > 0) parts.push(`+${atk}攻`);
-    if (acc > 0) parts.push(`+${acc}命`);
-    $('energy-info').textContent = parts.join(' ');
+    if (atk > 0 && acc > 0) {
+        el.innerHTML = `<span class="coeff-frac"><span>+${atk}攻</span><span>+${acc}命</span></span>`;
+        el.setAttribute('data-tooltip', `攻擊+${atk}、命中+${acc}`);
+    } else if (atk > 0) {
+        el.textContent = `+${atk}攻`;
+        el.setAttribute('data-tooltip', `攻擊+${atk}`);
+    } else {
+        el.innerHTML = '';
+        el.removeAttribute('data-tooltip');
+    }
 }
 
 function resetCharacter() {

@@ -384,6 +384,17 @@
             padding-bottom: 0;
         }
 
+        #energy-info .coeff-frac {
+            flex-direction: row;
+            font-size: inherit;
+            font-family: inherit;
+        }
+
+        #energy-info .coeff-frac > span:first-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
         .coeff-frac {
             display: inline-flex;
             flex-direction: column;
@@ -595,7 +606,7 @@
         }
 
         /* 讓所有 tooltip 亮度對齊武器係數（武器係數因父層 opacity:0.6 較暗） */
-        [data-tooltip]:not(#weapon-coeff)::before {
+        [data-tooltip]:not(#weapon-coeff):not(.skill-hint)::before {
             background: rgba(239, 241, 244, 0.6) !important;
         }
 
@@ -617,6 +628,15 @@
                 font-size: 0.85em;
             }
             #mastery-pct .coeff-frac > span:first-child {
+                border-bottom: 1px solid currentColor;
+                padding-bottom: 1px;
+            }
+            #energy-info .coeff-frac {
+                flex-direction: column;
+                font-size: 0.8em;
+                font-family: inherit;
+            }
+            #energy-info .coeff-frac > span:first-child {
                 border-bottom: 1px solid currentColor;
                 padding-bottom: 1px;
             }
@@ -870,12 +890,12 @@
                 <div class="field-label" id="bullet-time-name">極限迴避</div>
                 <div class="field-value field-value-mid" id="bullet-time-wrap" style="flex:1;">
                     <input type="number" id="bullet-time-level" value="0" min="0" max="20" />
-                    <span id="bullet-time-info" class="skill-hint"></span>
+                    <span id="bullet-time-info" class="skill-hint has-tooltip" style="position:relative; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none;"></span>
                 </div>
                 <div class="field-label" id="energy-name" style="display:none; border-left: var(--field-border);">蓄能激發</div>
                 <div class="field-value" id="energy-wrap" style="display:none; flex:1;">
                     <input type="number" id="energy-level" value="0" min="0" max="40" />
-                    <span id="energy-info" class="skill-hint"></span>
+                    <span id="energy-info" class="skill-hint has-tooltip" style="font-size:0.85em; position:relative; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none;"></span>
                 </div>
             </div>
 
@@ -997,7 +1017,7 @@
             </div>
         </article>
 
-        <div class="version-label">v2.19.0</div>
+        <div class="version-label">v2.19.1</div>
     </main>
 
     <script src="src/config.js"></script>

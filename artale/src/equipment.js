@@ -192,9 +192,8 @@ function initEquipment() {
     });
     $('elixir-acc').addEventListener('input', updateAttack);
 
-    // mastery-pct long-press tooltip
-    (function() {
-        const el = dom.masteryPct;
+    // long-press tooltip
+    [dom.masteryPct, $('energy-info'), $('bullet-time-info')].forEach(el => {
         let timer, skip = false;
         el.addEventListener('touchstart', () => {
             skip = false;
@@ -207,7 +206,7 @@ function initEquipment() {
         el.addEventListener('touchmove', () => {
             clearTimeout(timer); el.classList.remove('show-tooltip'); skip = false;
         }, { passive: true });
-    })();
+    });
 
     dom.mastery.addEventListener('blur', () => {
         dom.mastery.value = clamp(parseInt(dom.mastery.value), 0, 20);
