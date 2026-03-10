@@ -534,13 +534,13 @@
             position: relative;
         }
 
-        #potion-select {
+        .inline-select {
             border: none !important;
             background: transparent;
             margin: 0;
-            padding: 2px 18px 2px 4px;
+            padding: 2px 18px 2px 0 !important;
             width: auto;
-            max-width: 100%;
+            flex-shrink: 0;
             height: auto;
             box-shadow: none;
             outline: none;
@@ -551,13 +551,13 @@
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 2px center;
-            background-size: 12px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 2px center !important;
+            background-size: 12px !important;
         }
 
-        #potion-select:disabled {
+        .inline-select:disabled {
             opacity: 0.6;
             cursor: default;
         }
@@ -910,7 +910,7 @@
             </div>
 
             <div class="attr-footer">
-                <span style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; min-width:0;">
+                <span style="display:flex; align-items:center; gap:4px; flex-wrap:wrap; min-width:0;">
                     <span id="angel-blessing-label" style="font-size:0.85em; display:none; align-items:center; gap:4px;">
                         <input type="checkbox" id="angel-blessing" />
                         <span data-tooltip="Lv.20 命中+20、迴避+20、物防+20、魔防+20" style="position:relative;">天使祝福</span>
@@ -918,7 +918,12 @@
                     <span class="footer-divider" id="potion-divider"></span>
                     <span id="potion-buff-label" style="font-size:0.85em; display:flex; align-items:center; gap:4px; ">
                         <input type="checkbox" id="potion-buff" />
-                        <select id="potion-select" disabled></select>
+                        <select id="potion-select" class="inline-select" disabled></select>
+                    </span>
+                    <span class="footer-divider" id="projectile-divider" style="display:none;"></span>
+                    <span id="projectile-buff-label" style="font-size:0.85em; display:none; align-items:center; gap:4px;">
+                        <input type="checkbox" id="projectile-buff" />
+                        <select id="projectile-select" class="inline-select" disabled></select>
                     </span>
                 </span>
                 <span class="attr-actions">
@@ -992,7 +997,7 @@
             </div>
         </article>
 
-        <div class="version-label">v2.18.0</div>
+        <div class="version-label">v2.19.0</div>
     </main>
 
     <script src="src/config.js"></script>

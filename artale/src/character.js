@@ -235,6 +235,16 @@ function updateJobUI() {
     $('potion-divider').style.display = showAcc ? '' : 'none';
     buildPotionOptions();
     if (dom.potionBuff.checked) applyPotionBuff();
+
+    // 投射物種類選擇
+    const hasProjectile = !!config?.projectile;
+    $('projectile-divider').style.display = hasProjectile ? '' : 'none';
+    $('projectile-buff-label').style.display = hasProjectile ? 'flex' : 'none';
+    if (hasProjectile) {
+        buildProjectileOptions();
+        if (dom.projectileBuff.checked) applyProjectileBuff();
+    }
+
     dom.accuracyField.style.display = mage ? 'none' : 'contents';
     document.querySelectorAll('.atk-spacer').forEach(el => el.style.display = mage ? '' : 'none');
 
@@ -297,11 +307,14 @@ function fitJobSelect() {
     const sel = dom.job;
     const opt = sel.options[sel.selectedIndex];
     if (!opt) return;
+    const cs = getComputedStyle(sel);
     const span = document.createElement('span');
-    span.style.cssText = 'visibility:hidden;position:absolute;white-space:nowrap;font:inherit;';
-    sel.parentNode.appendChild(span);
+    span.style.cssText = 'visibility:hidden;position:absolute;white-space:nowrap;';
+    span.style.font = cs.font;
+    span.style.letterSpacing = cs.letterSpacing;
+    document.body.appendChild(span);
     span.textContent = opt.textContent;
-    sel.style.width = (span.offsetWidth + 28) + 'px';
+    sel.style.setProperty('width', (span.offsetWidth + 28) + 'px', 'important');
     span.remove();
 }
 

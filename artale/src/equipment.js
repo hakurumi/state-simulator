@@ -60,14 +60,40 @@ function buildPotionOptions() {
     resizePotionSelect();
 }
 
-function resizePotionSelect() {
-    const text = dom.potionSelect.options[dom.potionSelect.selectedIndex]?.text || '';
+function resizeInlineSelect(sel) {
+    const text = sel.options[sel.selectedIndex]?.text || '';
+    const cs = getComputedStyle(sel);
     const span = document.createElement('span');
-    span.style.cssText = 'visibility:hidden;position:absolute;white-space:nowrap;font:inherit;';
-    dom.potionSelect.parentNode.appendChild(span);
+    span.style.cssText = 'visibility:hidden;position:absolute;white-space:nowrap;';
+    span.style.font = cs.font;
+    span.style.letterSpacing = cs.letterSpacing;
+    document.body.appendChild(span);
     span.textContent = text;
-    dom.potionSelect.style.width = (span.offsetWidth + 24) + 'px';
+    sel.style.setProperty('width', (span.offsetWidth + 20) + 'px', 'important');
     span.remove();
+}
+
+function resizePotionSelect() {
+    const sel = dom.potionSelect;
+    const cs = getComputedStyle(sel);
+    const span = document.createElement('span');
+    span.style.cssText = 'visibility:hidden;position:absolute;white-space:nowrap;';
+    span.style.font = cs.font;
+    span.style.letterSpacing = cs.letterSpacing;
+    document.body.appendChild(span);
+    // 固定寬度：取最大選項文字寬度
+    let maxW = 0;
+    for (const opt of sel.options) {
+        span.textContent = opt.text;
+        if (span.offsetWidth > maxW) maxW = span.offsetWidth;
+    }
+    sel.style.setProperty('width', (maxW + 20) + 'px', 'important');
+    // 箭頭跟隨當前文字
+    const cur = sel.options[sel.selectedIndex]?.text || '';
+    span.textContent = cur;
+    const curW = span.offsetWidth;
+    span.remove();
+    sel.style.setProperty('background-position', (curW + 6) + 'px center', 'important');
 }
 
 function applyPotionBuff() {
@@ -84,6 +110,51 @@ function applyPotionBuff() {
     $('elixir-atk-detail').disabled = on;
     $('elixir-atk-detail').style.opacity = on ? '0.6' : '';
     resizePotionSelect();
+    updateAttack();
+}
+
+function getProjectileList() {
+    const config = JOB_CONFIG[getJob()];
+    if (!config?.projectile) return [];
+    if (config.projectile === '飛鏢攻擊') return STAR_OPTIONS;
+    if (config.projectile === '子彈攻擊') return BULLET_OPTIONS;
+    if (config.weapon === '弓') return BOW_ARROW_OPTIONS;
+    if (config.weapon === '弩') return XBOW_ARROW_OPTIONS;
+    return [];
+}
+
+function buildProjectileOptions() {
+    const prev = dom.projectileSelect.value;
+    dom.projectileSelect.innerHTML = '';
+    getProjectileList().forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.value;
+        opt.textContent = `${p.label} (+${p.atk})`;
+        dom.projectileSelect.appendChild(opt);
+    });
+    if ([...dom.projectileSelect.options].some(o => o.value === prev)) {
+        dom.projectileSelect.value = prev;
+    }
+    resizeProjectileSelect();
+}
+
+function resizeProjectileSelect() { resizeInlineSelect(dom.projectileSelect);
+}
+
+function applyProjectileBuff() {
+    const on = dom.projectileBuff.checked;
+    dom.projectileSelect.disabled = !on;
+    if (on) {
+        const chosen = getProjectileList().find(p => p.value === dom.projectileSelect.value);
+        const atk = chosen ? chosen.atk : 0;
+        dom.projectileAtk.value = atk;
+        $('projectile-atk-detail').value = atk;
+    }
+    dom.projectileAtk.disabled = on;
+    dom.projectileAtk.style.opacity = on ? '0.6' : '';
+    $('projectile-atk-detail').disabled = on;
+    $('projectile-atk-detail').style.opacity = on ? '0.6' : '';
+    resizeProjectileSelect();
     updateAttack();
 }
 
@@ -207,6 +278,12 @@ function initEquipment() {
         if (dom.potionBuff.checked) { applyPotionBuff(); saveState(); }
     });
 
+    dom.projectileBuff.addEventListener('change', () => { applyProjectileBuff(); saveState(); });
+    dom.projectileSelect.addEventListener('change', () => {
+        resizeProjectileSelect();
+        if (dom.projectileBuff.checked) { applyProjectileBuff(); saveState(); }
+    });
+
     $('btn-reset-equip').addEventListener('click', resetEquipment);
 }
 
@@ -218,6 +295,8 @@ function resetEquipment() {
     applyAngelBlessing();
     dom.potionBuff.checked = false;
     applyPotionBuff();
+    dom.projectileBuff.checked = false;
+    applyProjectileBuff();
     dom.weaponAtk.value = 1;
     dom.armorAtk.value = 0;
     dom.elixirAtk.value = 0;

@@ -68,6 +68,9 @@ const dom = {
     potionBuff:         $('potion-buff'),
     potionSelect:       $('potion-select'),
 
+    projectileBuff:     $('projectile-buff'),
+    projectileSelect:   $('projectile-select'),
+
     themeToggle:      $('theme-toggle'),
 };
 
@@ -84,6 +87,8 @@ function saveState() {
     state['angel-blessing'] = dom.angelBlessing.checked;
     state['potion-buff'] = dom.potionBuff.checked;
     state['potion-select'] = dom.potionSelect.value;
+    state['projectile-buff'] = dom.projectileBuff.checked;
+    state['projectile-select'] = dom.projectileSelect.value;
     state['char-mode'] = charMode;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
@@ -124,11 +129,16 @@ function loadState() {
         dom.potionBuff.checked = !!state['potion-buff'];
         applyPotionBuff();
 
-        // 8. 設定 level & prevLevel
+        // 8. 投射物種類
+        if (state['projectile-select'] != null) dom.projectileSelect.value = state['projectile-select'];
+        dom.projectileBuff.checked = !!state['projectile-buff'];
+        applyProjectileBuff();
+
+        // 9. 設定 level & prevLevel
         if (state['level'] != null) dom.level.value = state['level'];
         prevLevel = getVal('level', 1);
 
-        // 9. 更新所有 UI
+        // 10. 更新所有 UI
         updateWeaponCoeff();
         updateMasteryLabel();
         updateMapleLabel();
@@ -163,6 +173,7 @@ const KEY_TO_SHORT = {
     'str':'s', 'dex':'d', 'int':'i', 'luk':'l',
     'extra-str':'es', 'extra-dex':'ed', 'extra-int':'ei', 'extra-luk':'el',
     'angel-blessing':'ab', 'potion-buff':'pb', 'potion-select':'ps',
+    'projectile-buff':'pjb', 'projectile-select':'pjs',
     'char-mode':'cm', 'equipMode':'em', 'armorMode':'am',
     'equipData':'eq', 'elixirDetail':'xd', 'elixirAccDetail':'xc', 'projectileDetail':'pd',
 };
@@ -206,6 +217,8 @@ function collectFullState(compact) {
     if (!compact || dom.angelBlessing.checked) state['angel-blessing'] = dom.angelBlessing.checked;
     if (!compact || dom.potionBuff.checked) state['potion-buff'] = dom.potionBuff.checked;
     if (!compact || dom.potionBuff.checked) state['potion-select'] = dom.potionSelect.value;
+    if (!compact || dom.projectileBuff.checked) state['projectile-buff'] = dom.projectileBuff.checked;
+    if (!compact || dom.projectileBuff.checked) state['projectile-select'] = dom.projectileSelect.value;
     if (!compact || charMode !== 'summary') state['char-mode'] = charMode;
     if (!compact || equipMode !== 'summary') state['equipMode'] = equipMode;
     if (!compact || armorMode !== 'top-bottom') state['armorMode'] = armorMode;
@@ -264,11 +277,16 @@ function applyFullState(state) {
     dom.potionBuff.checked = !!state['potion-buff'];
     applyPotionBuff();
 
-    // 8. 設定 level & prevLevel
+    // 8. 投射物種類
+    if (state['projectile-select'] != null) dom.projectileSelect.value = state['projectile-select'];
+    dom.projectileBuff.checked = !!state['projectile-buff'];
+    applyProjectileBuff();
+
+    // 9. 設定 level & prevLevel
     if (state['level'] != null) dom.level.value = state['level'];
     prevLevel = getVal('level', 1);
 
-    // 9. equip detail 部分：先全部重置再套用
+    // 10. equip detail 部分：先全部重置再套用
     EQUIPMENT_SLOTS.forEach(s => {
         equipData[s.id] = makeEmptySlot();
         EQUIP_STATS.forEach(stat => {
@@ -298,7 +316,7 @@ function applyFullState(state) {
     if (state['projectileDetail'] != null) $('projectile-atk-detail').value = state['projectileDetail'];
     if (state['equipMode']) setEquipMode(state['equipMode']);
 
-    // 10. 更新所有 UI
+    // 11. 更新所有 UI
     updateWeaponCoeff();
     updateMasteryLabel();
     updateMapleLabel();
@@ -313,7 +331,7 @@ function applyFullState(state) {
     updateTotals();
     updateAttack();
 
-    // 11. 寫入 localStorage
+    // 12. 寫入 localStorage
     saveState();
     saveEquipDetail();
 }
@@ -471,3 +489,9 @@ window.addEventListener('hashchange', () => loadFromHash());
     }
     initEquipDetail();
 })();
+
+document.fonts.ready.then(() => {
+    resizePotionSelect();
+    if (getProjectileList().length) resizeProjectileSelect();
+    fitJobSelect();
+});

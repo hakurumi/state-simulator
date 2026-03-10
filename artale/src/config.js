@@ -178,3 +178,36 @@ const MAGE_POTION_OPTIONS = [
     { value: 'magic-pill',     label: '魔力藥丸', atk: 5 },
     { value: 'magic-potion',   label: '魔力藥水', atk: 5 },
 ];
+
+const STAR_OPTIONS = [
+    { value: 'hwabi',   label: '月牙鏢',   atk: 28 },
+    { value: 'ilbi',    label: '日之鏢',   atk: 27 },
+    { value: 'steely',  label: '雷之鏢',   atk: 25 },
+    { value: 'orange',  label: '橘子',     atk: 24 },
+    { value: 'tobi',    label: '梅之鏢',   atk: 23 },
+    { value: 'kumbi',   label: '雪花鏢',   atk: 21 },
+    { value: 'mokbi',   label: '黑色利刃', atk: 19 },
+    { value: 'wtop',    label: '木陀螺',   atk: 19 },
+    { value: 'wolbi',   label: '迴旋鏢',   atk: 17 },
+    { value: 'snow',    label: '雪球',     atk: 17 },
+    { value: 'subi',    label: '海星鏢',   atk: 15 },
+];
+
+const BULLET_OPTIONS = [
+    { value: 'shiny',   label: '閃耀子彈',   atk: 18 },
+    { value: 'vital',   label: '活力子彈',   atk: 16 },
+    { value: 'blaze',   label: '烈焰膠囊',   atk: 16 },
+    { value: 'mighty',  label: '強力子彈',   atk: 14 },
+];
+
+const BOW_ARROW_OPTIONS = [
+    { value: 'steel-bow',  label: '弓專用鋼鐵箭矢', atk: 2 },
+    { value: 'bronze-bow', label: '弓專用青銅箭矢', atk: 1 },
+    { value: 'arrow-bow',  label: '弓專用箭矢',     atk: 0 },
+];
+
+const XBOW_ARROW_OPTIONS = [
+    { value: 'steel-xbow',  label: '弩專用鋼鐵箭矢', atk: 2 },
+    { value: 'bronze-xbow', label: '弩專用青銅箭矢', atk: 1 },
+    { value: 'arrow-xbow',  label: '弩專用箭矢',     atk: 0 },
+];
