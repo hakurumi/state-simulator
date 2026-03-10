@@ -79,6 +79,7 @@ const JOB_CONFIG = {
         mastery: '精通槍法',
         projectile: '子彈攻擊',
         accCoeff: [0.9, 0.3],
+        bulletTime: '極限迴避',       // 1轉, +lv acc, max 20
     },
     '海盜 (拳霸)': {
         main: 'str', sub: 'dex',
@@ -86,6 +87,9 @@ const JOB_CONFIG = {
         weapon: '指虎',
         mastery: '精通指虎',
         accCoeff: [0.6, 0.3],
+        bulletTime: '極限迴避',       // 1轉, +lv acc, max 20
+        energyCharge: '蓄能激發',     // 3轉, max 40, +10+ceil(lv/4) atk, +ceil(lv/2) acc
+        energyChargeMax: 40,
     },
 };
 

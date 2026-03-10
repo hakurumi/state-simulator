@@ -7,6 +7,7 @@ const STATE_FIELDS = [
     'equip-acc', 'elixir-acc',
     'mastery', 'weapon-type', 'maple-blessing', 'expert', 'hex-level',
     'boa-level', 'focus-level', 'concentrate-level',
+    'bullet-time-level', 'energy-level',
     'str', 'dex', 'int', 'luk', 'extra-str', 'extra-dex', 'extra-int', 'extra-luk',
 ];
 
@@ -55,6 +56,9 @@ const dom = {
     concentrateLevel:   $('concentrate-level'),
     concentrateInfo:    $('concentrate-info'),
 
+    bulletTimeLevel:        $('bullet-time-level'),
+    energyLevel:        $('energy-level'),
+
     hexLevel:         $('hex-level'),
     hexInfo:          $('hex-info'),
 
@@ -102,7 +106,7 @@ function loadState() {
         if (state['weapon-type'] != null) dom.weaponType.value = state['weapon-type'];
 
         // 4. 設定 equipment 欄位
-        ['weapon-atk', 'armor-atk', 'elixir-atk', 'projectile-atk', 'equip-acc', 'elixir-acc', 'mastery', 'maple-blessing', 'expert', 'hex-level', 'boa-level', 'focus-level', 'concentrate-level'].forEach(id => {
+        ['weapon-atk', 'armor-atk', 'elixir-atk', 'projectile-atk', 'equip-acc', 'elixir-acc', 'mastery', 'maple-blessing', 'expert', 'hex-level', 'boa-level', 'focus-level', 'concentrate-level', 'bullet-time-level', 'energy-level'].forEach(id => {
             if (state[id] != null) $(id).value = state[id];
         });
 
@@ -133,6 +137,8 @@ function loadState() {
         updateConcentrateLabel();
         updateBoaLabel();
         updateFocusLabel();
+        updateBulletTimeLabel();
+        updateEnergyLabel();
         updateAttributes();
         updateTotals();
         updateAttack();
@@ -153,6 +159,7 @@ const KEY_TO_SHORT = {
     'elixir-atk':'ea', 'projectile-atk':'pa', 'equip-acc':'ec', 'elixir-acc':'xa',
     'mastery':'ms', 'weapon-type':'wt', 'maple-blessing':'mb', 'expert':'ex',
     'hex-level':'hx', 'boa-level':'ba', 'focus-level':'fc', 'concentrate-level':'cc',
+    'bullet-time-level':'bt', 'energy-level':'eg',
     'str':'s', 'dex':'d', 'int':'i', 'luk':'l',
     'extra-str':'es', 'extra-dex':'ed', 'extra-int':'ei', 'extra-luk':'el',
     'angel-blessing':'ab', 'potion-buff':'pb', 'potion-select':'ps',
@@ -183,6 +190,7 @@ const STATE_DEFAULTS = {
     'equip-acc': '0', 'elixir-acc': '0', 'mastery': '0',
     'maple-blessing': '0', 'expert': '0', 'hex-level': '0',
     'boa-level': '0', 'focus-level': '0', 'concentrate-level': '0',
+    'bullet-time-level': '0', 'energy-level': '0',
     'str': '4', 'dex': '4', 'int': '4', 'luk': '4',
     'extra-str': '0', 'extra-dex': '0', 'extra-int': '0', 'extra-luk': '0',
 };
@@ -238,7 +246,7 @@ function applyFullState(state) {
     if (state['weapon-type'] != null) dom.weaponType.value = state['weapon-type'];
 
     // 4. 設定 equipment 欄位
-    ['weapon-atk', 'armor-atk', 'elixir-atk', 'projectile-atk', 'equip-acc', 'elixir-acc', 'mastery', 'maple-blessing', 'expert', 'hex-level', 'boa-level', 'focus-level', 'concentrate-level'].forEach(id => {
+    ['weapon-atk', 'armor-atk', 'elixir-atk', 'projectile-atk', 'equip-acc', 'elixir-acc', 'mastery', 'maple-blessing', 'expert', 'hex-level', 'boa-level', 'focus-level', 'concentrate-level', 'bullet-time-level', 'energy-level'].forEach(id => {
         if (state[id] != null) $(id).value = state[id];
     });
 
@@ -299,6 +307,8 @@ function applyFullState(state) {
     updateConcentrateLabel();
     updateBoaLabel();
     updateFocusLabel();
+    updateBulletTimeLabel();
+    updateEnergyLabel();
     updateAttributes();
     updateTotals();
     updateAttack();
@@ -453,6 +463,8 @@ window.addEventListener('hashchange', () => loadFromHash());
         updateConcentrateLabel();
         updateBoaLabel();
         updateFocusLabel();
+        updateBulletTimeLabel();
+        updateEnergyLabel();
         resetStats(false);
         resetStats(true);
         updateJobUI();

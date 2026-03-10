@@ -66,7 +66,9 @@ function updateAttack() {
     const guardAtk  = guardLv <= 15 ? 0 : Math.min(guardLv - 15, 5);
     const concentrateLv  = config.concentrate ? clamp(parseInt(dom.concentrateLevel.value), 0, 30) : 0;
     const concentrateAtk = concentrateLv > 0 ? 10 + Math.ceil(concentrateLv / 2) : 0;
-    const totalAtk  = weapon + armor + projectile + elixir + expertAtk + guardAtk + concentrateAtk;
+    const energyLv  = config.energyCharge ? clamp(parseInt(dom.energyLevel.value), 0, config.energyChargeMax || 40) : 0;
+    const energyAtk = energyLv > 0 ? 10 + Math.ceil(energyLv / 4) : 0;
+    const totalAtk  = weapon + armor + projectile + elixir + expertAtk + guardAtk + concentrateAtk + energyAtk;
     const prof      = (Math.ceil(getVal('mastery') / 2) * 5 + 10 + expertPct) / 100;
 
     const max = Math.floor((mainAttr * coeffMax + subAttr) * totalAtk / 100) || 1;
@@ -75,7 +77,6 @@ function updateAttack() {
     dom.attackDisplay.textContent = `${min}\u2007~\u2007${max}`;
 
     // 命中計算
-    // TODO: 劍士/海盜 精準命中非線性加成（需查表確認各等級數值）
     const accCoeff = config.accCoeff || [0.8, 0.5];
     const accBase  = Math.floor(getStat('dex') * accCoeff[0] + getStat('luk') * accCoeff[1]);
     const equipAcc = clamp(parseInt(dom.equipAcc.value), 0, MAX_EXTRA);
@@ -85,7 +86,9 @@ function updateAttack() {
     const profAcc  = profLv <= 6 || profLv >= 19 ? profLv : Math.floor(profLv / 2) * 2;
     const boaLv   = config.blessingOfAmazon ? clamp(parseInt(dom.boaLevel.value), 0, 16) : 0;
     const focusLv = config.focus ? clamp(parseInt(dom.focusLevel.value), 0, 20) : 0;
-    const totalAcc = accBase + profAcc + equipAcc + elixirAcc + blessAcc + boaLv + focusLv;
+    const bulletTimeLv  = config.bulletTime ? clamp(parseInt(dom.bulletTimeLevel.value), 0, 20) : 0;
+    const energyAcc = energyLv > 0 ? Math.ceil(energyLv / 2) : 0;
+    const totalAcc = accBase + profAcc + equipAcc + elixirAcc + blessAcc + boaLv + focusLv + bulletTimeLv + energyAcc;
     dom.accuracyField.style.display = 'contents';
     document.querySelectorAll('.atk-spacer').forEach(el => el.style.display = 'none');
     dom.accuracyDisplay.textContent = totalAcc;
@@ -209,6 +212,14 @@ function updateJobUI() {
     // 弓箭手技能（精準強化 + 集中術）
     $('archer-acc-row').style.display = config?.blessingOfAmazon ? 'flex' : 'none';
 
+    // 海盜技能（極限迴避 + 蓄能激發）
+    const hasBulletTime = !!config?.bulletTime;
+    const hasEnergy = !!config?.energyCharge;
+    $('pirate-acc-row').style.display = hasBulletTime ? 'flex' : 'none';
+    $('energy-name').style.display = hasEnergy ? '' : 'none';
+    $('energy-wrap').style.display = hasEnergy ? '' : 'none';
+    $('bullet-time-wrap').classList.toggle('field-value-mid', hasEnergy);
+
     // 命中欄位（法師隱藏半邊）
     const showAcc = !mage;
     $('equip-acc-label').style.display = showAcc ? '' : 'none';
@@ -235,6 +246,8 @@ function updateJobUI() {
     updateConcentrateLabel();
     updateBoaLabel();
     updateFocusLabel();
+    updateBulletTimeLabel();
+    updateEnergyLabel();
 
     if (typeof equipMode !== 'undefined' && equipMode === 'detail') {
         syncEquipToAttack();
@@ -365,6 +378,23 @@ function updateBoaLabel() {
 function updateFocusLabel() {
     const lv = clamp(parseInt(dom.focusLevel.value), 0, 20);
     $('focus-info').textContent = lv > 0 ? `+${lv}命` : '';
+}
+
+function updateBulletTimeLabel() {
+    const lv = clamp(parseInt(dom.bulletTimeLevel.value), 0, 20);
+    $('bullet-time-info').textContent = lv > 0 ? `+${lv}命` : '';
+}
+
+function updateEnergyLabel() {
+    const config = JOB_CONFIG[getJob()];
+    if (!config?.energyCharge) { $('energy-info').textContent = ''; return; }
+    const lv  = clamp(parseInt(dom.energyLevel.value), 0, config.energyChargeMax || 40);
+    const atk = lv > 0 ? 10 + Math.ceil(lv / 4) : 0;
+    const acc = lv > 0 ? Math.ceil(lv / 2) : 0;
+    const parts = [];
+    if (atk > 0) parts.push(`+${atk}攻`);
+    if (acc > 0) parts.push(`+${acc}命`);
+    $('energy-info').textContent = parts.join(' ');
 }
 
 function resetCharacter() {

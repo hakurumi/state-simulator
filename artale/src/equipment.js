@@ -168,6 +168,19 @@ function initEquipment() {
         updateAttack();
     });
 
+    // 海盜技能
+    dom.bulletTimeLevel.addEventListener('blur', () => {
+        dom.bulletTimeLevel.value = clamp(parseInt(dom.bulletTimeLevel.value), 0, 20);
+        updateBulletTimeLabel();
+        updateAttack();
+    });
+    dom.energyLevel.addEventListener('blur', () => {
+        const max = JOB_CONFIG[getJob()]?.energyChargeMax || 40;
+        dom.energyLevel.value = clamp(parseInt(dom.energyLevel.value), 0, max);
+        updateEnergyLabel();
+        updateAttack();
+    });
+
     // 弓箭手技能
     dom.boaLevel.addEventListener('blur', () => {
         dom.boaLevel.value = clamp(parseInt(dom.boaLevel.value), 0, 16);
@@ -218,6 +231,8 @@ function resetEquipment() {
     dom.boaLevel.value = 0;
     dom.focusLevel.value = 0;
     dom.concentrateLevel.value = 0;
+    dom.bulletTimeLevel.value = 0;
+    dom.energyLevel.value = 0;
     updateMasteryLabel();
     updateMapleLabel();
     updateExpertLabel();
@@ -225,6 +240,8 @@ function resetEquipment() {
     updateConcentrateLabel();
     updateBoaLabel();
     updateFocusLabel();
+    updateBulletTimeLabel();
+    updateEnergyLabel();
     updateTotals();
     updateAttack();
     saveState();
