@@ -194,9 +194,11 @@ const STAR_OPTIONS = [
 ];
 
 const BULLET_OPTIONS = [
+    { value: 'eternal', label: '恆久子彈',   atk: 20 },
     { value: 'shiny',   label: '閃耀子彈',   atk: 18 },
     { value: 'vital',   label: '活力子彈',   atk: 16 },
     { value: 'blaze',   label: '烈焰膠囊',   atk: 16 },
+    { value: 'glaze',   label: '冰霜膠囊',   atk: 16 },
     { value: 'mighty',  label: '強力子彈',   atk: 14 },
 ];
 
