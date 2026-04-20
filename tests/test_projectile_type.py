@@ -57,15 +57,15 @@ def test_job_switch_updates_list(fresh_page):
     _select_job(fresh_page, "海盜 (槍神)")
     opts_bullet = fresh_page.locator("#projectile-select option").count()
     assert opts_star == 11   # 飛鏢 11 種
-    assert opts_bullet == 4  # 子彈 4 種
+    assert opts_bullet == 6  # 子彈 6 種
 
 
 def test_bullet_list_for_gunslinger(fresh_page):
-    """槍神顯示子彈列表，勾選後 ATK=18。"""
+    """槍神顯示子彈列表，勾選後 ATK=20（恆久子彈為預設）。"""
     _select_job(fresh_page, "海盜 (槍神)")
     fresh_page.check("#projectile-buff")
     fresh_page.wait_for_timeout(200)
-    assert fresh_page.input_value("#projectile-atk") == "18"
+    assert fresh_page.input_value("#projectile-atk") == "20"
 
 
 def test_bow_arrow_list_for_bowmaster(fresh_page):
