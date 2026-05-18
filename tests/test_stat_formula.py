@@ -110,3 +110,42 @@ def test_bowmaster_full_example_matches_game(fresh_page):
 
     assert fresh_page.text_content("#attack-display") == "3277 ~ 4007"
     assert int(fresh_page.text_content("#accuracy-display")) == 596
+
+
+# === Bug C: 匯入時自動切換 equipMode ===
+
+
+def test_import_summary_json_sets_summary_mode(fresh_page):
+    """匯入精簡 JSON 後 equipMode 自動切到 'summary'，extra-* 維持正確。"""
+    # 先切到 detail 製造「不對的初始狀態」
+    fresh_page.click("#mode-detail")
+    fresh_page.wait_for_timeout(200)
+    assert fresh_page.evaluate("equipMode") == "detail"
+
+    import_json = """{
+      "job": "弓箭手 (箭神)", "level": "155",
+      "weapon-atk": "113", "armor-atk": "12", "projectile-atk": "1",
+      "equip-acc": "34", "mastery": "20", "expert": "30",
+      "boa-level": "16", "focus-level": "20", "maple-blessing": "10",
+      "str": "72", "dex": "715", "int": "4", "luk": "4",
+      "extra-str": "49", "extra-dex": "116", "extra-int": "24", "extra-luk": "22"
+    }"""
+    fresh_page.evaluate(f"applyFullState({import_json})")
+    fresh_page.wait_for_timeout(300)
+
+    assert fresh_page.evaluate("equipMode") == "summary"
+    assert int(fresh_page.text_content("#accuracy-display")) == 596
+    assert fresh_page.input_value("#extra-dex") == "116"
+
+
+def test_import_detail_json_sets_detail_mode(fresh_page):
+    """匯入帶 equipData 的 JSON 自動切到 'detail'，skipSync 保留 extra-*。"""
+    import_json = """{
+      "job": "弓箭手 (箭神)",
+      "equipData": {"weapon": {"atk": 113}, "hat": {"dex": 10}},
+      "str": "72", "extra-str": "49", "extra-dex": "10"
+    }"""
+    fresh_page.evaluate(f"applyFullState({import_json})")
+    fresh_page.wait_for_timeout(300)
+    assert fresh_page.evaluate("equipMode") == "detail"
+    assert fresh_page.input_value("#extra-dex") == "10"

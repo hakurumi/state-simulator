@@ -314,7 +314,9 @@ function applyFullState(state) {
     if (state['elixirDetail'] != null) $('elixir-atk-detail').value = state['elixirDetail'];
     if (state['elixirAccDetail'] != null) $('elixir-acc-detail').value = state['elixirAccDetail'];
     if (state['projectileDetail'] != null) $('projectile-atk-detail').value = state['projectileDetail'];
-    if (state['equipMode']) setEquipMode(state['equipMode']);
+    const targetMode = state['equipMode']
+        || (state['equipData'] && Object.keys(state['equipData']).length ? 'detail' : 'summary');
+    if (equipMode !== targetMode) setEquipMode(targetMode, { skipSync: true });
 
     // 11. 更新所有 UI
     updateWeaponCoeff();

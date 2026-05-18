@@ -174,7 +174,7 @@ function updateArmorMode() {
 
 // ── 模式切換 ──
 
-function setEquipMode(mode) {
+function setEquipMode(mode, opts = {}) {
     equipMode = mode;
     const isDetail = mode === 'detail';
 
@@ -229,7 +229,7 @@ function setEquipMode(mode) {
         el.style.opacity = isDetail ? '0.6' : '';
     });
 
-    if (isDetail) {
+    if (isDetail && !opts.skipSync) {
         importSummaryToDetail();
         syncEquipToExtra();
         syncEquipToAttack();
