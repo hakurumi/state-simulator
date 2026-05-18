@@ -43,6 +43,7 @@ const JOB_CONFIG = {
         coeff: [3.6, 4.2],
         weapon: '短劍',
         mastery: '精準之刀',
+        accCoeff: [0.6, 0.3],
     },
     '盜賊 (夜使者)': {
         main: 'luk', sub: 'str+dex',
@@ -50,6 +51,7 @@ const JOB_CONFIG = {
         weapon: '拳套',
         mastery: '精準暗器',
         projectile: '飛鏢攻擊',
+        accCoeff: [0.6, 0.3],
     },
     '弓箭手 (箭神)': {
         main: 'dex', sub: 'str',
@@ -58,6 +60,7 @@ const JOB_CONFIG = {
         mastery: '精準之弓',
         projectile: '箭矢攻擊',
         expert: '弓術精通',
+        accCoeff: [0.6, 0.3],
         concentrate: '念力集中',         // 4轉, +10+ceil(lv/2) atk, max 30
         blessingOfAmazon: '精準強化',   // 1轉, +lv acc passive, max 16
         focus: '集中術',                // 1轉, +lv acc buff, max 20
@@ -69,6 +72,7 @@ const JOB_CONFIG = {
         mastery: '精準之弩',
         projectile: '箭矢攻擊',
         expert: '弩術精通',
+        accCoeff: [0.6, 0.3],
         blessingOfAmazon: '精準強化',   // 1轉, +lv acc passive, max 16
         focus: '集中術',                // 1轉, +lv acc buff, max 20
     },

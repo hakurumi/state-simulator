@@ -7,8 +7,7 @@ let lastEditedAttr = null;
 function getStat(attr) {
     const base  = getVal(attr, BASE_STAT);
     const extra = getVal(`extra-${attr}`, 0);
-    const maple = Math.floor(base * getMaplePct() / 100);
-    return base + maple + extra;
+    return base + extra;
 }
 
 function getLevelPoints() {
