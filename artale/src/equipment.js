@@ -2,6 +2,8 @@
 //  裝備技能
 // ────────────────────────────────
 
+const equipExtras = { str: 0, dex: 0, int: 0, luk: 0 };
+
 function getMaplePct() {
     const lv = clamp(parseInt(dom.mapleBlessing.value), 0, 30);
     return lv <= 0 ? 0 : Math.floor((lv + 1) / 2);
@@ -16,6 +18,25 @@ function updateMapleLabel() {
         dom.maplePct.textContent = '';
         dom.maplePct.removeAttribute('data-tooltip');
     }
+}
+
+function getMapleAdd(attr) {
+    const pct = getMaplePct();
+    if (pct <= 0) return 0;
+    return Math.floor(getVal(attr, BASE_STAT) * pct / 100);
+}
+
+function applyMapleToExtra() {
+    ATTRS.forEach(a => {
+        $(`extra-${a}`).value = equipExtras[a] + getMapleAdd(a);
+    });
+}
+
+function reconstructEquipExtras() {
+    ATTRS.forEach(a => {
+        const shown = getVal(`extra-${a}`, 0);
+        equipExtras[a] = Math.max(0, shown - getMapleAdd(a));
+    });
 }
 
 function updateMasteryLabel() {
@@ -218,6 +239,11 @@ function initEquipment() {
     dom.mapleBlessing.addEventListener('blur', () => {
         dom.mapleBlessing.value = clamp(parseInt(dom.mapleBlessing.value), 0, 30);
         updateMapleLabel();
+        if (typeof equipMode !== 'undefined' && equipMode === 'detail') {
+            syncEquipToExtra();
+        } else {
+            applyMapleToExtra();
+        }
         updateTotals();
         updateAttack();
     });
@@ -304,6 +330,7 @@ function resetEquipment() {
     dom.projectileAtk.value = 0;
     dom.mastery.value = 0;
     dom.mapleBlessing.value = 0;
+    ATTRS.forEach(a => { equipExtras[a] = 0; });
     dom.expert.value = 0;
     dom.hexLevel.value = 0;
     dom.boaLevel.value = 0;
@@ -320,6 +347,9 @@ function resetEquipment() {
     updateFocusLabel();
     updateBulletTimeLabel();
     updateEnergyLabel();
+    if (typeof equipMode === 'undefined' || equipMode !== 'detail') {
+        applyMapleToExtra();
+    }
     updateTotals();
     updateAttack();
     saveState();

@@ -262,8 +262,10 @@ function importSummaryToDetail() {
 
 function syncEquipToExtra() {
     ATTRS.forEach(attr => {
-        const sum = getActiveSlots().reduce((s, slot) => s + (equipData[slot.id][attr] || 0), 0);
-        $(`extra-${attr}`).value = sum;
+        equipExtras[attr] = getActiveSlots().reduce(
+            (s, slot) => s + (equipData[slot.id][attr] || 0), 0
+        );
+        $(`extra-${attr}`).value = equipExtras[attr] + getMapleAdd(attr);
     });
     updateTotals();
 }

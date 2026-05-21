@@ -142,6 +142,9 @@ function loadState() {
         updateWeaponCoeff();
         updateMasteryLabel();
         updateMapleLabel();
+        if (typeof equipMode === 'undefined' || equipMode !== 'detail') {
+            reconstructEquipExtras();
+        }
         updateExpertLabel();
         updateHexLabel();
         updateConcentrateLabel();
@@ -322,6 +325,9 @@ function applyFullState(state) {
     updateWeaponCoeff();
     updateMasteryLabel();
     updateMapleLabel();
+    if (equipMode !== 'detail') {
+        reconstructEquipExtras();
+    }
     updateExpertLabel();
     updateHexLabel();
     updateConcentrateLabel();

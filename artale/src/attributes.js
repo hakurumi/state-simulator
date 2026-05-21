@@ -57,6 +57,12 @@ function resetStats(extra = false) {
     ATTRS.forEach(a => {
         $(extra ? `extra-${a}` : a).value = extra ? 0 : BASE_STAT;
     });
+    if (extra) {
+        ATTRS.forEach(a => { equipExtras[a] = 0; });
+    }
+    if (typeof equipMode === 'undefined' || equipMode !== 'detail') {
+        applyMapleToExtra();
+    }
     updateAttributes();
     updateTotals();
     updateAttack();
@@ -94,17 +100,28 @@ function initAttributes() {
         $(a).addEventListener('blur', () => {
             lastEditedAttr = a;
             updateAttributes();
+            if (typeof equipMode === 'undefined' || equipMode !== 'detail') {
+                applyMapleToExtra();
+            }
             updateTotals();
             updateAttack();
         });
-        $(a).addEventListener('input', updateTotals);
+        $(a).addEventListener('input', () => {
+            if (typeof equipMode === 'undefined' || equipMode !== 'detail') {
+                applyMapleToExtra();
+            }
+            updateTotals();
+        });
     });
 
     ATTRS.forEach(a => {
         const id = `extra-${a}`;
         $(id).addEventListener('blur', () => {
             if (typeof equipMode !== 'undefined' && equipMode === 'detail') return;
-            $(id).value = clamp(parseInt($(id).value), 0, MAX_EXTRA);
+            const shown = clamp(parseInt($(id).value), 0, MAX_EXTRA);
+            const mapleAdd = getMapleAdd(a);
+            equipExtras[a] = Math.max(0, shown - mapleAdd);
+            $(id).value = equipExtras[a] + mapleAdd;
             updateTotals();
             updateAttack();
         });

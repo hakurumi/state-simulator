@@ -13,36 +13,52 @@ def _set_input(page, sel, val):
     page.locator(sel).blur()
 
 
-# === Bug A: 楓葉祝福不再 double-count ===
+# === v2.19.5: 楓葉祝福 derived 到 extra-* 內 ===
 
 
-def test_maple_blessing_does_not_double_count_str(fresh_page):
-    """設定楓葉祝福 lv10，total STR 應等於 base + extra (不再加 maple)。"""
+def test_maple_blessing_lv10_derived_into_extra_str(fresh_page):
+    """v2.19.5 設定楓葉祝福 lv10 後，extra-str 自動加上 mapleAdd=floor(72*5/100)=3，total=72+(49+3)=124。"""
     _select_job(fresh_page, "弓箭手 (箭神)")
     _set_input(fresh_page, "#str", 72)
     _set_input(fresh_page, "#extra-str", 49)
     _set_input(fresh_page, "#maple-blessing", 10)
     fresh_page.wait_for_timeout(200)
-    assert fresh_page.text_content("#total-str") == "121"
+    assert fresh_page.input_value("#extra-str") == "52"
+    assert fresh_page.text_content("#total-str") == "124"
 
 
-def test_maple_blessing_does_not_double_count_dex(fresh_page):
+def test_maple_blessing_lv10_derived_into_extra_dex(fresh_page):
+    """同上 dex。mapleAdd=floor(715*5/100)=35，extra-dex=116+35=151，total=866。"""
     _select_job(fresh_page, "弓箭手 (箭神)")
     _set_input(fresh_page, "#dex", 715)
     _set_input(fresh_page, "#extra-dex", 116)
     _set_input(fresh_page, "#maple-blessing", 10)
     fresh_page.wait_for_timeout(200)
-    assert fresh_page.text_content("#total-dex") == "831"
+    assert fresh_page.input_value("#extra-dex") == "151"
+    assert fresh_page.text_content("#total-dex") == "866"
 
 
 def test_maple_blessing_lv0_keeps_stat_unchanged(fresh_page):
-    """楓葉祝福 lv=0 時也應 = base + extra，與 lv>0 行為一致。"""
+    """楓葉祝福 lv=0 時 mapleAdd=0，total = base + extra。"""
     _select_job(fresh_page, "弓箭手 (箭神)")
     _set_input(fresh_page, "#dex", 715)
     _set_input(fresh_page, "#extra-dex", 116)
     _set_input(fresh_page, "#maple-blessing", 0)
     fresh_page.wait_for_timeout(200)
     assert fresh_page.text_content("#total-dex") == "831"
+
+
+def test_maple_blessing_toggle_off_restores_equip_extras(fresh_page):
+    """maple lv10 → 0 時，腳本扣回 mapleAdd，extra-str 回到使用者設定的裝備值。"""
+    _select_job(fresh_page, "弓箭手 (箭神)")
+    _set_input(fresh_page, "#str", 72)
+    _set_input(fresh_page, "#extra-str", 49)
+    _set_input(fresh_page, "#maple-blessing", 10)
+    fresh_page.wait_for_timeout(100)
+    _set_input(fresh_page, "#maple-blessing", 0)
+    fresh_page.wait_for_timeout(100)
+    assert fresh_page.input_value("#extra-str") == "49"
+    assert fresh_page.text_content("#total-str") == "121"
 
 
 # === Bug B: 弓箭手/盜賊 4 職業命中公式 ===
@@ -91,6 +107,8 @@ def test_bowmaster_full_example_matches_game(fresh_page):
     """箭神 Lv155 完整案例：攻擊力 3277~4007，命中 596。"""
     _select_job(fresh_page, "弓箭手 (箭神)")
     _set_input(fresh_page, "#level", 155)
+    # v2.19.5: maple 先設,後續 attrs blur 會把 mapleAdd 推進 extra-*,使用者輸入 extra=49/116/22 會被拆成裝備值
+    _set_input(fresh_page, "#maple-blessing", 10)
     _set_input(fresh_page, "#str", 72)
     _set_input(fresh_page, "#extra-str", 49)
     _set_input(fresh_page, "#dex", 715)
@@ -105,7 +123,6 @@ def test_bowmaster_full_example_matches_game(fresh_page):
     _set_input(fresh_page, "#boa-level", 16)
     _set_input(fresh_page, "#focus-level", 20)
     _set_input(fresh_page, "#equip-acc", 34)
-    _set_input(fresh_page, "#maple-blessing", 10)
     fresh_page.wait_for_timeout(300)
 
     assert fresh_page.text_content("#attack-display") == "3277 ~ 4007"
