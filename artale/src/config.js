@@ -161,6 +161,12 @@ const EQUIPMENT_SLOTS = [
     { id: 'face',    label: '臉飾' },
     { id: 'eye',     label: '眼飾' },
     { id: 'pendant', label: '墜飾' },
+    { id: 'belt',    label: '腰帶' },
+    { id: 'shoulder',label: '肩章' },
+    { id: 'ring1',   label: '戒指1' },
+    { id: 'ring2',   label: '戒指2' },
+    { id: 'ring3',   label: '戒指3' },
+    { id: 'ring4',   label: '戒指4' },
     { id: 'medal',   label: '勳章' },
 ];
 
