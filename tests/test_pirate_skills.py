@@ -37,9 +37,7 @@ def test_bullet_time_accuracy(fresh_page):
     acc_before = int(fresh_page.text_content("#accuracy-display"))
     fresh_page.fill("#bullet-time-level", "15")
     fresh_page.locator("#bullet-time-level").blur()
-    fresh_page.wait_for_timeout(200)
-    acc_after = int(fresh_page.text_content("#accuracy-display"))
-    assert acc_after - acc_before == 15
+    expect(fresh_page.locator("#accuracy-display")).to_have_text(str(acc_before + 15))
 
 
 def test_bullet_time_label(fresh_page):
@@ -62,11 +60,9 @@ def test_energy_charge_attack_and_accuracy(fresh_page):
 
     fresh_page.fill("#energy-level", "20")
     fresh_page.locator("#energy-level").blur()
-    fresh_page.wait_for_timeout(200)
 
-    acc_after = int(fresh_page.text_content("#accuracy-display"))
     # ceil(20/2) = 10
-    assert acc_after - acc_before == 10
+    expect(fresh_page.locator("#accuracy-display")).to_have_text(str(acc_before + 10))
 
     # label: +15攻 +10命  (10 + ceil(20/4) = 15)
     label = fresh_page.text_content("#energy-info")

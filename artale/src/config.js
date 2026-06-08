@@ -157,6 +157,14 @@ function getMasteryAtk(level) {
     return level < 3 ? 0 : Math.floor(level / 3);
 }
 
+// 技能等級 → 加成（計算層 character.js 與標籤層 update*Label 共用，避免公式重複漂移）
+function getConcentrateAtk(lv) { return lv > 0 ? 10 + Math.ceil(lv / 2) : 0; }  // 念力集中攻擊
+function getEnergyAtk(lv)      { return lv > 0 ? 10 + Math.ceil(lv / 4) : 0; }  // 蓄能激發攻擊
+function getEnergyAcc(lv)      { return lv > 0 ? Math.ceil(lv / 2) : 0; }       // 蓄能激發命中
+function getHexAtk(lv)         { return lv <= 15 ? 0 : Math.min(lv - 15, 5); }  // 黑暗守護攻擊
+function getProfAcc(lv)        { return lv <= 6 || lv >= 19 ? lv : Math.floor(lv / 2) * 2; }  // 熟練度命中
+function getExpertPct(lv, enhMax) { return enhMax ? Math.ceil(lv / 3) * 5 : getMasteryBonus(lv); }  // 精通/眼魔強化%
+
 const EQUIP_DETAIL_KEY = 'artale-sim-equip-detail';
 
 const EQUIPMENT_SLOTS = [

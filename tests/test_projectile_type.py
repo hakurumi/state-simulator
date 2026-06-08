@@ -36,10 +36,9 @@ def test_uncheck_unlocks_projectile_atk(fresh_page):
     """取消勾選後可手動編輯。"""
     _select_job(fresh_page, "盜賊 (夜使者)")
     fresh_page.check("#projectile-buff")
-    fresh_page.wait_for_timeout(100)
+    expect(fresh_page.locator("#projectile-atk")).to_be_disabled()
     fresh_page.uncheck("#projectile-buff")
-    fresh_page.wait_for_timeout(100)
-    assert not fresh_page.locator("#projectile-atk").is_disabled()
+    expect(fresh_page.locator("#projectile-atk")).to_be_enabled()
 
 
 def test_change_option_updates_atk(fresh_page):

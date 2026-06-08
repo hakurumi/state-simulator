@@ -48,9 +48,9 @@ function updateMasteryLabel() {
     let expertPct = 0;
     if (enhSkill) {
         const expertLv = clamp(parseInt(dom.expert.value), 0, enhMax || DEFAULT_EXPERT_MAX);
-        expertPct = enhMax ? Math.ceil(expertLv / 3) * 5 : getMasteryBonus(expertLv);
+        expertPct = getExpertPct(expertLv, enhMax);
     }
-    const profAcc = lv <= 6 || lv >= 19 ? lv : Math.floor(lv / 2) * 2;
+    const profAcc = getProfAcc(lv);
     const pct = basePct + expertPct;
     if (profAcc > 0) {
         dom.masteryPct.innerHTML = `<span class="coeff-frac"><span>${pct}%</span><span class="mastery-acc">+${profAcc}命</span></span>`;

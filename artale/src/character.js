@@ -60,14 +60,14 @@ function updateAttack() {
     const enhSkill = config.expert || config.beholder;
     const enhMax   = config.expertMax || config.beholderMax;
     const expertLv = enhSkill ? clamp(parseInt(dom.expert.value), 0, enhMax || DEFAULT_EXPERT_MAX) : 0;
-    const expertPct = enhMax ? Math.ceil(expertLv / 3) * 5 : getMasteryBonus(expertLv);
+    const expertPct = getExpertPct(expertLv, enhMax);
     const expertAtk = enhMax ? 0 : getMasteryAtk(expertLv);
     const guardLv   = config.hexOfTheBeholder ? clamp(parseInt(dom.hexLevel.value), 0, config.hexOfTheBeholderMax || DEFAULT_HEX_MAX) : 0;
-    const guardAtk  = guardLv <= 15 ? 0 : Math.min(guardLv - 15, 5);
+    const guardAtk  = getHexAtk(guardLv);
     const concentrateLv  = config.concentrate ? clamp(parseInt(dom.concentrateLevel.value), 0, MAX_CONCENTRATE) : 0;
-    const concentrateAtk = concentrateLv > 0 ? 10 + Math.ceil(concentrateLv / 2) : 0;
+    const concentrateAtk = getConcentrateAtk(concentrateLv);
     const energyLv  = config.energyCharge ? clamp(parseInt(dom.energyLevel.value), 0, config.energyChargeMax || DEFAULT_ENERGY_MAX) : 0;
-    const energyAtk = energyLv > 0 ? 10 + Math.ceil(energyLv / 4) : 0;
+    const energyAtk = getEnergyAtk(energyLv);
     const totalAtk  = weapon + armor + projectile + elixir + expertAtk + guardAtk + concentrateAtk + energyAtk;
     const prof      = (Math.ceil(getVal('mastery') / 2) * 5 + 10 + expertPct) / 100;
 
@@ -83,11 +83,11 @@ function updateAttack() {
     const blessAcc = dom.angelBlessing.checked ? 20 : 0;
     const elixirAcc = dom.angelBlessing.checked ? 0 : clamp(parseInt(dom.elixirAcc.value), 0, MAX_EXTRA);
     const profLv   = clamp(parseInt(dom.mastery.value), 0, MAX_MASTERY);
-    const profAcc  = profLv <= 6 || profLv >= 19 ? profLv : Math.floor(profLv / 2) * 2;
+    const profAcc  = getProfAcc(profLv);
     const boaLv   = config.blessingOfAmazon ? clamp(parseInt(dom.boaLevel.value), 0, MAX_BOA) : 0;
     const focusLv = config.focus ? clamp(parseInt(dom.focusLevel.value), 0, MAX_FOCUS) : 0;
     const bulletTimeLv  = config.bulletTime ? clamp(parseInt(dom.bulletTimeLevel.value), 0, MAX_BULLET_TIME) : 0;
-    const energyAcc = energyLv > 0 ? Math.ceil(energyLv / 2) : 0;
+    const energyAcc = getEnergyAcc(energyLv);
     const totalAcc = accBase + profAcc + equipAcc + elixirAcc + blessAcc + boaLv + focusLv + bulletTimeLv + energyAcc;
     dom.accuracyField.style.display = 'contents';
     document.querySelectorAll('.atk-spacer').forEach(el => el.style.display = 'none');
@@ -368,7 +368,7 @@ function updateConcentrateLabel() {
         return;
     }
     const lv  = clamp(parseInt(dom.concentrateLevel.value), 0, MAX_CONCENTRATE);
-    const atk = lv > 0 ? 10 + Math.ceil(lv / 2) : 0;
+    const atk = getConcentrateAtk(lv);
     dom.concentrateInfo.textContent = atk > 0 ? `+${atk}攻` : '';
 }
 
@@ -379,7 +379,7 @@ function updateHexLabel() {
         return;
     }
     const lv  = clamp(parseInt(dom.hexLevel.value), 0, config.hexOfTheBeholderMax || DEFAULT_HEX_MAX);
-    const atk = lv <= 15 ? 0 : Math.min(lv - 15, 5);
+    const atk = getHexAtk(lv);
     dom.hexInfo.textContent = atk > 0 ? `+${atk}攻` : '';
 }
 
@@ -410,8 +410,8 @@ function updateEnergyLabel() {
     const config = JOB_CONFIG[getJob()];
     if (!config?.energyCharge) { el.innerHTML = ''; el.removeAttribute('data-tooltip'); return; }
     const lv  = clamp(parseInt(dom.energyLevel.value), 0, config.energyChargeMax || DEFAULT_ENERGY_MAX);
-    const atk = lv > 0 ? 10 + Math.ceil(lv / 4) : 0;
-    const acc = lv > 0 ? Math.ceil(lv / 2) : 0;
+    const atk = getEnergyAtk(lv);
+    const acc = getEnergyAcc(lv);
     if (atk > 0 && acc > 0) {
         el.innerHTML = `<span class="coeff-frac"><span>+${atk}攻</span><span>+${acc}命</span></span>`;
         el.setAttribute('data-tooltip', `攻擊+${atk}、命中+${acc}`);
