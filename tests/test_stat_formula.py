@@ -1,6 +1,7 @@
 """Stat 顯示與命中公式 regression tests (Bug A + B 修正)."""
 
 import pytest
+from playwright.sync_api import expect
 
 from helpers import _select_job, _set_input
 
@@ -14,9 +15,8 @@ def test_maple_blessing_lv10_derived_into_extra_str(fresh_page):
     _set_input(fresh_page, "#str", 72)
     _set_input(fresh_page, "#extra-str", 49)
     _set_input(fresh_page, "#maple-blessing", 10)
-    fresh_page.wait_for_timeout(200)
-    assert fresh_page.input_value("#extra-str") == "52"
-    assert fresh_page.text_content("#total-str") == "124"
+    expect(fresh_page.locator("#extra-str")).to_have_value("52")
+    expect(fresh_page.locator("#total-str")).to_have_text("124")
 
 
 def test_maple_blessing_lv10_derived_into_extra_dex(fresh_page):
@@ -25,9 +25,8 @@ def test_maple_blessing_lv10_derived_into_extra_dex(fresh_page):
     _set_input(fresh_page, "#dex", 715)
     _set_input(fresh_page, "#extra-dex", 116)
     _set_input(fresh_page, "#maple-blessing", 10)
-    fresh_page.wait_for_timeout(200)
-    assert fresh_page.input_value("#extra-dex") == "151"
-    assert fresh_page.text_content("#total-dex") == "866"
+    expect(fresh_page.locator("#extra-dex")).to_have_value("151")
+    expect(fresh_page.locator("#total-dex")).to_have_text("866")
 
 
 def test_maple_blessing_lv0_keeps_stat_unchanged(fresh_page):
@@ -36,8 +35,7 @@ def test_maple_blessing_lv0_keeps_stat_unchanged(fresh_page):
     _set_input(fresh_page, "#dex", 715)
     _set_input(fresh_page, "#extra-dex", 116)
     _set_input(fresh_page, "#maple-blessing", 0)
-    fresh_page.wait_for_timeout(200)
-    assert fresh_page.text_content("#total-dex") == "831"
+    expect(fresh_page.locator("#total-dex")).to_have_text("831")
 
 
 def test_maple_blessing_toggle_off_restores_equip_extras(fresh_page):
@@ -48,9 +46,8 @@ def test_maple_blessing_toggle_off_restores_equip_extras(fresh_page):
     _set_input(fresh_page, "#maple-blessing", 10)
     fresh_page.wait_for_timeout(100)
     _set_input(fresh_page, "#maple-blessing", 0)
-    fresh_page.wait_for_timeout(100)
-    assert fresh_page.input_value("#extra-str") == "49"
-    assert fresh_page.text_content("#total-str") == "121"
+    expect(fresh_page.locator("#extra-str")).to_have_value("49")
+    expect(fresh_page.locator("#total-str")).to_have_text("121")
 
 
 # === Bug B: 弓箭手/盜賊 4 職業命中公式 ===

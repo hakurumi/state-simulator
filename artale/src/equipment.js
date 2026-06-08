@@ -5,7 +5,7 @@
 const equipExtras = { str: 0, dex: 0, int: 0, luk: 0 };
 
 function getMaplePct() {
-    const lv = clamp(parseInt(dom.mapleBlessing.value), 0, 30);
+    const lv = clamp(parseInt(dom.mapleBlessing.value), 0, MAX_MAPLE_BLESSING);
     return lv <= 0 ? 0 : Math.floor((lv + 1) / 2);
 }
 
@@ -40,14 +40,14 @@ function reconstructEquipExtras() {
 }
 
 function updateMasteryLabel() {
-    const lv = clamp(parseInt(dom.mastery.value), 0, 20);
+    const lv = clamp(parseInt(dom.mastery.value), 0, MAX_MASTERY);
     const basePct = Math.ceil(lv / 2) * 5 + 10;
     const config = JOB_CONFIG[getJob()];
     const enhSkill = config?.expert || config?.beholder;
     const enhMax = config?.expertMax || config?.beholderMax;
     let expertPct = 0;
     if (enhSkill) {
-        const expertLv = clamp(parseInt(dom.expert.value), 0, enhMax || 30);
+        const expertLv = clamp(parseInt(dom.expert.value), 0, enhMax || DEFAULT_EXPERT_MAX);
         expertPct = enhMax ? Math.ceil(expertLv / 3) * 5 : getMasteryBonus(expertLv);
     }
     const profAcc = lv <= 6 || lv >= 19 ? lv : Math.floor(lv / 2) * 2;
@@ -230,14 +230,14 @@ function initEquipment() {
     });
 
     dom.mastery.addEventListener('blur', () => {
-        dom.mastery.value = clamp(parseInt(dom.mastery.value), 0, 20);
+        dom.mastery.value = clamp(parseInt(dom.mastery.value), 0, MAX_MASTERY);
         updateMasteryLabel();
         updateExpertLabel();
         updateAttack();
     });
 
     dom.mapleBlessing.addEventListener('blur', () => {
-        dom.mapleBlessing.value = clamp(parseInt(dom.mapleBlessing.value), 0, 30);
+        dom.mapleBlessing.value = clamp(parseInt(dom.mapleBlessing.value), 0, MAX_MAPLE_BLESSING);
         updateMapleLabel();
         if (typeof equipMode !== 'undefined' && equipMode === 'detail') {
             syncEquipToExtra();
@@ -250,7 +250,7 @@ function initEquipment() {
 
     dom.expert.addEventListener('blur', () => {
         const cfg = JOB_CONFIG[getJob()];
-        const max = cfg?.expertMax || cfg?.beholderMax || 30;
+        const max = cfg?.expertMax || cfg?.beholderMax || DEFAULT_EXPERT_MAX;
         dom.expert.value = clamp(parseInt(dom.expert.value), 0, max);
         updateMasteryLabel();
         updateExpertLabel();
@@ -258,7 +258,7 @@ function initEquipment() {
     });
 
     dom.hexLevel.addEventListener('blur', () => {
-        const max = JOB_CONFIG[getJob()]?.hexOfTheBeholderMax || 25;
+        const max = JOB_CONFIG[getJob()]?.hexOfTheBeholderMax || DEFAULT_HEX_MAX;
         dom.hexLevel.value = clamp(parseInt(dom.hexLevel.value), 0, max);
         updateHexLabel();
         updateAttack();
@@ -266,12 +266,12 @@ function initEquipment() {
 
     // 海盜技能
     dom.bulletTimeLevel.addEventListener('blur', () => {
-        dom.bulletTimeLevel.value = clamp(parseInt(dom.bulletTimeLevel.value), 0, 20);
+        dom.bulletTimeLevel.value = clamp(parseInt(dom.bulletTimeLevel.value), 0, MAX_BULLET_TIME);
         updateBulletTimeLabel();
         updateAttack();
     });
     dom.energyLevel.addEventListener('blur', () => {
-        const max = JOB_CONFIG[getJob()]?.energyChargeMax || 40;
+        const max = JOB_CONFIG[getJob()]?.energyChargeMax || DEFAULT_ENERGY_MAX;
         dom.energyLevel.value = clamp(parseInt(dom.energyLevel.value), 0, max);
         updateEnergyLabel();
         updateAttack();
@@ -279,17 +279,17 @@ function initEquipment() {
 
     // 弓箭手技能
     dom.boaLevel.addEventListener('blur', () => {
-        dom.boaLevel.value = clamp(parseInt(dom.boaLevel.value), 0, 16);
+        dom.boaLevel.value = clamp(parseInt(dom.boaLevel.value), 0, MAX_BOA);
         updateBoaLabel();
         updateAttack();
     });
     dom.focusLevel.addEventListener('blur', () => {
-        dom.focusLevel.value = clamp(parseInt(dom.focusLevel.value), 0, 20);
+        dom.focusLevel.value = clamp(parseInt(dom.focusLevel.value), 0, MAX_FOCUS);
         updateFocusLabel();
         updateAttack();
     });
     dom.concentrateLevel.addEventListener('blur', () => {
-        dom.concentrateLevel.value = clamp(parseInt(dom.concentrateLevel.value), 0, 30);
+        dom.concentrateLevel.value = clamp(parseInt(dom.concentrateLevel.value), 0, MAX_CONCENTRATE);
         updateConcentrateLabel();
         updateAttack();
     });

@@ -59,14 +59,14 @@ function updateAttack() {
 
     const enhSkill = config.expert || config.beholder;
     const enhMax   = config.expertMax || config.beholderMax;
-    const expertLv = enhSkill ? clamp(parseInt(dom.expert.value), 0, enhMax || 30) : 0;
+    const expertLv = enhSkill ? clamp(parseInt(dom.expert.value), 0, enhMax || DEFAULT_EXPERT_MAX) : 0;
     const expertPct = enhMax ? Math.ceil(expertLv / 3) * 5 : getMasteryBonus(expertLv);
     const expertAtk = enhMax ? 0 : getMasteryAtk(expertLv);
-    const guardLv   = config.hexOfTheBeholder ? clamp(parseInt(dom.hexLevel.value), 0, config.hexOfTheBeholderMax || 25) : 0;
+    const guardLv   = config.hexOfTheBeholder ? clamp(parseInt(dom.hexLevel.value), 0, config.hexOfTheBeholderMax || DEFAULT_HEX_MAX) : 0;
     const guardAtk  = guardLv <= 15 ? 0 : Math.min(guardLv - 15, 5);
-    const concentrateLv  = config.concentrate ? clamp(parseInt(dom.concentrateLevel.value), 0, 30) : 0;
+    const concentrateLv  = config.concentrate ? clamp(parseInt(dom.concentrateLevel.value), 0, MAX_CONCENTRATE) : 0;
     const concentrateAtk = concentrateLv > 0 ? 10 + Math.ceil(concentrateLv / 2) : 0;
-    const energyLv  = config.energyCharge ? clamp(parseInt(dom.energyLevel.value), 0, config.energyChargeMax || 40) : 0;
+    const energyLv  = config.energyCharge ? clamp(parseInt(dom.energyLevel.value), 0, config.energyChargeMax || DEFAULT_ENERGY_MAX) : 0;
     const energyAtk = energyLv > 0 ? 10 + Math.ceil(energyLv / 4) : 0;
     const totalAtk  = weapon + armor + projectile + elixir + expertAtk + guardAtk + concentrateAtk + energyAtk;
     const prof      = (Math.ceil(getVal('mastery') / 2) * 5 + 10 + expertPct) / 100;
@@ -82,11 +82,11 @@ function updateAttack() {
     const equipAcc = clamp(parseInt(dom.equipAcc.value), 0, MAX_EXTRA);
     const blessAcc = dom.angelBlessing.checked ? 20 : 0;
     const elixirAcc = dom.angelBlessing.checked ? 0 : clamp(parseInt(dom.elixirAcc.value), 0, MAX_EXTRA);
-    const profLv   = clamp(parseInt(dom.mastery.value), 0, 20);
+    const profLv   = clamp(parseInt(dom.mastery.value), 0, MAX_MASTERY);
     const profAcc  = profLv <= 6 || profLv >= 19 ? profLv : Math.floor(profLv / 2) * 2;
-    const boaLv   = config.blessingOfAmazon ? clamp(parseInt(dom.boaLevel.value), 0, 16) : 0;
-    const focusLv = config.focus ? clamp(parseInt(dom.focusLevel.value), 0, 20) : 0;
-    const bulletTimeLv  = config.bulletTime ? clamp(parseInt(dom.bulletTimeLevel.value), 0, 20) : 0;
+    const boaLv   = config.blessingOfAmazon ? clamp(parseInt(dom.boaLevel.value), 0, MAX_BOA) : 0;
+    const focusLv = config.focus ? clamp(parseInt(dom.focusLevel.value), 0, MAX_FOCUS) : 0;
+    const bulletTimeLv  = config.bulletTime ? clamp(parseInt(dom.bulletTimeLevel.value), 0, MAX_BULLET_TIME) : 0;
     const energyAcc = energyLv > 0 ? Math.ceil(energyLv / 2) : 0;
     const totalAcc = accBase + profAcc + equipAcc + elixirAcc + blessAcc + boaLv + focusLv + bulletTimeLv + energyAcc;
     dom.accuracyField.style.display = 'contents';
@@ -188,8 +188,8 @@ function updateJobUI() {
     const enhMaxUI   = config?.expertMax || config?.beholderMax;
     if (enhSkillUI) {
         dom.expertName.textContent = enhSkillUI;
-        dom.expert.max = enhMaxUI || 30;
-        dom.expert.value = clamp(parseInt(dom.expert.value), 0, enhMaxUI || 30);
+        dom.expert.max = enhMaxUI || DEFAULT_EXPERT_MAX;
+        dom.expert.value = clamp(parseInt(dom.expert.value), 0, enhMaxUI || DEFAULT_EXPERT_MAX);
         $('expert-row').style.display = 'flex';
     } else {
         $('expert-row').style.display = 'none';
@@ -356,7 +356,7 @@ function updateExpertLabel() {
         return;
     }
     const enhMax   = config?.expertMax || config?.beholderMax;
-    const expertLv = clamp(parseInt(dom.expert.value), 0, enhMax || 30);
+    const expertLv = clamp(parseInt(dom.expert.value), 0, enhMax || DEFAULT_EXPERT_MAX);
     const atk      = enhMax ? 0 : getMasteryAtk(expertLv);
     dom.expertInfo.textContent = atk > 0 ? `+${atk}攻` : '';
 }
@@ -367,7 +367,7 @@ function updateConcentrateLabel() {
         dom.concentrateInfo.textContent = '';
         return;
     }
-    const lv  = clamp(parseInt(dom.concentrateLevel.value), 0, 30);
+    const lv  = clamp(parseInt(dom.concentrateLevel.value), 0, MAX_CONCENTRATE);
     const atk = lv > 0 ? 10 + Math.ceil(lv / 2) : 0;
     dom.concentrateInfo.textContent = atk > 0 ? `+${atk}攻` : '';
 }
@@ -378,24 +378,24 @@ function updateHexLabel() {
         dom.hexInfo.textContent = '';
         return;
     }
-    const lv  = clamp(parseInt(dom.hexLevel.value), 0, config.hexOfTheBeholderMax || 25);
+    const lv  = clamp(parseInt(dom.hexLevel.value), 0, config.hexOfTheBeholderMax || DEFAULT_HEX_MAX);
     const atk = lv <= 15 ? 0 : Math.min(lv - 15, 5);
     dom.hexInfo.textContent = atk > 0 ? `+${atk}攻` : '';
 }
 
 function updateBoaLabel() {
-    const lv = clamp(parseInt(dom.boaLevel.value), 0, 16);
+    const lv = clamp(parseInt(dom.boaLevel.value), 0, MAX_BOA);
     $('boa-info').textContent = lv > 0 ? `+${lv}命` : '';
 }
 
 function updateFocusLabel() {
-    const lv = clamp(parseInt(dom.focusLevel.value), 0, 20);
+    const lv = clamp(parseInt(dom.focusLevel.value), 0, MAX_FOCUS);
     $('focus-info').textContent = lv > 0 ? `+${lv}命` : '';
 }
 
 function updateBulletTimeLabel() {
     const el = $('bullet-time-info');
-    const lv = clamp(parseInt(dom.bulletTimeLevel.value), 0, 20);
+    const lv = clamp(parseInt(dom.bulletTimeLevel.value), 0, MAX_BULLET_TIME);
     if (lv > 0) {
         el.textContent = `+${lv}命`;
         el.setAttribute('data-tooltip', `命中+${lv}`);
@@ -409,7 +409,7 @@ function updateEnergyLabel() {
     const el = $('energy-info');
     const config = JOB_CONFIG[getJob()];
     if (!config?.energyCharge) { el.innerHTML = ''; el.removeAttribute('data-tooltip'); return; }
-    const lv  = clamp(parseInt(dom.energyLevel.value), 0, config.energyChargeMax || 40);
+    const lv  = clamp(parseInt(dom.energyLevel.value), 0, config.energyChargeMax || DEFAULT_ENERGY_MAX);
     const atk = lv > 0 ? 10 + Math.ceil(lv / 4) : 0;
     const acc = lv > 0 ? Math.ceil(lv / 2) : 0;
     if (atk > 0 && acc > 0) {

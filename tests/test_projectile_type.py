@@ -1,7 +1,12 @@
 """Projectile type selector tests."""
+from playwright.sync_api import expect
+
 from helpers import (
     _select_job, _get_share_url, _open_share_url, _export_config, _import_file,
 )
+
+STAR_COUNT = 11    # 盜賊飛鏢種類數
+BULLET_COUNT = 6   # 槍神子彈種類數
 
 
 def test_projectile_selector_visible_for_thief(fresh_page):
@@ -22,10 +27,9 @@ def test_check_fills_projectile_atk(fresh_page):
     """勾選後自動填入 ATK 值，鎖定手動輸入。"""
     _select_job(fresh_page, "盜賊 (夜使者)")
     fresh_page.check("#projectile-buff")
-    fresh_page.wait_for_timeout(200)
     # 預設選第一個（月牙鏢 +28）
-    assert fresh_page.input_value("#projectile-atk") == "28"
-    assert fresh_page.locator("#projectile-atk").is_disabled()
+    expect(fresh_page.locator("#projectile-atk")).to_have_value("28")
+    expect(fresh_page.locator("#projectile-atk")).to_be_disabled()
 
 
 def test_uncheck_unlocks_projectile_atk(fresh_page):
@@ -44,8 +48,7 @@ def test_change_option_updates_atk(fresh_page):
     fresh_page.check("#projectile-buff")
     fresh_page.wait_for_timeout(100)
     fresh_page.select_option("#projectile-select", "subi")
-    fresh_page.wait_for_timeout(200)
-    assert fresh_page.input_value("#projectile-atk") == "15"
+    expect(fresh_page.locator("#projectile-atk")).to_have_value("15")
 
 
 def test_job_switch_updates_list(fresh_page):
@@ -54,32 +57,29 @@ def test_job_switch_updates_list(fresh_page):
     opts_star = fresh_page.locator("#projectile-select option").count()
     _select_job(fresh_page, "海盜 (槍神)")
     opts_bullet = fresh_page.locator("#projectile-select option").count()
-    assert opts_star == 11   # 飛鏢 11 種
-    assert opts_bullet == 6  # 子彈 6 種
+    assert opts_star == STAR_COUNT
+    assert opts_bullet == BULLET_COUNT
 
 
 def test_bullet_list_for_gunslinger(fresh_page):
     """槍神顯示子彈列表，勾選後 ATK=20（恆久子彈為預設）。"""
     _select_job(fresh_page, "海盜 (槍神)")
     fresh_page.check("#projectile-buff")
-    fresh_page.wait_for_timeout(200)
-    assert fresh_page.input_value("#projectile-atk") == "20"
+    expect(fresh_page.locator("#projectile-atk")).to_have_value("20")
 
 
 def test_bow_arrow_list_for_bowmaster(fresh_page):
     """箭神顯示弓箭矢列表，勾選後 ATK=2。"""
     _select_job(fresh_page, "弓箭手 (箭神)")
     fresh_page.check("#projectile-buff")
-    fresh_page.wait_for_timeout(200)
-    assert fresh_page.input_value("#projectile-atk") == "2"
+    expect(fresh_page.locator("#projectile-atk")).to_have_value("2")
 
 
 def test_xbow_arrow_list_for_marksman(fresh_page):
     """神射手顯示弩箭列表，勾選後 ATK=2。"""
     _select_job(fresh_page, "弓箭手 (神射手)")
     fresh_page.check("#projectile-buff")
-    fresh_page.wait_for_timeout(200)
-    assert fresh_page.input_value("#projectile-atk") == "2"
+    expect(fresh_page.locator("#projectile-atk")).to_have_value("2")
 
 
 def test_reset_clears_projectile_buff(fresh_page):

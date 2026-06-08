@@ -1,4 +1,6 @@
 """Pirate skill tests (Bullet Time + Energy Charge)."""
+from playwright.sync_api import expect
+
 from helpers import (
     _select_job, _get_share_url, _open_share_url, _export_config, _import_file,
 )
@@ -45,13 +47,11 @@ def test_bullet_time_label(fresh_page):
     _select_job(fresh_page, "海盜 (槍神)")
     fresh_page.fill("#bullet-time-level", "10")
     fresh_page.locator("#bullet-time-level").blur()
-    fresh_page.wait_for_timeout(100)
-    assert fresh_page.text_content("#bullet-time-info") == "+10命"
+    expect(fresh_page.locator("#bullet-time-info")).to_have_text("+10命")
 
     fresh_page.fill("#bullet-time-level", "0")
     fresh_page.locator("#bullet-time-level").blur()
-    fresh_page.wait_for_timeout(100)
-    assert fresh_page.text_content("#bullet-time-info") == ""
+    expect(fresh_page.locator("#bullet-time-info")).to_have_text("")
 
 
 def test_energy_charge_attack_and_accuracy(fresh_page):
@@ -79,8 +79,7 @@ def test_energy_charge_label_zero(fresh_page):
     _select_job(fresh_page, "海盜 (拳霸)")
     fresh_page.fill("#energy-level", "0")
     fresh_page.locator("#energy-level").blur()
-    fresh_page.wait_for_timeout(100)
-    assert fresh_page.text_content("#energy-info") == ""
+    expect(fresh_page.locator("#energy-info")).to_have_text("")
 
 
 def test_energy_charge_max_clamped(fresh_page):
@@ -88,8 +87,7 @@ def test_energy_charge_max_clamped(fresh_page):
     _select_job(fresh_page, "海盜 (拳霸)")
     fresh_page.fill("#energy-level", "99")
     fresh_page.locator("#energy-level").blur()
-    fresh_page.wait_for_timeout(100)
-    assert fresh_page.input_value("#energy-level") == "40"
+    expect(fresh_page.locator("#energy-level")).to_have_value("40")
 
 
 def test_reset_clears_pirate_skills(fresh_page):

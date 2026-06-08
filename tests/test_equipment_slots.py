@@ -1,4 +1,6 @@
 """裝備詳細模式欄位組成測試。"""
+from playwright.sync_api import expect
+
 from helpers import _switch_detail
 
 EXPECTED_SLOTS = [
@@ -23,12 +25,10 @@ def test_new_slots_sync_to_stats(fresh_page):
     fresh_page.locator("#equip-ring1-str").blur()
     fresh_page.locator("#equip-belt-atk").fill("11")
     fresh_page.locator("#equip-belt-atk").blur()
-    fresh_page.wait_for_timeout(200)
 
-    assert fresh_page.text_content("#equip-total-str") == "7"
-    assert fresh_page.input_value("#extra-str") == "7"
+    expect(fresh_page.locator("#equip-total-str")).to_have_text("7")
+    expect(fresh_page.locator("#extra-str")).to_have_value("7")
 
     # 腰帶攻擊應併入摘要模式的「防具攻擊」
     fresh_page.click("#mode-summary")
-    fresh_page.wait_for_timeout(200)
-    assert fresh_page.input_value("#armor-atk") == "11"
+    expect(fresh_page.locator("#armor-atk")).to_have_value("11")

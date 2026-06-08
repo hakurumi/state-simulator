@@ -7,6 +7,18 @@ const BASE_STAT  = 4;
 const MAX_LEVEL  = 200;
 const MAX_ATK    = 999;
 const MAX_EXTRA  = 999;
+
+// 技能 / 強化等級上限（計算層 character.js 與輸入鉗制 equipment.js 共用，避免分散硬編碼漂移）
+const MAX_MASTERY        = 20;  // 熟練度
+const MAX_MAPLE_BLESSING = 30;  // 楓葉祝福
+const MAX_CONCENTRATE    = 30;  // 念力集中
+const MAX_BOA            = 16;  // 精準強化
+const MAX_FOCUS          = 20;  // 集中術
+const MAX_BULLET_TIME    = 20;  // 極限迴避
+const DEFAULT_EXPERT_MAX = 30;  // 精通 / 眼魔強化（無 per-job 上限時的預設）
+const DEFAULT_HEX_MAX    = 25;  // 黑暗守護（無 per-job 上限時的預設）
+const DEFAULT_ENERGY_MAX = 40;  // 蓄能激發（無 per-job 上限時的預設）
+
 const ATTRS      = ['str', 'dex', 'int', 'luk'];
 
 const WEAPON_COEFF = {
