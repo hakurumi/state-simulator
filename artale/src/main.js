@@ -251,6 +251,10 @@ function collectFullState(compact) {
 }
 
 function applyFullState(state) {
+    // 缺漏欄位補回預設值：compact 分享連結會省略「等於預設值」的欄位，
+    // 舊版匯出檔也缺後加的欄位；不補齊會殘留當前 session 的值造成污染。
+    state = { ...STATE_DEFAULTS, ...state };
+
     // 1. 角色資訊模式
     if (state['char-mode']) setCharMode(state['char-mode']);
 
