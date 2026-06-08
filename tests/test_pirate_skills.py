@@ -1,9 +1,7 @@
 """Pirate skill tests (Bullet Time + Energy Charge)."""
-
-
-def _select_job(page, job):
-    page.select_option("#job", job)
-    page.wait_for_timeout(200)
+from helpers import (
+    _select_job, _get_share_url, _open_share_url, _export_config, _import_file,
+)
 
 
 def test_bullet_time_visible_for_gunslinger(fresh_page):
@@ -123,19 +121,8 @@ def test_share_restores_pirate_skills(fresh_page, context):
 
     expected_acc = fresh_page.text_content("#accuracy-display")
 
-    # share
-    context.grant_permissions(["clipboard-read", "clipboard-write"])
-    fresh_page.click("#btn-settings")
-    fresh_page.wait_for_timeout(200)
-    fresh_page.click("#btn-share")
-    fresh_page.wait_for_timeout(500)
-    url = fresh_page.evaluate("navigator.clipboard.readText()")
-
-    # open in new page
-    page2 = context.new_page()
-    page2.goto(url)
-    page2.wait_for_load_state("networkidle")
-    page2.wait_for_timeout(500)
+    url = _get_share_url(fresh_page, context)
+    page2 = _open_share_url(context, url)
 
     assert page2.input_value("#job") == "海盜 (拳霸)"
     assert page2.input_value("#bullet-time-level") == "18"
@@ -157,21 +144,14 @@ def test_import_restores_pirate_skills(fresh_page):
     expected_ec = fresh_page.input_value("#energy-level")
 
     # export
-    with fresh_page.expect_download() as dl_info:
-        fresh_page.click("#btn-settings")
-        fresh_page.wait_for_timeout(200)
-        fresh_page.click("#btn-export")
-    dl_path = dl_info.value.path()
+    dl_path = _export_config(fresh_page).path()
 
     # change values
     _select_job(fresh_page, "劍士 (英雄)")
     fresh_page.wait_for_timeout(200)
 
     # import
-    fresh_page.click("#btn-settings")
-    fresh_page.wait_for_timeout(200)
-    fresh_page.locator("#file-import").set_input_files(dl_path)
-    fresh_page.wait_for_timeout(500)
+    _import_file(fresh_page, dl_path)
 
     assert fresh_page.input_value("#job") == "海盜 (拳霸)"
     assert fresh_page.input_value("#bullet-time-level") == expected_bt

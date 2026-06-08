@@ -1,5 +1,5 @@
 """Share URL tests."""
-import re
+from helpers import _get_share_url, _open_share_url, _switch_detail
 
 
 def _set_fields(page, **fields):
@@ -11,23 +11,6 @@ def _set_fields(page, **fields):
             page.fill(f"#{sel}", str(val))
             page.locator(f"#{sel}").blur()
     page.wait_for_timeout(200)
-
-
-def _get_share_url(page, context):
-    context.grant_permissions(["clipboard-read", "clipboard-write"])
-    page.click("#btn-settings")
-    page.wait_for_timeout(200)
-    page.click("#btn-share")
-    page.wait_for_timeout(500)
-    return page.evaluate("navigator.clipboard.readText()")
-
-
-def _open_share_url(context, url):
-    page = context.new_page()
-    page.goto(url)
-    page.wait_for_load_state("networkidle")
-    page.wait_for_timeout(500)
-    return page
 
 
 def test_share_url_generated(fresh_page, context):
@@ -79,8 +62,7 @@ def test_share_default_state(fresh_page, context):
 def test_share_detail_mode(fresh_page, context):
     fresh_page.select_option("#job", "劍士 (英雄)")
     fresh_page.wait_for_timeout(100)
-    fresh_page.click("#mode-detail")
-    fresh_page.wait_for_timeout(300)
+    _switch_detail(fresh_page)
 
     fresh_page.locator("#equip-weapon-atk").fill("100")
     fresh_page.locator("#equip-weapon-atk").blur()

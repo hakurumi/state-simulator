@@ -2,15 +2,7 @@
 
 import pytest
 
-
-def _select_job(page, job):
-    page.select_option("#job", job)
-    page.wait_for_timeout(200)
-
-
-def _set_input(page, sel, val):
-    page.fill(sel, str(val))
-    page.locator(sel).blur()
+from helpers import _select_job, _set_input
 
 
 # === v2.19.5: 楓葉祝福 derived 到 extra-* 內 ===
